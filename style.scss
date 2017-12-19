@@ -38,10 +38,14 @@ body {
 }
 
 #display {
-  height: 250px;
-  width: 300px;
-  margin: 0 auto;
-  
+  display: flex;
+  height: 200px;  
+  justify-content: center;
+}
+
+#display>div {
+  width: 135px;
+  border: solid 1px black;
 }
 
 .avatar {

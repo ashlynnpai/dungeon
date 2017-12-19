@@ -69,11 +69,31 @@ class Game extends React.Component {
     return (
       <div onKeyPress={(e) => this.onKeyPressed(e)}>
         <div id="display">
-          <p>Health: {this.state.health}</p>
-          <p>Level: {this.state.level}</p>
-          <p>Weapon: {this.state.weapon}</p>
-        <img className="avatar" src="https://www.ashlynnpai.com/assets/Idle__000.png" />
-          
+          <div id="display-box">
+            <p>Health: {this.state.health}</p>
+            <p>Level: {this.state.level}</p>
+            <p>Weapon: {this.state.weapon}</p>
+          </div>  
+          <div>
+            <img id="display-box" className="avatar" src="https://www.ashlynnpai.com/assets/Idle__000.png" />
+          </div>  
+          <div id="display-box">
+            <p>Health: </p>
+            <p>Level: </p>
+            <p>Weapon: </p>
+          </div>  
+          <div>
+            <img id="display-box" className="avatar" src="" /> 
+          </div>
+          <div id="display-box">
+            <p>More Stuff</p>
+          </div>  
+          <div id="display-box">
+            <p>More Stuff</p>
+          </div>  
+          <div id="display-box">
+            <p>More Stuff</p>
+          </div>  
         </div>
         <div id="board" className="flex-container" >      
           {this.state.squares.map((square,index) => 
