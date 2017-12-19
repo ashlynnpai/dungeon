@@ -19,7 +19,8 @@ class Game extends React.Component {
     player_index: startPoint,
     health: 20,
     level: 1,
-    weapon: "hands"
+    weapons: [{type: "hands", attack: 1}],
+    inventory: [{type: "health", quantity: 1}]
                  };
   }
   
@@ -72,7 +73,8 @@ class Game extends React.Component {
           <div id="display-box">
             <p>Health: {this.state.health}</p>
             <p>Level: {this.state.level}</p>
-            <p>Weapon: {this.state.weapon}</p>
+            <p>Weapon: {this.state.weapons[0].type}</p>
+            <p>Attack: {this.state.weapons[0].attack}</p>
           </div>  
           <div>
             <img id="display-box" className="avatar" src="https://www.ashlynnpai.com/assets/Idle__000.png" />
@@ -86,7 +88,7 @@ class Game extends React.Component {
             <img id="display-box" className="avatar" src="" /> 
           </div>
           <div id="display-box">
-            <p>More Stuff</p>
+            <p>Inventory</p>
           </div>  
           <div id="display-box">
             <p>More Stuff</p>
