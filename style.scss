@@ -17,9 +17,8 @@ body {
 }
 
 .flex-container>div {
-  width: 47px;
-  height: 47px;
-  border: solid 1px #505963;
+  width: 49px;
+  height: 49px;
   text-align: center;
 }
 
@@ -33,5 +32,18 @@ body {
 
 .Pcolor {
   background: #fff;
+  background-image: url("https://www.ashlynnpai.com/assets/Idle__000.png");
+  background-size: 30px;
+  background-repeat: no-repeat;
 }
 
+#display {
+  height: 250px;
+  width: 300px;
+  margin: 0 auto;
+  
+}
+
+.avatar {
+  height: 150px;
+}
