@@ -37,9 +37,16 @@ body {
   background-repeat: no-repeat;
 }
 
+.ratcolor {
+  background: #fff;
+  background-image: url("https://southparkstudios.mtvnimages.com/shared/characters/non-human/lemmiwinks.png");
+  background-size: 60px;
+  background-repeat: no-repeat;
+}
+
 #display {
   display: flex;
-  height: 200px;  
+  height: 220px;  
   justify-content: center;
 }
 
