@@ -54,45 +54,59 @@ class Game extends React.Component {
     }
   }
   
-  fightMob(mob) {
+  getInfo(mob) {
     for(var i=0; i<this.mobInfo.length; i++) {
       if(this.mobInfo[i].name==mob) {
         var mob_hp = this.mobInfo[i].health;
+        this.state.mob_hp = mob_hp;
         var mob_attack = this.mobInfo[i].attack;
       }
     }
     let player_hp = this.state.health;
     let player_attack = this.state.weapons[0].attack;
+    this.fightMob(mob, mob_hp, mob_attack, player_hp, player_attack);
+  }
+  
+  fightMob(mob, mob_hp, mob_attack, player_hp, player_attack) {
     let hitChance = .7;
     console.log("fight " + mob);
-    while (player_hp > 0 && mob_hp > 0) {
-      let player_roll = Math.random();
-      if (player_roll <= hitChance) {
-        mob_hp = mob_hp - player_attack;
-        this.state.mob_hp = mob_hp;
-        console.log("Player hits " + mob + "for " + player_attack);
-      }
-      else {
-        console.log("Player misses.");
-      }
-      if (mob_hp == 0) {
-        console.log(mob + " dies");
-        return;
-      }
-      let mob_roll = Math.random();
-      if (mob_roll <= hitChance) {
-        player_hp = player_hp - mob_attack;
-        this.state.health = player_hp;
-        console.log("Mob hits player for " + mob_attack);
-      }
-      else {
-        console.log(mob + " misses.");
-      }
-      if (player_hp == 0) {
-        console.log("You die.");
-        return;
-      }
+    if (player_hp == 0 || mob_hp == 0) {
+      return;
+    } 
+    let player_roll = Math.random();
+    if (player_roll <= hitChance) {
+      mob_hp = mob_hp - player_attack;
+      console.log("mob hp " + mob_hp);
+      this.setState({
+        mob_hp: mob_hp
+      });
+
+      console.log("Player hits " + mob + "for " + player_attack);
     }
+    else {
+      console.log("Player misses.");
+    }
+    if (mob_hp == 0) {
+      console.log(mob + " dies");
+      return;
+    }
+    let mob_roll = Math.random();
+    if (mob_roll <= hitChance) {
+      player_hp = player_hp - mob_attack;
+      this.setState({
+        health: player_hp
+      });
+
+      console.log("Mob hits player for " + mob_attack);
+    }
+    else {
+      console.log(mob + " misses.");
+    }
+    if (player_hp == 0) {
+      console.log("You die.");
+      return;
+    }
+    setTimeout(this.fightMob.bind(this), 2000, mob, mob_hp, mob_attack, player_hp, player_attack);   
   }
   
   onKeyPressed(e) {
@@ -121,7 +135,7 @@ class Game extends React.Component {
         this.setState({
           current_mob: squares[next_square]
         });
-        this.fightMob(squares[next_square]);
+        this.getInfo(squares[next_square]);
       }
     else {
       return;
