@@ -4,6 +4,7 @@ class Game extends React.Component {
     this.size = 400;
     this.rowSize = 20;
     this.mobInfo = [{name: "rat", attack: 1, health: 8, url: "https://southparkstudios.mtvnimages.com/shared/characters/non-human/lemmiwinks.png"}];
+    this.weaponsInfo = [{type: "hands", attack: 1}, {type: "starter_sword", attack: 2}, {type: "other_sword", attack: 2}];
     const startPoint = 20;
     var grids = Array(this.size).fill("S");
     let l1 = [21, 22, 23, 24, 42, 43, 44, 62, 63, 64, 25, 26, 27, 46, 47, 66, 67, 86, 87, 48, 49, 50, 29, 30, 69, 70, 89, 90, 71, 32, 33, 52, 53, 72, 73, 34, 35, 36, 55, 56, 75, 76, 57, 58];
@@ -16,8 +17,10 @@ class Game extends React.Component {
       }
     }
     grids[startPoint] = "P";
+    grids[42] = "starter_sword";
     let l1copy = l1.slice();
     l1copy.splice(0, 7);
+    l1copy.splice(3, 1);
     for (let i=0; i<5; i++) {
       let l1Index = Math.floor(Math.random() * l1copy.length);
       let occupySquare = l1copy[l1Index];
@@ -26,15 +29,16 @@ class Game extends React.Component {
     }
     
     this.state = {
-    squares: grids,
-    player_index: startPoint,
-    health: 10,
-    level: 1,
-    xp: 0,
-    weapons: [{type: "hands", attack: 1}],
-    inventory: [{type: "health pots", quantity: 1}],
-    current_mob: "",
-    mob_hp: 0
+      squares: grids,
+      player_index: startPoint,
+      health: 10,
+      level: 1,
+      xp: 0,
+      weapons: ["hands"],
+      inventory: [{type: "health pots", quantity: 1}],
+      current_mob: "",
+      mob_hp: 0,
+      target_index: null
                  };
   }
   
@@ -47,10 +51,19 @@ class Game extends React.Component {
   }      
 
   mobLookup(mob) {
-    for(var i=0; i<this.mobInfo.length; i++) {
-      if(this.mobInfo[i].name==mob ){
-        return true;
-      }
+    if (this.mobInfo.filter(mobInfo => mobInfo.name == mob).length > 0) {
+      return true;
+    };
+
+    // if (this.mobInfo.filter(mobInfo => mobInfo.name == mob)) {
+    //   console.log(this.mobInfo);
+    //   return true;
+    // }
+  }
+  
+  weaponLookup(weapon) {
+    if (this.weaponsInfo.filter(weaponInfo => weaponInfo.type == weapon).length > 0) {
+      return true;
     }
   }
   
@@ -63,16 +76,20 @@ class Game extends React.Component {
       }
     }
     let player_hp = this.state.health;
-    let player_attack = this.state.weapons[0].attack;
+    let filtered_weapons = this.weaponsInfo.filter(weaponInfo => weaponInfo.type == this.state.weapons[0]);
+    let player_attack = filtered_weapons[0].attack;
     this.fightMob(mob, mob_hp, mob_attack, player_hp, player_attack);
   }
   
   fightMob(mob, mob_hp, mob_attack, player_hp, player_attack) {
     let hitChance = .7;
     console.log("fight " + mob);
-    if (player_hp == 0 || mob_hp == 0) {
-      return;
-    } 
+    if (player_hp == 0) {
+      return "player dies."
+    }
+    if (mob_hp == 0) {
+      return "mob dies."
+    }
     let player_roll = Math.random();
     if (player_roll <= hitChance) {
       mob_hp = mob_hp - player_attack;
@@ -81,14 +98,18 @@ class Game extends React.Component {
         mob_hp: mob_hp
       });
 
-      console.log("Player hits " + mob + "for " + player_attack);
+      console.log("Player hits " + mob + " for " + player_attack);
     }
     else {
       console.log("Player misses.");
     }
     if (mob_hp == 0) {
       console.log(mob + " dies");
-      return;
+      this.setState({
+          current_mob: null,
+          target_index: null,
+          //squares[target_index]: null
+      });
     }
     let mob_roll = Math.random();
     if (mob_roll <= hitChance) {
@@ -104,7 +125,7 @@ class Game extends React.Component {
     }
     if (player_hp == 0) {
       console.log("You die.");
-      return;
+      return "player dies";
     }
     setTimeout(this.fightMob.bind(this), 2000, mob, mob_hp, mob_attack, player_hp, player_attack);   
   }
@@ -131,12 +152,22 @@ class Game extends React.Component {
       squares[current_square] = null;
       squares[next_square] = "P";
     }
-    else if(this.mobLookup(squares[next_square]))       { 
+    else if(this.mobLookup(squares[next_square])) { 
+        console.log(squares[next_square]);
         this.setState({
-          current_mob: squares[next_square]
+          current_mob: squares[next_square],
+          target_index: next_square     
         });
+        //fight the mob
         this.getInfo(squares[next_square]);
       }
+    else if(this.weaponLookup(squares[next_square])) {
+      let weapons = this.state.weapons;
+      weapons.unshift(squares[next_square]);
+        this.setState({
+          weapons: weapons    
+        });
+    }
     else {
       return;
     }
@@ -154,6 +185,10 @@ class Game extends React.Component {
   else {
     var mob = {name: "none", attack: 0, health: 0, url: ""}
   }
+ 
+  var weapon = this.state.weapons[0];        
+  let filtered_weapons = this.weaponsInfo.filter(weaponInfo => weaponInfo.type == weapon);
+  var attack_value = filtered_weapons[0].attack;
      }
     return (
       <div onKeyPress={(e) => this.onKeyPressed(e)}>
@@ -162,8 +197,8 @@ class Game extends React.Component {
             <p>Health: {this.state.health}</p>
             <p>Level: {this.state.level}</p>
             <p>XP: {this.state.xp}</p>
-            <p>Weapon: {this.state.weapons[0].type}</p>
-            <p>Attack: {this.state.weapons[0].attack}</p>
+            <p>Weapon: {weapon}</p>
+            <p>Attack: {attack_value}</p>
           </div>  
           <div>
             <img id="display-box" className="avatar" src="https://www.ashlynnpai.com/assets/Idle__000.png" />
