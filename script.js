@@ -34,6 +34,7 @@ class Game extends React.Component {
       health: 10,
       level: 1,
       xp: 0,
+      living: true,
       weapons: ["hands"],
       inventory: [{type: "health pots", quantity: 1}],
       current_mob: "",
@@ -54,11 +55,6 @@ class Game extends React.Component {
     if (this.mobInfo.filter(mobInfo => mobInfo.name == mob).length > 0) {
       return true;
     };
-
-    // if (this.mobInfo.filter(mobInfo => mobInfo.name == mob)) {
-    //   console.log(this.mobInfo);
-    //   return true;
-    // }
   }
   
   weaponLookup(weapon) {
@@ -67,28 +63,30 @@ class Game extends React.Component {
     }
   }
   
-  getInfo(mob) {
-    for(var i=0; i<this.mobInfo.length; i++) {
-      if(this.mobInfo[i].name==mob) {
-        var mob_hp = this.mobInfo[i].health;
-        this.state.mob_hp = mob_hp;
-        var mob_attack = this.mobInfo[i].attack;
-      }
+  fightMob(mob) {
+      if (this.mobInfo.filter(mobInfo => mobInfo.name == mob)) {
+      var mob_hp = this.mobInfo[0].health;
+      this.state.mob_hp = mob_hp;
+      var mob_attack = this.mobInfo[0].attack;
     }
     let player_hp = this.state.health;
     let filtered_weapons = this.weaponsInfo.filter(weaponInfo => weaponInfo.type == this.state.weapons[0]);
     let player_attack = filtered_weapons[0].attack;
-    this.fightMob(mob, mob_hp, mob_attack, player_hp, player_attack);
+    this.combatSequence(mob, mob_hp, mob_attack, player_hp, player_attack);
+     
   }
   
-  fightMob(mob, mob_hp, mob_attack, player_hp, player_attack) {
+  combatSequence(mob, mob_hp, mob_attack, player_hp, player_attack) {
     let hitChance = .7;
     console.log("fight " + mob);
     if (player_hp == 0) {
-      return "player dies."
+      this.setState({
+        living: false
+      });
+      return;
     }
     if (mob_hp == 0) {
-      return "mob dies."
+      return;
     }
     let player_roll = Math.random();
     if (player_roll <= hitChance) {
@@ -105,11 +103,7 @@ class Game extends React.Component {
     }
     if (mob_hp == 0) {
       console.log(mob + " dies");
-      this.setState({
-          current_mob: null,
-          target_index: null,
-          //squares[target_index]: null
-      });
+      return;
     }
     let mob_roll = Math.random();
     if (mob_roll <= hitChance) {
@@ -125,12 +119,17 @@ class Game extends React.Component {
     }
     if (player_hp == 0) {
       console.log("You die.");
-      return "player dies";
+      this.setState({
+        living: false
+        //death scene
+      });
+      return;
     }
-    setTimeout(this.fightMob.bind(this), 2000, mob, mob_hp, mob_attack, player_hp, player_attack);   
+    setTimeout(this.combatSequence.bind(this), 2000, mob, mob_hp, mob_attack, player_hp, player_attack);   
   }
   
   onKeyPressed(e) {
+    if (this.state.living) {
     let current_square = this.state.player_index;
     let squares = this.state.squares;
     if(e.key == 'd'){
@@ -153,13 +152,15 @@ class Game extends React.Component {
       squares[next_square] = "P";
     }
     else if(this.mobLookup(squares[next_square])) { 
-        console.log(squares[next_square]);
-        this.setState({
-          current_mob: squares[next_square],
-          target_index: next_square     
-        });
+     
         //fight the mob
-        this.getInfo(squares[next_square]);
+          this.fightMob(squares[next_square]);
+          squares[current_square] = null;
+          squares[next_square] = "P";
+        
+        this.setState({
+          squares: squares
+     });
       }
     else if(this.weaponLookup(squares[next_square])) {
       let weapons = this.state.weapons;
@@ -167,6 +168,8 @@ class Game extends React.Component {
         this.setState({
           weapons: weapons    
         });
+      squares[current_square] = null;
+      squares[next_square] = "P";
     }
     else {
       return;
@@ -175,6 +178,7 @@ class Game extends React.Component {
           squares: squares,
           player_index: next_square
      });
+    }
   }
 
   render() {
