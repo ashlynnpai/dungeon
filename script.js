@@ -30,6 +30,7 @@ class Game extends React.Component {
     
     this.state = {
       squares: grids,
+      hidden: [75, 76, 57, 58],
       player_index: startPoint,
       health: 10,
       level: 1,
@@ -51,6 +52,52 @@ class Game extends React.Component {
     document.removeEventListener("keypress", this.onKeyPressed.bind(this));
   }      
 
+  checkVisible() {
+    let p = this.state.player_index;
+    let r = Math.floor(p/20);
+    let n = 20;
+    let visible = [p, p-2, p-1, p+1, p+2, p-n-2, p-n-1, p-n, p-n+1, p-n+2, p+n-2, p+n-1, p+n, p+n+1, p+n+2];
+    console.log(p);
+    console.log(visible);
+    this.setVisible(visible);
+  
+
+    //10 squares in each row between row number - 1 * 20 and row number * 20 - 1
+    //if not in visible, set className to hidden
+    let squares = this.state.squares;
+    let hidden = [];
+    for (let i=0; i<squares.length; i++) {
+      if (!visible.includes(i)) {
+         hidden.push(i);
+      }
+    }
+    this.setHidden(hidden);    
+  }
+  
+  setVisible(visible) {
+      let squares = this.state.squares;
+      for (let i=0; i<visible.length; i++) {
+      if (visible[i] >= 0) {
+       document.getElementById("square" + visible[i]).classList.remove("hidden");
+       document.getElementById("square" + visible[i]).classList.add(squares[visible[i]] + "color");
+      }
+     }
+    
+    this.setState({
+      squares: squares
+    })
+  }
+  
+  setHidden(hidden) {
+    for (let i=0; i<hidden.length; i++) {
+      document.getElementById("square" + hidden[i]).className = "hidden";
+    }
+    let squares = this.state.squares;
+    this.setState({
+      squares: squares
+    })
+  }
+  
   mobLookup(mob) {
     if (this.mobInfo.filter(mobInfo => mobInfo.name == mob).length > 0) {
       return true;
@@ -151,16 +198,11 @@ class Game extends React.Component {
       squares[current_square] = null;
       squares[next_square] = "P";
     }
-    else if(this.mobLookup(squares[next_square])) { 
-     
+    else if(this.mobLookup(squares[next_square])) {    
         //fight the mob
-          this.fightMob(squares[next_square]);
-          squares[current_square] = null;
-          squares[next_square] = "P";
-        
-        this.setState({
-          squares: squares
-     });
+        this.fightMob(squares[next_square]);
+        squares[current_square] = null;
+        squares[next_square] = "P";
       }
     else if(this.weaponLookup(squares[next_square])) {
       let weapons = this.state.weapons;
@@ -178,6 +220,8 @@ class Game extends React.Component {
           squares: squares,
           player_index: next_square
      });
+    this.checkVisible();
+    
     }
   }
 
@@ -189,7 +233,7 @@ class Game extends React.Component {
   else {
     var mob = {name: "none", attack: 0, health: 0, url: ""}
   }
- 
+
   var weapon = this.state.weapons[0];        
   let filtered_weapons = this.weaponsInfo.filter(weaponInfo => weaponInfo.type == weapon);
   var attack_value = filtered_weapons[0].attack;
