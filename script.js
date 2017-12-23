@@ -25,8 +25,8 @@ class Game extends React.Component {
     grids[11] = "starter_sword";
     //seed a random square with a mob or item and then remove it from a copy of the floor plan array so multiple items don't get put on the same square
     let level1Copy = level1.slice();
-    level1Copy.splice(startPoint, 3);
-    let starterSwordIndex = level1Copy.indexOf(21);
+    level1Copy.splice(startPoint, 2);
+    let starterSwordIndex = level1Copy.indexOf(11);
     level1Copy.splice(starterSwordIndex, 1);
     console.log(level1Copy);
     for (let i=0; i<5; i++) {
@@ -64,6 +64,7 @@ class Game extends React.Component {
   checkVisible() {
     let squares = this.state.squares;
     let p = this.state.player_index;
+    console.log(p);
     let r = Math.floor(p/10);
     let n = 10;
     let visible = [];
@@ -92,6 +93,7 @@ class Game extends React.Component {
   
   setVisible(visible) {
       let squares = this.state.squares;
+      console.log("visible " + visible);
       for (let i=0; i<visible.length; i++) {
       if (visible[i] >= 0) {
        document.getElementById("square" + visible[i]).classList.remove("hidden");
@@ -192,12 +194,10 @@ class Game extends React.Component {
   }
   
   onKeyPressed(e) {
+    let current_square = this.state.player_index;
+    let squares = this.state.squares;
     if (this.state.living) {
-      let current_square = this.state.player_index;
-      let squares = this.state.squares;
-      console.log("combat: " + this.state.inCombat);
-      console.log(current_square);
-      if(this.state.inCombat==false){
+      if(!this.state.inCombat){
         if(e.key == 'd'){
           var next_square = current_square + 1;
         }
@@ -234,12 +234,17 @@ class Game extends React.Component {
           return;
         }     
         this.setState({
-              squares: squares,
-              player_index: next_square
+          squares: squares,
+          player_index: next_square
          });
         this.checkVisible(); 
         }
-     }
+      if (this.state.inCombat) {
+        if(e.key == '1'){
+          console.log("do something");
+        }
+      }
+    }
   }
 
   render() {
