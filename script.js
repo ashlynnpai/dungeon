@@ -22,10 +22,10 @@ class Game extends React.Component {
       }
     }
     grids[startPoint] = "P";
-    grids[21] = "starter_sword";
+    grids[11] = "starter_sword";
     //seed a random square with a mob or item and then remove it from a copy of the floor plan array so multiple items don't get put on the same square
     let level1Copy = level1.slice();
-    level1Copy.splice(startPoint, 1);
+    level1Copy.splice(startPoint, 3);
     let starterSwordIndex = level1Copy.indexOf(21);
     level1Copy.splice(starterSwordIndex, 1);
     console.log(level1Copy);
@@ -48,8 +48,9 @@ class Game extends React.Component {
       inventory: [{type: "health pots", quantity: 1}],
       current_mob: "",
       mob_hp: 0,
-      target_index: null
-                 };
+      target_index: null,
+      inCombat: false
+      };
   }
   
   componentWillMount() {
@@ -142,12 +143,11 @@ class Game extends React.Component {
     let hitChance = .7;
     console.log("fight " + mob);
     if (player_hp == 0) {
-      this.setState({
-        living: false
-      });
+      this.state.living=false;
       return;
     }
     if (mob_hp == 0) {
+      this.state.inCombat=false;
       return;
     }
     let player_roll = Math.random();
@@ -165,6 +165,7 @@ class Game extends React.Component {
     }
     if (mob_hp == 0) {
       console.log(mob + " dies");
+      this.state.inCombat=false;
       return;
     }
     let mob_roll = Math.random();
@@ -192,52 +193,53 @@ class Game extends React.Component {
   
   onKeyPressed(e) {
     if (this.state.living) {
-    let current_square = this.state.player_index;
-    let squares = this.state.squares;
-    if(e.key == 'd'){
-      var next_square = current_square + 1;
-    }
-    else if(e.key =='a') {
-      var next_square = current_square - 1;
-    }  
-    else if(e.key =='w') {
-      var next_square = current_square - this.rowSize;
-    }  
-    else if(e.key =='s') {
-      var next_square = current_square + this.rowSize;
-    }  
-    else {
-      return;
-    }
-    if(squares[next_square] == null) {
-      squares[current_square] = null;
-      squares[next_square] = "P";
-    }
-    else if(this.mobLookup(squares[next_square])) {    
-        //fight the mob
-        this.fightMob(squares[next_square]);
-        squares[current_square] = null;
-        squares[next_square] = "P";
-      }
-    else if(this.weaponLookup(squares[next_square])) {
-      let weapons = this.state.weapons;
-      weapons.unshift(squares[next_square]);
+      let current_square = this.state.player_index;
+      let squares = this.state.squares;
+      console.log("combat: " + this.state.inCombat);
+      console.log(current_square);
+      if(this.state.inCombat==false){
+        if(e.key == 'd'){
+          var next_square = current_square + 1;
+        }
+        else if(e.key =='a') {
+          var next_square = current_square - 1;
+        }  
+        else if(e.key =='w') {
+          var next_square = current_square - this.rowSize;
+        }  
+        else if(e.key =='s') {
+          var next_square = current_square + this.rowSize;
+        }  
+        if(squares[next_square] == null) {
+          squares[current_square] = null;
+          squares[next_square] = "P";
+        }
+        else if(this.mobLookup(squares[next_square])) {    
+          //fight the mob
+          this.state.inCombat=true;
+          this.fightMob(squares[next_square]);
+          squares[current_square] = null;
+          squares[next_square] = "P";
+        }
+        else if(this.weaponLookup(squares[next_square])) {
+          let weapons = this.state.weapons;
+          weapons.unshift(squares[next_square]);
+            this.setState({
+              weapons: weapons    
+            });
+          squares[current_square] = null;
+          squares[next_square] = "P";
+        }
+        else {
+          return;
+        }     
         this.setState({
-          weapons: weapons    
-        });
-      squares[current_square] = null;
-      squares[next_square] = "P";
-    }
-    else {
-      return;
-    }
-    this.setState({
-          squares: squares,
-          player_index: next_square
-     });
-    this.checkVisible();
-    
-    }
+              squares: squares,
+              player_index: next_square
+         });
+        this.checkVisible(); 
+        }
+     }
   }
 
   render() {
