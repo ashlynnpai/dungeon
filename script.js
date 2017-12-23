@@ -1,15 +1,20 @@
 class Game extends React.Component {
   constructor(props) {
     super(props);
-    this.size = 400;
-    this.rowSize = 20;
+    this.size = 200;
+    this.rowSize = 10;
     this.mobInfo = [{name: "rat", attack: 1, health: 8, url: "https://southparkstudios.mtvnimages.com/shared/characters/non-human/lemmiwinks.png"}];
     this.weaponsInfo = [{type: "hands", attack: 1}, {type: "starter_sword", attack: 2}, {type: "other_sword", attack: 2}];
-    const startPoint = 20;
+    const startPoint = 0;
     var grids = Array(this.size).fill("S");
-    let l1 = [21, 22, 23, 24, 42, 43, 44, 62, 63, 64, 25, 26, 27, 46, 47, 66, 67, 86, 87, 48, 49, 50, 29, 30, 69, 70, 89, 90, 71, 32, 33, 52, 53, 72, 73, 34, 35, 36, 55, 56, 75, 76, 57, 58];
-    let l2 = [78, 98, 118, 117, 116, 115, 137, 157, 177, 176, 175, 155, 154, 153, 133, 113]
-    let spaces = l1.concat(l2);
+    let level1 = Array.from(Array(10).keys())
+    let room1 = [11, 12, 13, 14, 21, 22, 23, 24];
+    let room2 = [16, 17, 18, 28];
+    level1.concat(room1);
+    level1.concat(room2);
+    level1.push.apply(level1, room1.concat(room2));
+    let level2 = [38, 37, 36]
+    let spaces = level1.concat(level2);
     
     for (let i=0; i<grids.length; i++) {
       if(spaces.includes(i)) {
@@ -17,20 +22,23 @@ class Game extends React.Component {
       }
     }
     grids[startPoint] = "P";
-    grids[42] = "starter_sword";
-    let l1copy = l1.slice();
-    l1copy.splice(0, 7);
-    l1copy.splice(3, 1);
+    grids[21] = "starter_sword";
+    //seed a random square with a mob or item and then remove it from a copy of the floor plan array so multiple items don't get put on the same square
+    let level1Copy = level1.slice();
+    level1Copy.splice(startPoint, 1);
+    let starterSwordIndex = level1Copy.indexOf(21);
+    level1Copy.splice(starterSwordIndex, 1);
+    console.log(level1Copy);
     for (let i=0; i<5; i++) {
-      let l1Index = Math.floor(Math.random() * l1copy.length);
-      let occupySquare = l1copy[l1Index];
+      let level1Index = Math.floor(Math.random() * level1Copy.length);
+      let occupySquare = level1Copy[level1Index];
       grids[occupySquare] = "rat";
-      l1copy.splice(l1Index, 1);
+      level1Copy.splice(level1Index, 1);
     }
     
     this.state = {
       squares: grids,
-      hidden: [75, 76, 57, 58],
+      hidden: [],
       player_index: startPoint,
       health: 10,
       level: 1,
@@ -55,11 +63,10 @@ class Game extends React.Component {
   checkVisible() {
     let squares = this.state.squares;
     let p = this.state.player_index;
-    let r = Math.floor(p/20);
-    let n = 20;
+    let r = Math.floor(p/10);
+    let n = 10;
     let visible = [];
-    const aura = [p, p-2, p-1, p+1, p+2, p-n-2, p-n-1, p-n, p-n+1, p-n+2, p+n-2, p+n-1, p+n, p+n+1, p+n+2, p+3, p-3, p-n-3, p-n+3, p+n-3, p+n+3, p-n*2, p+n*2, p-n*2-1, p-n*2+1,
-p+n*2+1, p+n*2-1];
+    const aura = [p, p-2, p-1, p+1, p+2, p-n-2, p-n-1, p-n, p-n+1, p-n+2, p+n-2, p+n-1, p+n, p+n+1, p+n+2, p+3, p-3, p-n-3, p-n+3, p+n-3, p+n+3, p-n*2, p+n*2, p-n*2-1, p-n*2+1, p+n*2+1, p+n*2-1, p+4, p-n+4,p+n+4];
     for (let i=0; i<aura.length; i++) {
       if (Math.abs(aura[i]%10-p%10)<4 && aura[i]>=0 && aura[i]<=squares.length) {
         visible.push(aura[i]);
