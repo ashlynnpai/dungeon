@@ -53,18 +53,26 @@ class Game extends React.Component {
   }      
 
   checkVisible() {
+    let squares = this.state.squares;
     let p = this.state.player_index;
     let r = Math.floor(p/20);
     let n = 20;
-    let visible = [p, p-2, p-1, p+1, p+2, p-n-2, p-n-1, p-n, p-n+1, p-n+2, p+n-2, p+n-1, p+n, p+n+1, p+n+2];
-    console.log(p);
-    console.log(visible);
-    this.setVisible(visible);
-  
+    let visible = [];
+    const aura = [p, p-2, p-1, p+1, p+2, p-n-2, p-n-1, p-n, p-n+1, p-n+2, p+n-2, p+n-1, p+n, p+n+1, p+n+2, p+3, p-3, p-n-3, p-n+3, p+n-3, p+n+3, p-n*2, p+n*2, p-n*2-1, p-n*2+1,
+p+n*2+1, p+n*2-1];
+    for (let i=0; i<aura.length; i++) {
+      if (Math.abs(aura[i]%10-p%10)<4 && aura[i]>=0 && aura[i]<=squares.length) {
+        visible.push(aura[i]);
+      }
+    }
 
-    //10 squares in each row between row number - 1 * 20 and row number * 20 - 1
-    //if not in visible, set className to hidden
-    let squares = this.state.squares;
+//         if (x>=Math.floor(p/20)*20 && x<=Math.ceil(p/20)*20)      {
+//         visible.push(x);
+//        }
+//         if (y>=Math.floor(p/20)*20 && y<=Math.ceil(p/20)*20)      {
+//         visible.push(y);
+//         }
+    this.setVisible(visible);
     let hidden = [];
     for (let i=0; i<squares.length; i++) {
       if (!visible.includes(i)) {
