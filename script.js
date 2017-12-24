@@ -42,6 +42,7 @@ class Game extends React.Component {
       health: 10,
       level: 1,
       xp: 0,
+      special: null,
       living: true,
       weapons: ["hands"],
       inventory: [{type: "health pots", quantity: 1}],
@@ -260,6 +261,8 @@ class Game extends React.Component {
         }
       if (this.state.inCombat) {
         if(e.key == '1'){
+          //set a special state and in combat check if state is true
+          //only one state can be active
           console.log("do something");
         }
         else {
