@@ -314,6 +314,12 @@ class Game extends React.Component {
   }
 
   render() {
+    let health = this.state.health;
+    let healthPercent = Math.round((health/this.maxHealth)*100);
+    if (healthPercent > 70) {
+      var healthColor = "green";
+    }
+    var healthBar = {width: healthPercent + "%"};
     for(var i=0; i<this.mobInfo.length; i++) {
   if(this.mobInfo[i].name==this.state.current_mob) {
     var mob = this.mobInfo[i];
@@ -328,6 +334,10 @@ class Game extends React.Component {
      }
     return (
       <div onKeyPress={(e) => this.onKeyPressed(e)}>
+      <div className = {healthColor + " progress-bar"}>
+ 
+        <span style={healthBar}></span> 
+      </div>
       <div id="display">
         <div id="display-box">
           <p>Health: {this.state.health}</p>
