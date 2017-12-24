@@ -140,25 +140,27 @@ class Game extends React.Component {
     let hitChance = .7;
     var modifiedPlayerAttack = player_attack + (Math.round(Math.random()) * this.state.level);
     var modifiedMobAttack = mob_attack + (Math.round(Math.random()) * mobLevel);
-    if (player_hp == 0) {
-      this.state.living=false;
-      let action = "You die.";
-      log.unshift(action);
-      this.setState({
-        log: log
-      });
-      return;
-    }
-    if (mob_hp <= 0) {
-      this.state.busy=false;
-      let action = mob + " dies.";
-      log.unshift(action);
-      this.setState({
-        mob_hp: 0,
-        log: log
-      });
-      return;
-    }
+    // if (player_hp == 0) {
+    //   this.state.living=false;
+    //   let action = "You die.";
+    //   log.unshift(action);
+    //   this.setState({
+    //     log: log
+    //   });
+    //   return;
+    // }
+    // if (mob_hp <= 0) {
+    //   this.state.busy=false;
+    //   let action = mob + " dies.";
+    //   log.unshift(action);
+    //   let xp = this.state.xp += 5;
+    //   this.setState({
+    //     mob_hp: 0,
+    //     xp: xp,
+    //     log: log
+    //   });
+    //   return;
+    // }
     let player_roll = Math.random();
     if (player_roll <= hitChance) {
       mob_hp = mob_hp - modifiedPlayerAttack;
@@ -180,8 +182,12 @@ class Game extends React.Component {
       let action = mob + " dies.";
       log.unshift(action);
       this.state.busy=false;
+      let xp = this.state.xp += 5;
+      let level = this.checkLevel();
       this.setState({
         mob_hp: 0,
+        xp: xp,
+        level: level,
         log: log
       });
       return;
@@ -227,6 +233,17 @@ class Game extends React.Component {
       });
        setTimeout(this.regenerateHealth.bind(this), 5000, health);   
     }
+  }
+  
+  checkLevel() {
+    let levelInfo = {1:50, 2:100, 3:200};
+    let level = this.state.level;
+    let xp = this.state.xp;
+    if (levelInfo[level] <= xp) {
+      level++;
+      console.log("You are now level " + level);
+    }
+    return level;
   }
   
   onKeyPressed(e) {
