@@ -3,7 +3,7 @@ class Game extends React.Component {
     super(props);
     this.size = 200;
     this.rowSize = 10;
-    this.mobInfo = [{name: "rat", attack: 1, health: 8, url: "https://southparkstudios.mtvnimages.com/shared/characters/non-human/lemmiwinks.png"}];
+    this.mobInfo = [{name: "rat", attack: 1, health: 8, level: 1, url: "https://southparkstudios.mtvnimages.com/shared/characters/non-human/lemmiwinks.png"}];
     this.weaponsInfo = [{type: "hands", attack: 1}, {type: "starter_sword", attack: 2}, {type: "other_sword", attack: 2}];
     const startPoint = 0;
     var grids = Array(this.size).fill("S");
@@ -122,73 +122,91 @@ class Game extends React.Component {
   
   fightMob(mob) {
       if (this.mobInfo.filter(mobInfo => mobInfo.name == mob)) {
-      var mob_hp = this.mobInfo[0].health;
-      this.state.mob_hp = mob_hp;
-      var mob_attack = this.mobInfo[0].attack;
+        var mob_hp = this.mobInfo[0].health;
+        this.state.mob_hp = mob_hp;
+        var mobLevel = this.mobInfo[0].level;
+        var mob_attack = this.mobInfo[0].attack;
     }
     let player_hp = this.state.health;
     let filtered_weapons = this.weaponsInfo.filter(weaponInfo => weaponInfo.type == this.state.weapons[0]);
     let player_attack = filtered_weapons[0].attack;
-    this.combatSequence(mob, mob_hp, mob_attack, player_hp, player_attack);     
+    this.combatSequence(mob, mob_hp, mob_attack, mobLevel, player_hp, player_attack);     
   }
   
-  combatSequence(mob, mob_hp, mob_attack, player_hp, player_attack) {
+  combatSequence(mob, mob_hp, mob_attack, mobLevel, player_hp, player_attack) {
     var log = this.state.log;
     let hitChance = .7;
+    var modifiedPlayerAttack = player_attack + (Math.round(Math.random()) * this.state.level);
+    var modifiedMobAttack = mob_attack + (Math.round(Math.random()) * mobLevel);
     if (player_hp == 0) {
       this.state.living=false;
+      let action = "You die.";
+      log.unshift(action);
+      this.setState({
+        log: log
+      });
       return;
     }
     if (mob_hp == 0) {
       this.state.inCombat=false;
+      let action = mob + " dies.";
+      log.unshift(action);
+      this.setState({
+        log: log
+      });
       return;
     }
     let player_roll = Math.random();
     if (player_roll <= hitChance) {
-      mob_hp = mob_hp - player_attack;
+      mob_hp = mob_hp - modifiedPlayerAttack;
       this.setState({
         mob_hp: mob_hp
       });
-      let action = "Player hits " + mob + " for " + player_attack
+      let action = "Player hits " + mob + " for " + modifiedPlayerAttack;
       log.unshift(action);
     }
     else {
-      let action = "Player misses."
+      let action = "Player misses.";
       log.unshift(action);
+      this.setState({
+        log: log
+      });
     }
+    
     if (mob_hp == 0) {
-      let action = mob + " dies."
+      let action = mob + " dies.";
       log.unshift(action);
       this.state.inCombat=false;
+      this.setState({
+        log: log
+      });
       return;
     }
     let mob_roll = Math.random();
     if (mob_roll <= hitChance) {
-      player_hp = player_hp - mob_attack;
+      player_hp = player_hp - modifiedMobAttack;
       this.setState({
         health: player_hp
       });
-      let action = mob + " hits you for " + mob_attack;
-      console.log(action);
-      console.log(log);
+      let action = mob + " hits you for " + modifiedMobAttack;
       log.unshift(action);
     }
     else {
       let action = mob + " misses."
-      console.log(action);
-      console.log(log);
       log.unshift(action);
     }
+
     if (player_hp == 0) {
       let action = "You die."
       log.unshift(action);
       this.setState({
-        living: false
+        living: false,
+        log: log
         //death scene
       });
       return;
     }
-    setTimeout(this.combatSequence.bind(this), 2000, mob, mob_hp, mob_attack, player_hp, player_attack);   
+    setTimeout(this.combatSequence.bind(this), 2000, mob, mob_hp, mob_attack, mobLevel, player_hp, player_attack);   
   }
   
   onKeyPressed(e) {
