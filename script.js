@@ -3,6 +3,7 @@ class Game extends React.Component {
     super(props);
     this.size = 200;
     this.rowSize = 10;
+    this.maxHealth = 10;
     this.mobInfo = [{name: "rat", attack: 1, health: 8, level: 1, url: "https://southparkstudios.mtvnimages.com/shared/characters/non-human/lemmiwinks.png"}];
     this.weaponsInfo = [{type: "hands", attack: 1}, {type: "starter_sword", attack: 2}, {type: "other_sword", attack: 2}];
     const startPoint = 0;
@@ -49,7 +50,7 @@ class Game extends React.Component {
       current_mob: "",
       mob_hp: 0,
       target_index: null,
-      inCombat: false,
+      busy: false,
       log: [],
       messages: []
       };
@@ -148,11 +149,12 @@ class Game extends React.Component {
       });
       return;
     }
-    if (mob_hp == 0) {
-      this.state.inCombat=false;
+    if (mob_hp <= 0) {
+      this.state.busy=false;
       let action = mob + " dies.";
       log.unshift(action);
       this.setState({
+        mob_hp: 0,
         log: log
       });
       return;
@@ -174,11 +176,12 @@ class Game extends React.Component {
       });
     }
     
-    if (mob_hp == 0) {
+    if (mob_hp <= 0) {
       let action = mob + " dies.";
       log.unshift(action);
-      this.state.inCombat=false;
+      this.state.busy=false;
       this.setState({
+        mob_hp: 0,
         log: log
       });
       return;
@@ -210,11 +213,27 @@ class Game extends React.Component {
     setTimeout(this.combatSequence.bind(this), 2000, mob, mob_hp, mob_attack, mobLevel, player_hp, player_attack);   
   }
   
+  regenerateHealth(health) {
+    var maxHealth = this.maxHealth;
+    if (health >= maxHealth) {
+      this.state.health = maxHealth;
+      this.state.busy = false;
+      return;
+    }
+    else {
+      health += this.state.level;
+      this.setState({
+        health: health
+      });
+       setTimeout(this.regenerateHealth.bind(this), 5000, health);   
+    }
+  }
+  
   onKeyPressed(e) {
     let current_square = this.state.player_index;
     let squares = this.state.squares;
     if (this.state.living) {
-      if(!this.state.inCombat){
+      if(!this.state.busy){
         if(e.key == 'd'){
           var next_square = current_square + 1;
         }
@@ -227,6 +246,11 @@ class Game extends React.Component {
         else if(e.key =='s') {
           var next_square = current_square + this.rowSize;
         }  
+        else if(e.key == 'r') {
+          this.state.busy = true;
+          var next_square = current_square;
+          this.regenerateHealth(this.state.health);
+        }
         else {
           return;
         }
@@ -236,7 +260,7 @@ class Game extends React.Component {
         }
         else if(this.mobLookup(squares[next_square])) {    
           //fight the mob
-          this.state.inCombat=true;
+          this.state.busy = true;
           this.fightMob(squares[next_square]);
           squares[current_square] = null;
           squares[next_square] = "P";
@@ -259,7 +283,7 @@ class Game extends React.Component {
          });
         this.checkVisible(); 
         }
-      if (this.state.inCombat) {
+      if (this.state.busy) {
         if(e.key == '1'){
           //set a special state and in combat check if state is true
           //only one state can be active
