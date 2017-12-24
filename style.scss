@@ -4,6 +4,8 @@ $board-color: #4b535c;
 body {
   text-align: center;
   font-family: $font-stack;
+  width: 1000px;
+  margin: 0 auto;
 }
 
 .flex-container {
@@ -13,12 +15,13 @@ body {
   flex-direction: row;
   flex-wrap: wrap;
   margin: 0 auto;
-  width: 1000px;
+  width: 990px;
+  padding: 30px;
 }
 
 .flex-container>div {
-  width: 49px;
-  height: 49px;
+  width: 98px;
+  height: 98px;
   text-align: center;
 }
 
@@ -44,9 +47,13 @@ body {
   background-repeat: no-repeat;
 }
 
+.starter_swordcolor {
+  background: #fff;
+}
+
 #display {
   display: flex;
-  height: 220px;  
+  height: 200px;  
   justify-content: center;
 }
 
@@ -56,6 +63,16 @@ body {
   line-height: .5em;
 }
 
+#display-log {
+  width: 300px;
+  height: 200px;
+  overflow-y: scroll;
+  background: pink;
+}
 .avatar {
   height: 150px;
+}
+
+.hidden {
+  background: orange;
 }

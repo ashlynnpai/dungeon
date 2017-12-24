@@ -28,7 +28,6 @@ class Game extends React.Component {
     level1Copy.splice(startPoint, 2);
     let starterSwordIndex = level1Copy.indexOf(11);
     level1Copy.splice(starterSwordIndex, 1);
-    console.log(level1Copy);
     for (let i=0; i<5; i++) {
       let level1Index = Math.floor(Math.random() * level1Copy.length);
       let occupySquare = level1Copy[level1Index];
@@ -49,7 +48,9 @@ class Game extends React.Component {
       current_mob: "",
       mob_hp: 0,
       target_index: null,
-      inCombat: false
+      inCombat: false,
+      log: [],
+      messages: []
       };
   }
   
@@ -64,7 +65,6 @@ class Game extends React.Component {
   checkVisible() {
     let squares = this.state.squares;
     let p = this.state.player_index;
-    console.log(p);
     let r = Math.floor(p/10);
     let n = 10;
     let visible = [];
@@ -74,13 +74,6 @@ class Game extends React.Component {
         visible.push(aura[i]);
       }
     }
-
-//         if (x>=Math.floor(p/20)*20 && x<=Math.ceil(p/20)*20)      {
-//         visible.push(x);
-//        }
-//         if (y>=Math.floor(p/20)*20 && y<=Math.ceil(p/20)*20)      {
-//         visible.push(y);
-//         }
     this.setVisible(visible);
     let hidden = [];
     for (let i=0; i<squares.length; i++) {
@@ -93,7 +86,6 @@ class Game extends React.Component {
   
   setVisible(visible) {
       let squares = this.state.squares;
-      console.log("visible " + visible);
       for (let i=0; i<visible.length; i++) {
       if (visible[i] >= 0) {
        document.getElementById("square" + visible[i]).classList.remove("hidden");
@@ -137,13 +129,12 @@ class Game extends React.Component {
     let player_hp = this.state.health;
     let filtered_weapons = this.weaponsInfo.filter(weaponInfo => weaponInfo.type == this.state.weapons[0]);
     let player_attack = filtered_weapons[0].attack;
-    this.combatSequence(mob, mob_hp, mob_attack, player_hp, player_attack);
-     
+    this.combatSequence(mob, mob_hp, mob_attack, player_hp, player_attack);     
   }
   
   combatSequence(mob, mob_hp, mob_attack, player_hp, player_attack) {
+    var log = this.state.log;
     let hitChance = .7;
-    console.log("fight " + mob);
     if (player_hp == 0) {
       this.state.living=false;
       return;
@@ -155,18 +146,19 @@ class Game extends React.Component {
     let player_roll = Math.random();
     if (player_roll <= hitChance) {
       mob_hp = mob_hp - player_attack;
-      console.log("mob hp " + mob_hp);
       this.setState({
         mob_hp: mob_hp
       });
-
-      console.log("Player hits " + mob + " for " + player_attack);
+      let action = "Player hits " + mob + " for " + player_attack
+      log.unshift(action);
     }
     else {
-      console.log("Player misses.");
+      let action = "Player misses."
+      log.unshift(action);
     }
     if (mob_hp == 0) {
-      console.log(mob + " dies");
+      let action = mob + " dies."
+      log.unshift(action);
       this.state.inCombat=false;
       return;
     }
@@ -176,14 +168,20 @@ class Game extends React.Component {
       this.setState({
         health: player_hp
       });
-
-      console.log("Mob hits player for " + mob_attack);
+      let action = mob + " hits you for " + mob_attack;
+      console.log(action);
+      console.log(log);
+      log.unshift(action);
     }
     else {
-      console.log(mob + " misses.");
+      let action = mob + " misses."
+      console.log(action);
+      console.log(log);
+      log.unshift(action);
     }
     if (player_hp == 0) {
-      console.log("You die.");
+      let action = "You die."
+      log.unshift(action);
       this.setState({
         living: false
         //death scene
@@ -210,6 +208,9 @@ class Game extends React.Component {
         else if(e.key =='s') {
           var next_square = current_square + this.rowSize;
         }  
+        else {
+          return;
+        }
         if(squares[next_square] == null) {
           squares[current_square] = null;
           squares[next_square] = "P";
@@ -243,6 +244,9 @@ class Game extends React.Component {
         if(e.key == '1'){
           console.log("do something");
         }
+        else {
+          return;
+        }
       }
     }
   }
@@ -262,43 +266,35 @@ class Game extends React.Component {
      }
     return (
       <div onKeyPress={(e) => this.onKeyPressed(e)}>
-        <div id="display">
-          <div id="display-box">
-            <p>Health: {this.state.health}</p>
-            <p>Level: {this.state.level}</p>
-            <p>XP: {this.state.xp}</p>
-            <p>Weapon: {weapon}</p>
-            <p>Attack: {attack_value}</p>
-          </div>  
-          <div>
-            <img id="display-box" className="avatar" src="https://www.ashlynnpai.com/assets/Idle__000.png" />
-          </div>  
-          <div id="display-box">
-            <p>{mob.name}</p>
-            <p>Health: {this.state.mob_hp}</p>
-            <p>Level: {mob.level}</p>
-            <p>Attack: {mob.attack}</p>
-          </div>  
-          <div>
-            <img id="display-box" className="avatar" src="{}" /> 
-          </div>
-          <div id="display-box">
-            <p>Inventory</p>
-            {this.state.inventory.map((inv) => 
-           <div>{inv.type} {inv.quantity}</div>)}
-          </div>  
-          <div id="display-box">
-            <p>More Stuff</p>
-          </div>  
-          <div id="display-box">
-            <p>More Stuff</p>
-          </div>  
-        </div>
-        <div>
-
-          <span>{this.state.health}</span>
-          Messages</div>
-          <span>{this.state.mob_hp}</span>
+      <div id="display">
+        <div id="display-box">
+          <p>Health: {this.state.health}</p>
+          <p>Level: {this.state.level}</p>
+          <p>XP: {this.state.xp}</p>
+          <p>Weapon: {weapon}</p>
+          <p>Attack: {attack_value}</p>
+        </div>  
+        <div id="display-box">
+          <p>{mob.name}</p>
+          <p>Health: {this.state.mob_hp}</p>
+          <p>Level: {mob.level}</p>
+          <p>Attack: {mob.attack}</p>
+        </div>  
+        <div id="display-box">
+          <p>Inventory</p>
+          {this.state.inventory.map((inv) => 
+         <div>{inv.type} {inv.quantity}</div>)}
+        </div>  
+      </div>
+     <div id="display-log">
+        {this.state.log.map((line) => 
+       <div>{line}</div>)}
+      </div>  
+      <div id="messages">
+        {this.state.messages.map((message) => 
+       <div>{message}</div>)}
+      </div>
+       
         <div id="board" className="flex-container" >      
           {this.state.squares.map((square,index) => 
            <div className={square + "color"}  id={"square" + index} key={index}>{index} {square}</div>)}
