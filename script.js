@@ -319,7 +319,16 @@ class Game extends React.Component {
     if (healthPercent > 70) {
       var healthColor = "green";
     }
-    var healthBar = {width: healthPercent + "%"};
+    else if (healthPercent > 30) {
+      var healthColor = "yellow";
+    }
+    else {
+      var healthColor = "red";
+    }
+    var healthBar = {
+      width: healthPercent + "%",
+      color: "#fff"
+    };
     for(var i=0; i<this.mobInfo.length; i++) {
   if(this.mobInfo[i].name==this.state.current_mob) {
     var mob = this.mobInfo[i];
@@ -336,7 +345,7 @@ class Game extends React.Component {
       <div onKeyPress={(e) => this.onKeyPressed(e)}>
       <div className = {healthColor + " progress-bar"}>
  
-        <span style={healthBar}></span> 
+        <span style={healthBar}>{health}/{this.maxHealth}</span> 
       </div>
       <div id="display">
         <div id="display-box">
