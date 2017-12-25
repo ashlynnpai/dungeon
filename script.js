@@ -124,6 +124,9 @@ class Game extends React.Component {
   
   fightMob(mob) {
       if (this.mobInfo.filter(mobInfo => mobInfo.name == mob)) {
+        this.setState({
+          current_mob: mob
+        });
         var mob_hp = this.mobInfo[0].health;
         this.state.mob_hp = mob_hp;
         var mobLevel = this.mobInfo[0].level;
@@ -329,44 +332,83 @@ class Game extends React.Component {
       width: healthPercent + "%",
       color: "#fff"
     };
+    console.log("wtf");
+    let mobHealth = this.state.mob_hp;
+    console.log(this.state.current_mob);
+    console.log(mobHealth);
     for(var i=0; i<this.mobInfo.length; i++) {
-  if(this.mobInfo[i].name==this.state.current_mob) {
-    var mob = this.mobInfo[i];
-    }
+      if(this.mobInfo[i].name == this.state.current_mob) {
+        var mob = this.mobInfo[i];
+        var mobMaxHealth = mob.health;
+      }
   else {
-    var mob = {name: "none", attack: 0, health: 0, url: ""}
+    //var mob = {name: "none", attack: 0, health: 0, url: ""}
+    var mob = null;
   }
-
+  let mobHealthPercent = Math.round((mobHealth/mobMaxHealth)*100);
+  if (mobHealthPercent > 70) {
+    var mobHealthColor = "green";
+  }
+  else if (mobHealthPercent > 30) {
+    var mobHealthColor = "yellow";
+  }
+  else {
+    var mobHealthColor = "red";
+  }
+  var mobHealthBar = {
+    width: mobHealthPercent + "%",
+    color: "#fff"
+  };
+ 
   var weapon = this.state.weapons[0];        
   let filtered_weapons = this.weaponsInfo.filter(weaponInfo => weaponInfo.type == weapon);
   var attack_value = filtered_weapons[0].attack;
      }
     return (
       <div onKeyPress={(e) => this.onKeyPressed(e)}>
-      <div className = {healthColor + " progress-bar"}>
- 
-        <span style={healthBar}>{health}/{this.maxHealth}</span> 
-      </div>
       <div id="display">
-        <div id="display-box">
-          <p>Health: {this.state.health}</p>
-          <p>Level: {this.state.level}</p>
-          <p>XP: {this.state.xp}</p>
-          <p>Weapon: {weapon}</p>
-          <p>Attack: {attack_value}</p>
+        <div className = "avatar">P
+          <p>{this.state.level}</p>
+          <p>{this.state.xp}</p>
+        </div>
+        <div>
+          <div className = {healthColor + " progress-bar"}>
+            <span style={healthBar}>{health}/{this.maxHealth}</span> 
+          </div>
+          <div className = {healthColor + " progress-bar"}>
+            <span style={healthBar}>{health}/{this.maxHealth}</span> 
+          </div>
+        </div>
+        <div>       
+          <p>{weapon}</p>
         </div>  
-        <div id="display-box">
-          <p>{mob.name}</p>
-          <p>Health: {this.state.mob_hp}</p>
-          <p>Level: {mob.level}</p>
-          <p>Attack: {mob.attack}</p>
-        </div>  
-        <div id="display-box">
-          <p>Inventory</p>
-          {this.state.inventory.map((inv) => 
-         <div>{inv.type} {inv.quantity}</div>)}
-        </div>  
-      </div>
+        
+        <div>
+          {mob ? (
+            <div>     
+              <div className = {mobHealthColor + " progress-bar"}>
+                <span style={mobHealthBar}>{mobHealth}/{mobMaxHealth}</span> 
+              </div>
+              <div className = {mobHealthColor + " progress-bar"}>
+                <span style={mobHealthBar}>{mobHealth}/{mobMaxHealth}</span> 
+              </div>           
+            </div>        
+            ) : (
+            <div className = "blankMob">
+            </div>    
+            )}
+          </div> 
+          <div>  
+          {mob ? (
+            <div className = "avatar">N
+              <p>{mob.name}</p>  
+            </div>
+          ) : (
+             <div className = "avatar">
+             </div> 
+          )}
+        </div>   
+     </div>
      <div id="display-log">
         {this.state.log.map((line) => 
        <div>{line}</div>)}

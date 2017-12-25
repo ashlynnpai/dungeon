@@ -53,14 +53,11 @@ body {
 
 #display {
   display: flex;
-  height: 200px;  
   justify-content: center;
 }
 
 #display>div {
-  width: 135px;
-  border: solid 1px black;
-  line-height: .5em;
+
 }
 
 #display-log {
@@ -70,7 +67,9 @@ body {
   background: pink;
 }
 .avatar {
-  height: 150px;
+  height:50px;
+  width: 50px;
+  border: solid 1px;
 }
 
 .hidden {
@@ -81,9 +80,9 @@ body {
     background-color: #1a1a1a;
   text-align: left;
     height: 20px;
-    padding: 5px;
+    padding: 2px;
     width: 250px;
-    margin: 50px 0;         
+    margin: 0;         
     border-radius: 5px;
     box-shadow: 0 1px 5px #000 inset, 0 1px 0 #444;           
 }
@@ -109,4 +108,10 @@ body {
 
 .red span {
     background-color: #FF4C4C;
+}
+
+.blankMob {
+  width: 250px;
+  height: 50px;
+  background: #000;
 }
