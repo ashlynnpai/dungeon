@@ -4,24 +4,30 @@ $board-color: #4b535c;
 body {
   text-align: center;
   font-family: $font-stack;
-  width: 1000px;
+  width: 1100px;
   margin: 0 auto;
 }
 
 .flex-container {
+  overflow-y: scroll;
   display: flex;
   justify-content: center;
   background-color: $board-color;
   flex-direction: row;
   flex-wrap: wrap;
   margin: 0 auto;
-  width: 990px;
-  padding: 30px;
+  width: 800px;
+  height: 500px;
+  padding: 10px;
 }
 
+// ::-webkit-scrollbar { 
+//     display: none; 
+// }
+
 .flex-container>div {
-  width: 98px;
-  height: 98px;
+  width: 75px;
+  height: 75px;
   text-align: center;
 }
 
@@ -62,7 +68,7 @@ body {
 
 #display-log {
   width: 300px;
-  height: 200px;
+  height: 150px;
   overflow-y: scroll;
   background: pink;
 }

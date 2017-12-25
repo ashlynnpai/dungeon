@@ -14,7 +14,7 @@ class Game extends React.Component {
     level1.concat(room1);
     level1.concat(room2);
     level1.push.apply(level1, room1.concat(room2));
-    let level2 = [38, 37, 36]
+    let level2 = [38, 37, 36, 35, 45, 55, 65, 75, 85, 95]
     let spaces = level1.concat(level2);
     
     for (let i=0; i<grids.length; i++) {
@@ -32,7 +32,7 @@ class Game extends React.Component {
     for (let i=0; i<5; i++) {
       let level1Index = Math.floor(Math.random() * level1Copy.length);
       let occupySquare = level1Copy[level1Index];
-      grids[occupySquare] = "rat";
+      //grids[occupySquare] = "rat";
       level1Copy.splice(level1Index, 1);
     }
     
@@ -40,6 +40,7 @@ class Game extends React.Component {
       squares: grids,
       hidden: [],
       player_index: startPoint,
+      yCoord: 0,
       health: 10,
       level: 1,
       xp: 0,
@@ -143,27 +144,6 @@ class Game extends React.Component {
     let hitChance = .7;
     var modifiedPlayerAttack = player_attack + (Math.round(Math.random()) * this.state.level);
     var modifiedMobAttack = mob_attack + (Math.round(Math.random()) * mobLevel);
-    // if (player_hp == 0) {
-    //   this.state.living=false;
-    //   let action = "You die.";
-    //   log.unshift(action);
-    //   this.setState({
-    //     log: log
-    //   });
-    //   return;
-    // }
-    // if (mob_hp <= 0) {
-    //   this.state.busy=false;
-    //   let action = mob + " dies.";
-    //   log.unshift(action);
-    //   let xp = this.state.xp += 5;
-    //   this.setState({
-    //     mob_hp: 0,
-    //     xp: xp,
-    //     log: log
-    //   });
-    //   return;
-    // }
     let player_roll = Math.random();
     if (player_roll <= hitChance) {
       mob_hp = mob_hp - modifiedPlayerAttack;
@@ -252,6 +232,7 @@ class Game extends React.Component {
   onKeyPressed(e) {
     let current_square = this.state.player_index;
     let squares = this.state.squares;
+    let boardDiv = document.getElementById("board");
     if (this.state.living) {
       if(!this.state.busy){
         if(e.key == 'd'){
@@ -262,9 +243,25 @@ class Game extends React.Component {
         }  
         else if(e.key =='w') {
           var next_square = current_square - this.rowSize;
+           if(squares[next_square] == null) {
+            let yCoord = this.state.yCoord;
+            yCoord -= 75
+            this.setState({
+              yCoord: yCoord
+            })
+            boardDiv.scrollTo(0, yCoord);
+          }
         }  
         else if(e.key =='s') {
           var next_square = current_square + this.rowSize;
+          if(squares[next_square] == null) {
+            let yCoord = this.state.yCoord;
+            yCoord += 75
+            this.setState({
+              yCoord: yCoord
+            })
+            boardDiv.scrollTo(0, yCoord);
+          }
         }  
         else if(e.key == 'r') {
           this.state.busy = true;
@@ -332,10 +329,7 @@ class Game extends React.Component {
       width: healthPercent + "%",
       color: "#fff"
     };
-    console.log("wtf");
     let mobHealth = this.state.mob_hp;
-    console.log(this.state.current_mob);
-    console.log(mobHealth);
     for(var i=0; i<this.mobInfo.length; i++) {
       if(this.mobInfo[i].name == this.state.current_mob) {
         var mob = this.mobInfo[i];
