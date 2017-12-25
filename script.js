@@ -428,9 +428,18 @@ class Game extends React.Component {
        <div className={square + "color"}  id={"square" + index} key={index}>{index} {square}</div>)}
     </div>
     <div className='ui'>
+      <div>
       <div className = "blue xp-bar">
          <span style={xpBar}>{this.state.xp}/{xpGoal}</span> 
        </div>
+      <div className = "toolbar">
+        <span>1</span>
+        <span>2</span>
+        <span>3</span>
+        <span>4</span>
+        <span>5</span>
+       </div>
+      </div>  
      
       <div className="display-log">
         {this.state.mainLog.map((logLine) => 
