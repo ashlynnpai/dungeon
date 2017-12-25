@@ -4,7 +4,7 @@ $board-color: #4b535c;
 body {
   text-align: center;
   font-family: $font-stack;
-  width: 1100px;
+  width: 1000px;
   margin: 0 auto;
 }
 
@@ -16,9 +16,9 @@ body {
   flex-direction: row;
   flex-wrap: wrap;
   margin: 0 auto;
-  width: 800px;
-  height: 500px;
-  padding: 10px;
+  width: 990px;
+  height: 400px;
+  padding: 50px;
 }
 
 // ::-webkit-scrollbar { 
@@ -26,8 +26,8 @@ body {
 // }
 
 .flex-container>div {
-  width: 75px;
-  height: 75px;
+  width: 90px;
+  height: 90px;
   text-align: center;
 }
 
@@ -57,30 +57,38 @@ body {
   background: #fff;
 }
 
-#display {
+.ui {
   display: flex;
   justify-content: center;
 }
 
-#display>div {
+.ui>div {
 
 }
 
-#display-log {
-  width: 300px;
+.display-log {
+  width: 250px;
   height: 150px;
   overflow-y: scroll;
   background: pink;
 }
+
 .avatar {
   height:50px;
   width: 50px;
   border: solid 1px;
 }
 
+.messageDisplay {
+  height: 50px;
+  background: pink;
+}
+
 .hidden {
   background: orange;
 }
+
+/*https://catalin.red/stylish-css3-progress-bars/*/
 
 .progress-bar {
     background-color: #1a1a1a;
@@ -93,7 +101,6 @@ body {
     box-shadow: 0 1px 5px #000 inset, 0 1px 0 #444;           
 }
 
-/*https://catalin.red/stylish-css3-progress-bars/*/
 
 .progress-bar span {
     display: inline-block;
@@ -120,4 +127,30 @@ body {
   width: 250px;
   height: 50px;
   background: #000;
+}
+
+
+
+.xp-bar {
+    background-color: #1a1a1a;
+  text-align: left;
+    height: 30px;
+    width: 400px;
+    padding: 1px;     
+    border-radius: 5px;
+    box-shadow: 0 1px 5px #000 inset, 0 1px 0 #444;           
+}
+
+
+.xp-bar span {
+    display: inline-block;
+    height: 100%;
+    border-radius: 3px;
+    box-shadow: 0 1px 0 rgba(255, 255, 255, .5) inset;
+    transition: width .4s ease-in-out;   
+    text-align: center;
+}
+
+.blue span {
+  background-color: blue;
 }

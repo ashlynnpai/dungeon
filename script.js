@@ -9,12 +9,15 @@ class Game extends React.Component {
     const startPoint = 0;
     var grids = Array(this.size).fill("S");
     let level1 = Array.from(Array(10).keys())
-    let room1 = [11, 12, 13, 14, 21, 22, 23, 24];
-    let room2 = [16, 17, 18, 28];
+    let room1 = [11, 12, 13, 14, 20, 21, 22, 23, 24];
+    let room2 = [16, 17, 18, 27, 28, 29, 39, 38, 37, 36, 35, 49, 59, 58, 57];
+    let hall1 = [45, 44, 43, 42, 41, 40, 50, 60, 61, 62, 63, 64, 61, 62, 63, 64, 65, 66]
+    let boss1 = []
     level1.concat(room1);
     level1.concat(room2);
     level1.push.apply(level1, room1.concat(room2));
-    let level2 = [38, 37, 36, 35, 45, 55, 65, 75, 85, 95]
+    level1.push.apply(level1, hall1.concat(boss1));
+    let level2 = []
     let spaces = level1.concat(level2);
     
     for (let i=0; i<grids.length; i++) {
@@ -29,6 +32,7 @@ class Game extends React.Component {
     level1Copy.splice(startPoint, 2);
     let starterSwordIndex = level1Copy.indexOf(11);
     level1Copy.splice(starterSwordIndex, 1);
+    //change to picking a random point in each room
     for (let i=0; i<5; i++) {
       let level1Index = Math.floor(Math.random() * level1Copy.length);
       let occupySquare = level1Copy[level1Index];
@@ -52,8 +56,9 @@ class Game extends React.Component {
       mob_hp: 0,
       target_index: null,
       busy: false,
-      log: [],
-      messages: []
+      mainLog: [],
+      combatLog: [],
+      message: ""
       };
   }
   
@@ -140,7 +145,7 @@ class Game extends React.Component {
   }
   
   combatSequence(mob, mob_hp, mob_attack, mobLevel, player_hp, player_attack) {
-    var log = this.state.log;
+    var log = this.state.combatLog;
     let hitChance = .7;
     var modifiedPlayerAttack = player_attack + (Math.round(Math.random()) * this.state.level);
     var modifiedMobAttack = mob_attack + (Math.round(Math.random()) * mobLevel);
@@ -358,12 +363,22 @@ class Game extends React.Component {
   let filtered_weapons = this.weaponsInfo.filter(weaponInfo => weaponInfo.type == weapon);
   var attack_value = filtered_weapons[0].attack;
      }
+    
+  let levelInfo = {1:50, 2:100, 3:200};
+  let level = this.state.level;
+  var xpGoal = levelInfo[level];  
+  let xpPercent = Math.round((this.state.xp/xpGoal)*100);
+  var xpBar = {
+      width: xpPercent + "%",
+      color: "#fff"
+  };
+  
+
     return (
       <div onKeyPress={(e) => this.onKeyPressed(e)}>
-      <div id="display">
+      <div className = "ui">
         <div className = "avatar">P
           <p>{this.state.level}</p>
-          <p>{this.state.xp}</p>
         </div>
         <div>
           <div className = {healthColor + " progress-bar"}>
@@ -403,23 +418,42 @@ class Game extends React.Component {
           )}
         </div>   
      </div>
-     <div id="display-log">
-        {this.state.log.map((line) => 
-       <div>{line}</div>)}
-      </div>  
-      <div id="messages">
-        {this.state.messages.map((message) => 
-       <div>{message}</div>)}
-      </div>
-       
-        <div id="board" className="flex-container" >      
-          {this.state.squares.map((square,index) => 
-           <div className={square + "color"}  id={"square" + index} key={index}>{index} {square}</div>)}
-        </div>
-      </div>
+        
+     <div className="messageDisplay">
+        <p>{this.state.message}</p>
+     </div>
+    
+    <div id="board" className="flex-container" >      
+      {this.state.squares.map((square,index) => 
+       <div className={square + "color"}  id={"square" + index} key={index}>{index} {square}</div>)}
+    </div>
+    <div className='ui'>
+      <div className = "blue xp-bar">
+         <span style={xpBar}>{this.state.xp}/{xpGoal}</span> 
+       </div>
+     
+      <div className="display-log">
+        {this.state.mainLog.map((logLine) => 
+       <div>{logLine}</div>)}
+      </div> 
+      <div className="display-log">
+        {this.state.combatLog.map((combatEvent) => 
+       <div>{combatEven}</div>)}
+      </div> 
+    </div>  
+        
+    <div className="display-log">
+        {this.state.inventory.map((item) => 
+       <div>{item.type} {item.quantity}</div>                       
+        )}
+      </div>     
+   </div>     
+      
     );
   }
 }
+ 
+
 
 ReactDOM.render(
   <Game />,
