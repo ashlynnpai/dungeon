@@ -36,7 +36,7 @@ class Game extends React.Component {
     for (let i=0; i<5; i++) {
       let level1Index = Math.floor(Math.random() * level1Copy.length);
       let occupySquare = level1Copy[level1Index];
-      //grids[occupySquare] = "rat";
+      grids[occupySquare] = "rat";
       level1Copy.splice(level1Index, 1);
     }
     
@@ -48,7 +48,8 @@ class Game extends React.Component {
       health: 10,
       level: 1,
       xp: 0,
-      special: null,
+      specialSkill: null,
+      pet: null,
       living: true,
       weapons: ["hands"],
       inventory: [{type: "health pots", quantity: 1}],
@@ -141,15 +142,26 @@ class Game extends React.Component {
     let player_hp = this.state.health;
     let filtered_weapons = this.weaponsInfo.filter(weaponInfo => weaponInfo.type == this.state.weapons[0]);
     let player_attack = filtered_weapons[0].attack;
-    this.combatSequence(mob, mob_hp, mob_attack, mobLevel, player_hp, player_attack);     
+    let mobSpecial = "fire";
+    var action = mob + " is casting " + mobSpecial;
+    this.state.combatLog.unshift(action);
+    this.setState({
+      combatLog: this.state.combatLog,
+      message: action
+    });
+    console.log(this.state.message);
+    this.combatSequence(mob, mob_hp, mob_attack, mobLevel, mobSpecial, player_hp, player_attack);     
   }
   
-  combatSequence(mob, mob_hp, mob_attack, mobLevel, player_hp, player_attack) {
+  combatSequence(mob, mob_hp, mob_attack, mobLevel, mobSpecial, player_hp, player_attack) {
     var log = this.state.combatLog;
     let hitChance = .7;
     var modifiedPlayerAttack = player_attack + (Math.round(Math.random()) * this.state.level);
     var modifiedMobAttack = mob_attack + (Math.round(Math.random()) * mobLevel);
     let player_roll = Math.random();
+    let specialInfo = {fire: "water"};
+    let specialCounter = specialInfo[mobSpecial];
+
     if (player_roll <= hitChance) {
       mob_hp = mob_hp - modifiedPlayerAttack;
       this.setState({
@@ -161,10 +173,11 @@ class Game extends React.Component {
     else {
       let action = "Player misses.";
       log.unshift(action);
-      this.setState({
-        log: log
-      });
     }
+    
+    this.setState({
+      log: log
+    });
     
     if (mob_hp <= 0) {
       let action = mob + " dies.";
@@ -176,10 +189,30 @@ class Game extends React.Component {
         mob_hp: 0,
         xp: xp,
         level: level,
-        log: log
+        log: log, 
+        playerSpecial: null
       });
       return;
     }
+    
+    if (this.state.playerSpecial != specialCounter) {
+      let specialDamage = modifiedMobAttack;
+      player_hp = player_hp - modifiedMobAttack;
+      this.setState({
+        health: player_hp
+      });
+      let action = mob + " casts " + mobSpecial + " for " + modifiedMobAttack;
+      log.unshift(action);
+    }
+    else {
+      mob_hp = mob_hp - this.state.level;
+      let action = "You counter with " + specialCounter + " for " + this.state.level;
+      log.unshift(action);
+    }
+    this.setState({
+      log: log, 
+    });
+    
     let mob_roll = Math.random();
     if (mob_roll <= hitChance) {
       player_hp = player_hp - modifiedMobAttack;
@@ -204,7 +237,7 @@ class Game extends React.Component {
       });
       return;
     }
-    setTimeout(this.combatSequence.bind(this), 2000, mob, mob_hp, mob_attack, mobLevel, player_hp, player_attack);   
+    setTimeout(this.combatSequence.bind(this), 2000, mob, mob_hp, mob_attack, mobLevel, mobSpecial, player_hp, player_attack);   
   }
   
   regenerateHealth(health) {
@@ -219,7 +252,7 @@ class Game extends React.Component {
       this.setState({
         health: health
       });
-       setTimeout(this.regenerateHealth.bind(this), 5000, health);   
+       setTimeout(this.regenerateHealth.bind(this), 3000, health);   
     }
   }
   
@@ -291,7 +324,8 @@ class Game extends React.Component {
           let weapons = this.state.weapons;
           weapons.unshift(squares[next_square]);
             this.setState({
-              weapons: weapons    
+              weapons: weapons, 
+              message: "You equip " + weapons[0]
             });
           squares[current_square] = null;
           squares[next_square] = "P";
@@ -309,7 +343,9 @@ class Game extends React.Component {
         if(e.key == '1'){
           //set a special state and in combat check if state is true
           //only one state can be active
-          console.log("do something");
+          let skill1 = "water";
+          this.state.playerSpecial = skill1;
+          let action = "You use " + skill1
         }
         else {
           return;
@@ -388,9 +424,7 @@ class Game extends React.Component {
             <span style={healthBar}>{health}/{this.maxHealth}</span> 
           </div>
         </div>
-        <div>       
-          <p>{weapon}</p>
-        </div>  
+    
         
         <div>
           {mob ? (
@@ -447,14 +481,16 @@ class Game extends React.Component {
       </div> 
       <div className="display-log">
         {this.state.combatLog.map((combatEvent) => 
-       <div>{combatEven}</div>)}
+       <div>{combatEvent}</div>)}
       </div> 
     </div>  
         
-    <div className="display-log">
+    <div className="display-log">      
+         <p>{weapon}</p>
         {this.state.inventory.map((item) => 
        <div>{item.type} {item.quantity}</div>                       
         )}
+      
       </div>     
    </div>     
       
