@@ -4,7 +4,7 @@ class Game extends React.Component {
     this.size = 200;
     this.rowSize = 10;
     this.maxHealth = 10;
-    this.mobInfo = [{name: "rat", attack: 1, health: 8, level: 1, url: "https://southparkstudios.mtvnimages.com/shared/characters/non-human/lemmiwinks.png"}];
+    this.mobInfo = [{name: "goblin1", attack: 1, health: 8, level: 1, url: "https://www.ashlynnpai.com/assets/opengameart_goblin1.png"}];
     this.weaponsInfo = [{type: "hands", attack: 1}, {type: "starter_sword", attack: 2}, {type: "other_sword", attack: 2}];
     const startPoint = 0;
     var grids = Array(this.size).fill("S");
@@ -36,7 +36,7 @@ class Game extends React.Component {
     for (let i=0; i<5; i++) {
       let level1Index = Math.floor(Math.random() * level1Copy.length);
       let occupySquare = level1Copy[level1Index];
-      grids[occupySquare] = "rat";
+      grids[occupySquare] = "goblin1";
       level1Copy.splice(level1Index, 1);
     }
     
@@ -227,17 +227,19 @@ class Game extends React.Component {
       log.unshift(action);
     }
 
-    if (player_hp == 0) {
+    if (player_hp <= 0) {
+      player_hp = 0;
       let action = "You die."
       log.unshift(action);
       this.setState({
+        health: 0,
         living: false,
         log: log
         //death scene
       });
       return;
     }
-    setTimeout(this.combatSequence.bind(this), 2000, mob, mob_hp, mob_attack, mobLevel, mobSpecial, player_hp, player_attack);   
+    setTimeout(this.combatSequence.bind(this), 3000, mob, mob_hp, mob_attack, mobLevel, mobSpecial, player_hp, player_attack);   
   }
   
   regenerateHealth(health) {
@@ -412,11 +414,18 @@ class Game extends React.Component {
 
     return (
       <div onKeyPress={(e) => this.onKeyPressed(e)}>
+        
       <div className = "ui">
-        <div className = "avatar">P
-          <p>{this.state.level}</p>
-        </div>
+        <p>{this.state.level}</p>
         <div>
+          <div className = "avatar">
+            <img src ="https://www.ashlynnpai.com/assets/Jinn_hero2.png" />
+          </div>
+        </div>  
+        <div>
+          <div className = "nameplate">
+            <div>Hero</div>
+          </div>  
           <div className = {healthColor + " progress-bar"}>
             <span style={healthBar}>{health}/{this.maxHealth}</span> 
           </div>
@@ -428,7 +437,10 @@ class Game extends React.Component {
         
         <div>
           {mob ? (
-            <div>     
+            <div>   
+              <div className = "nameplate">
+                <div>{mob.name}</div>
+              </div>  
               <div className = {mobHealthColor + " progress-bar"}>
                 <span style={mobHealthBar}>{mobHealth}/{mobMaxHealth}</span> 
               </div>
@@ -443,9 +455,13 @@ class Game extends React.Component {
           </div> 
           <div>  
           {mob ? (
-            <div className = "avatar">N
-              <p>{mob.name}</p>  
-            </div>
+            <div>  
+              <div className = "avatar">
+                <img src ="https://www.ashlynnpai.com/assets/Jinn_goblin.png" />  
+              </div>
+              <p>{mob.level}</p>  
+            </div> 
+         
           ) : (
              <div className = "avatar">
              </div> 
@@ -466,12 +482,12 @@ class Game extends React.Component {
       <div className = "blue xp-bar">
          <span style={xpBar}>{this.state.xp}/{xpGoal}</span> 
        </div>
-      <div className = "toolbar">
-        <span>1</span>
-        <span>2</span>
+      <div className="toolbar">
+        <span id="toolbar1">1</span>
+        <span id="toolbar2">2</span>
         <span>3</span>
         <span>4</span>
-        <span>5</span>
+        <span id="toolbar5">5</span>
        </div>
       </div>  
      

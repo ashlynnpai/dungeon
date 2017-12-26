@@ -41,20 +41,22 @@ body {
 
 .Pcolor {
   background: #fff;
-  background-image: url("https://www.ashlynnpai.com/assets/Idle__000.png");
+  background-image: url("https://www.ashlynnpai.com/assets/opengameart_hero1.png");
   background-size: 30px;
   background-repeat: no-repeat;
 }
 
-.ratcolor {
+.goblin1color {
   background: #fff;
-  background-image: url("https://southparkstudios.mtvnimages.com/shared/characters/non-human/lemmiwinks.png");
+  background-image: url("https://www.ashlynnpai.com/assets/opengameart_goblin1.png");
   background-size: 60px;
   background-repeat: no-repeat;
 }
 
 .starter_swordcolor {
-  background: #fff;
+  background-color: #fff;
+  background-image: url("https://www.ashlynnpai.com/assets/7soul_chest.png");
+  background-repeat: no-repeat;
 }
 
 .ui {
@@ -74,9 +76,18 @@ body {
 }
 
 .avatar {
-  height:50px;
-  width: 50px;
+  height:60px;
+  width: 60px;
   border: solid 1px;
+  background: #000;
+}
+
+.nameplate {
+  width: 250px;
+  height: 15px;
+  color: #fff;
+  background: #000;
+  
 }
 
 .messageDisplay {
@@ -158,14 +169,26 @@ body {
 .toolbar {
   height: 50px;
   width: 400px;
-  
 }
 
 .toolbar > span {
   display: inline-block;
   width: 50px;
   height: 50px;
-  border: solid 3px;
-  background: pink;
+  border: solid 3px #000;
+  background: #000;
   border-radius: 5px;
+  color: #fff;
+}
+
+#toolbar1 {
+  background: url(https://www.ashlynnpai.com/assets/horropen_water.png);
+}
+
+#toolbar2{
+  background: orange;
+}
+
+#toolbar5 {
+ background:  url("https://www.ashlynnpai.com/assets/horrorpen_pot.png");
 }
