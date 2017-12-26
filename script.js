@@ -463,7 +463,7 @@ class Game extends React.Component {
             </div> 
          
           ) : (
-             <div className = "avatar">
+             <div className = "blankAvatar">
              </div> 
           )}
         </div>   

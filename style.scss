@@ -1,3 +1,13 @@
+// https://opengameart.org/content/jinns-icons
+// https://opengameart.org/content/random-rpg-icons-part-1
+
+//https://opengameart.org/content/dungeon-crawl-32x32-tiles
+// Part of (or All) the graphic tiles used in this program is the public 
+// domain roguelike tileset "RLTiles".
+// You can find the original tileset at:
+// http://rltiles.sf.net
+
+
 $font-stack: Roboto;
 $board-color: #4b535c;
   
@@ -80,6 +90,7 @@ body {
   width: 60px;
   border: solid 1px;
   background: #000;
+  border-radius: 5px;
 }
 
 .nameplate {
@@ -136,8 +147,12 @@ body {
 
 .blankMob {
   width: 250px;
-  height: 50px;
-  background: #000;
+  height: 50px; 
+}
+
+.blankAvatar {
+  height:60px;
+  width: 60px;
 }
 
 
