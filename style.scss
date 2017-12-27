@@ -63,7 +63,7 @@ body {
   background-repeat: no-repeat;
 }
 
-.Daggercolor {
+.Meatchoppercolor {
   background-color: #fff;
   background-image: url("https://www.ashlynnpai.com/assets/7soul_chest.png");
   background-repeat: no-repeat;
@@ -76,13 +76,6 @@ body {
 
 .ui>div {
 
-}
-
-.display-log {
-  width: 250px;
-  height: 150px;
-  overflow-y: scroll;
-  background: pink;
 }
 
 .avatar {
@@ -155,13 +148,11 @@ body {
   width: 60px;
 }
 
-
-
 .xp-bar {
     background-color: #1a1a1a;
   text-align: left;
     height: 30px;
-    width: 400px;
+    width: 270px;
     padding: 1px;     
     border-radius: 5px;
     box-shadow: 0 1px 5px #000 inset, 0 1px 0 #444;           
@@ -183,7 +174,7 @@ body {
 
 .toolbar {
   height: 50px;
-  width: 400px;
+
 }
 
 .toolbar > span {
@@ -206,4 +197,12 @@ body {
 
 #toolbar5 {
  background:  url("https://www.ashlynnpai.com/assets/horrorpen_pot.png");
+}
+
+.display-log {
+  width: 350px;
+  height: 150px;
+  overflow-y: scroll;
+  background: pink;
+  margin-left: 5px;
 }
