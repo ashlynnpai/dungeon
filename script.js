@@ -9,18 +9,21 @@ class Game extends React.Component {
                     ];
     this.weaponsInfo = [{name: "Hands", attack: 1, description: "These are deadly weapons."}, {name: "Meatchopper", attack: 2, 
     description: "A rusty knife from someone's kitchen"}];
-    this.itemsInfo = [[{name: "Pointe", bonus: "dodgeChance: 1", description: "These shoes were made for dancing"}]];
+    this.itemsInfo = [[{name: "Clogs", bonus: ["dodgeChance", .03], description: "These shoes were made for dancing"}, {name: "Mittens",
+    bonus: ["hitChance": .03], descriptions: "A Goon's favorite Mittens"}]];
+    this.level1Drops = ["Clogs", "healthPotion", "manaPotion", "Gold", "Mittens"];
     const startPoint = 0;
     var grids = Array(this.size).fill("S");
     let level1 = Array.from(Array(10).keys())
     let room1 = [11, 12, 13, 14, 20, 21, 22, 23, 24];
     let room2 = [16, 17, 18, 27, 28, 29, 39, 38, 37, 36, 35, 49, 59, 58, 57];
     let hall1 = [45, 44, 43, 42, 41, 40, 50, 51, 52, 53, 54, 60, 61, 62, 63, 64, 61, 62, 63, 64, 65, 66]
-    let boss1 = []
-    level1.concat(room1);
-    level1.concat(room2);
+    let boss1 = [];
     level1.push.apply(level1, room1.concat(room2).concat(hall1));
+    
+    let room3 = [76, 77, 78, 79, 89, 88, 87, 86];
     let level2 = []
+    level2.push.apply(level2, room3)
     let spaces = level1.concat(level2);
     
     for (let i=0; i<grids.length; i++) {
@@ -35,7 +38,11 @@ class Game extends React.Component {
     level1Copy.splice(startPoint, 2);
     let starterSwordIndex = level1Copy.indexOf(11);
     level1Copy.splice(starterSwordIndex, 1);
-    //change to picking a random point in each room
+    
+    let level2Copy = level2.slice();
+    
+    //seed level 1
+    //change to picking a random point in each room?
     for (let i=0; i<5; i++) {
       let level1Index = Math.floor(Math.random() * level1Copy.length);
       let occupySquare = level1Copy[level1Index];
@@ -58,7 +65,8 @@ class Game extends React.Component {
       pet: null,
       living: true,
       weapons: ["Hands"],
-      inventory: [{type: "healthPotion", quantity: 1}],
+      inventory: [{healthPotion: 1}, {manaPotion: 0}, {gold: 0}],
+      equipment: [],
       current_mob: "",
       mob_hp: 0,
       target_index: null,
@@ -288,7 +296,8 @@ class Game extends React.Component {
         message: message,
         mainLog: this.state.mainLog.push(message),
         health: this.state.health += 20,
-        mana: this.state.mana += 10
+        mana: this.state.mana += 10,
+        xp: xp - levelInfo[level]
       })
     }
     return level;
@@ -296,15 +305,35 @@ class Game extends React.Component {
   
   processItem(item) {
     let inventory = this.state.inventory;
+    let equipment = this.state.equipment;
     if(item == "healthPotion") {
      inventory.healthPotion++;
     }
-    else if (this.itemsInfo.filter(itemsInfo => itemsInfo.name == item)) {
-      console.log(itemsInfo.bonus);
-      inventory.push(item);
+    else if (item == "manaPotion") {
+      inventory.manaPotion++;
+    }
+    else if (this.itemsInfo.filter(itemInfo => itemInfo.name == item)) {
+      let bonus = itemInfo.bonus;
+      let hitChance = this.state.hitChance;
+      let dodgeChance = this.state.dodgeChance;
+      let attack = this.state.attack;
+      if (bonus[0] == "hitChance") {
+        hitChance += bonus[1];
+      }
+      else if (bonus[0] == "dodgeChance") {
+        dodgeChance += bonus[1];
+      }
+      else if (bonus[0] == "attack") {
+        attack += bonus[1];
+      }
+      equipment.push(itemInfo);
     }
     this.setState({
-      inventory: inventory
+      inventory: inventory,
+      equipment: equipment,
+      hitChance: hitChance,
+      dodgeChance: dodgeChance,
+      attack: attack
     })
   }
   
@@ -390,12 +419,23 @@ class Game extends React.Component {
         this.checkVisible(); 
         }
       if (this.state.currentAction) {
-        if(e.key == '1'){
-          //set a special state and in combat check if state is true
-          //only one state can be active
-          let skill1 = "water";
-          this.state.playerSpecial = skill1;
-          let action = "You use " + skill1
+        //set a special state and in combat check if state is true
+        //only one state can be active
+        let skillKeys = {1: "water", 2: "", 3: ""};
+        if (e.key in skillKeys) {
+          if (e.key == "1" || e.key == "2" || e.key == "3") {
+            let skill = skillKeys[e.key];
+            this.state.playerSpecial = skill;
+            var action = "You cast " + skill;
+          }   
+          if (e.key =="4") {
+            let mobHealth = this.state.mob_hp;
+            mobHealth -= this.state.level*2
+            var action = "Stuff";
+          }
+          this.setState({
+            combatLog: this.state.combatLog.push(action)
+          })
         }
         else {
           return;
@@ -454,7 +494,7 @@ class Game extends React.Component {
    
     var weapon = this.state.weapons[0];        
     let filtered_weapons = this.weaponsInfo.filter(weaponInfo => weaponInfo.name == weapon);
-    var attack_value = filtered_weapons[0].attack;
+    var attackValue = filtered_weapons[0].attack;
       
     let levelInfo = {1:50, 2:100, 3:200};
     let level = this.state.level;
@@ -533,23 +573,23 @@ class Game extends React.Component {
     </div>
     <div className='ui'>
       <div>
-      <div className = "blue xp-bar">
-         <span style={xpBar}>{this.state.xp}/{xpGoal}</span> 
-       </div>
-      <div className="toolbar">
-        <span id="toolbar1">1</span>
-        <span id="toolbar2">2</span>
-        <span id="toolbar3">3</span>
-        <span id="toolbar4">4</span>
-        <span id="toolbar5">5</span>
-      </div>  
-      <div className="toolbar">  
-        <span id="toolbar6">6</span>
-        <span id="toolbar7">7</span>
-        <span id="toolbar8">8</span>
-        <span id="toolbar9">9</span>
-        <span id="toolbar0">0</span>
-       </div>
+        <div className = "blue xp-bar">
+           <span style={xpBar}>{this.state.xp}/{xpGoal}</span> 
+         </div>
+        <div className="toolbar">
+          <span id="toolbar1">1</span>
+          <span id="toolbar2">2</span>
+          <span id="toolbar3">3</span>
+          <span id="toolbar4">4</span>
+          <span id="toolbar5">5</span>
+        </div>  
+        <div className="toolbar">  
+          <span id="toolbar6">6</span>
+          <span id="toolbar7">7</span>
+          <span id="toolbar8">8</span>
+          <span id="toolbar9">9</span>
+          <span id="toolbar0">0</span>
+         </div>
       </div>  
      
       <div className="display-log">
@@ -561,16 +601,21 @@ class Game extends React.Component {
        <div>{combatEvent}</div>)}
       </div> 
     </div>  
-        
-    <div className="display-log">      
-         <p>{weapon}</p>
-        {this.state.inventory.map((item) => 
-       <div>{item.type} {item.quantity}</div>                       
-        )}
-      
-      </div>     
-   </div>     
-      
+    <div className="displayStats">      
+      <p>{weapon} Attack: {attackValue}</p>
+      <p>Health Potions: {this.state.inventory.healthPotion}</p>
+      <p>Mana Potions: {this.state.inventory.manaPotion}</p>
+      <p>Gold: {this.state.inventory.gold}</p>
+      {this.state.equipment.map((piece) => 
+    <div>{piece.name} {piece.bonus} {piece.description}</div>                       
+      )}  
+    </div>         
+    <div className="displayStats">
+      <p>{this.state.attack}</p>
+      <p>{this.state.hitChance}</p>
+      <p>{this.state.dodgeChance}</p> 
+    </div>      
+  </div> 
     );
   }
 }
