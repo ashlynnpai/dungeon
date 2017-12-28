@@ -9,8 +9,8 @@ class Game extends React.Component {
                     ];
     this.weaponsInfo = [{name: "Hands", attack: 1, description: "These are deadly weapons."}, {name: "Meatchopper", attack: 2, 
     description: "A rusty knife from someone's kitchen"}];
-    this.itemsInfo = [[{name: "Clogs", bonus: ["dodgeChance", .03], description: "These shoes were made for dancing"}, {name: "Mittens",
-    bonus: ["hitChance": .03], descriptions: "A Goon's favorite Mittens"}]];
+    this.itemsInfo = [{name: "Clogs", bonus: ["dodgeChance", .03], description: "These shoes were made for dancing"}, {name: "Mittens",
+    bonus: ["hitChance", .03], description: "A Goon's favorite Mittens"}];
     this.level1Drops = ["Clogs", "healthPotion", "manaPotion", "Gold", "Mittens"];
     const startPoint = 0;
     var grids = Array(this.size).fill("S");
@@ -142,13 +142,7 @@ class Game extends React.Component {
       return true;
     }
   }
-  
-  itemLookup(item) {
-    if (this.itemsInfo.filter(itemInfo => itemInfo.name == item).length > 0) {
-      return true;
-    }
-  }
-  
+
   fightMob(mob) {
     for (let i=0; i<this.mobsInfo.length; i++) {
       if (this.mobsInfo[i].name == mob) {
@@ -199,12 +193,16 @@ class Game extends React.Component {
     }
     
     this.setState({
-      log: log
+     combatLog: log
     });
     
     if (mob_hp <= 0) {
       let action = mobDisplayName + " dies.";
       log.unshift(action);
+      let drops = this.level1Drops;
+      let loot = drops[Math.floor(Math.random() * drops.length)];
+      this.processItem(loot);
+      drops.splice(Math.floor(Math.random() * drops.length, 1));
       this.state.currentAction = null;
       let xp = this.state.xp += 5;
       let level = this.checkLevel();
@@ -212,9 +210,11 @@ class Game extends React.Component {
         mob_hp: 0,
         xp: xp,
         level: level,
-        log: log, 
+        combatLog: log, 
         playerSpecial: null,
-        current_mob: null
+        current_mob: null,
+        currentAction: null,
+        level1Drops: drops
       });
       return;
     }
@@ -235,7 +235,7 @@ class Game extends React.Component {
       mobSpecial = null;
     }
     this.setState({
-      log: log, 
+      combatLog: log, 
     });
     
     let mob_roll = Math.random();
@@ -259,7 +259,7 @@ class Game extends React.Component {
       this.setState({
         health: 0,
         living: false,
-        log: log
+        combatLog: log
         //death scene
       });
       return;
@@ -304,30 +304,41 @@ class Game extends React.Component {
   }
   
   processItem(item) {
+    console.log(item);
     let inventory = this.state.inventory;
     let equipment = this.state.equipment;
     if(item == "healthPotion") {
-     inventory.healthPotion++;
+      inventory.healthPotion++;
     }
     else if (item == "manaPotion") {
       inventory.manaPotion++;
     }
-    else if (this.itemsInfo.filter(itemInfo => itemInfo.name == item)) {
-      let bonus = itemInfo.bonus;
-      let hitChance = this.state.hitChance;
-      let dodgeChance = this.state.dodgeChance;
-      let attack = this.state.attack;
-      if (bonus[0] == "hitChance") {
-        hitChance += bonus[1];
-      }
-      else if (bonus[0] == "dodgeChance") {
-        dodgeChance += bonus[1];
-      }
-      else if (bonus[0] == "attack") {
-        attack += bonus[1];
-      }
-      equipment.push(itemInfo);
+    else if (item == "Gold") {
     }
+    else {
+      let items = this.itemsInfo;
+      for (let i=0; i<items.length; i++) {
+        let name = items[i].name;
+        if (name == item) {
+          var bonus = items[i].bonus;
+          var hitChance = this.state.hitChance;
+          var dodgeChance = this.state.dodgeChance;
+          var attack = this.state.attack;
+          if (bonus[0] == "hitChance") {
+            hitChance += bonus[1];
+          }
+          else if (bonus[0] == "dodgeChance") {
+            dodgeChance += bonus[1];
+          }
+          else if (bonus[0] == "attack") {
+            attack += bonus[1];
+          }
+          equipment.push(items[i]);
+        }
+      }
+    }
+
+    
     this.setState({
       inventory: inventory,
       equipment: equipment,
@@ -393,7 +404,6 @@ class Game extends React.Component {
         else if(this.weaponLookup(squares[next_square])) {
           let weapons = this.state.weapons;
           weapons.unshift(squares[next_square]);
-          console.log(this.state.mainLog);
           let message = "You equip " + weapons[0];
           let mainLog = this.state.mainLog;
           mainLog.push(message);
@@ -405,9 +415,6 @@ class Game extends React.Component {
           
           squares[current_square] = null;
           squares[next_square] = "P";
-        }
-        else if(this.itemLookup(squares[next_square])) {
-          console.log("item lookup");
         }
         else {
           return;
@@ -421,20 +428,23 @@ class Game extends React.Component {
       if (this.state.currentAction) {
         //set a special state and in combat check if state is true
         //only one state can be active
+        let log = this.state.combatLog;
         let skillKeys = {1: "water", 2: "", 3: ""};
         if (e.key in skillKeys) {
           if (e.key == "1" || e.key == "2" || e.key == "3") {
             let skill = skillKeys[e.key];
             this.state.playerSpecial = skill;
-            var action = "You cast " + skill;
+            let action = "You cast " + skill;
+            log.push(action);
           }   
           if (e.key =="4") {
             let mobHealth = this.state.mob_hp;
             mobHealth -= this.state.level*2
-            var action = "Stuff";
+            let action = "Stuff";
+            log.push(action);
           }
           this.setState({
-            combatLog: this.state.combatLog.push(action)
+            combatLog: log
           })
         }
         else {
