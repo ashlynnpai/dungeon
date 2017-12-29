@@ -2,7 +2,7 @@
 // https://opengameart.org/content/random-rpg-icons-part-1
 
 //https://opengameart.org/content/dungeon-crawl-32x32-tiles
-// Part of (or All) the graphic tiles used in this program is the public 
+// Part of (or All) the graphic tiles used in this program is the public
 // domain roguelike tileset "RLTiles".
 // You can find the original tileset at:
 // http://rltiles.sf.net
@@ -10,12 +10,16 @@
 
 $font-stack: Roboto;
 $board-color: #4b535c;
-  
+$tile-color: #cbc1b5;
+
 body {
   text-align: center;
   font-family: $font-stack;
   width: 1000px;
   margin: 0 auto;
+  //background: #642930; wine
+  //background: $tile-color;
+  background: #9898C3;
 }
 
 .flex-container {
@@ -31,8 +35,8 @@ body {
   padding: 50px;
 }
 
-// ::-webkit-scrollbar { 
-//     display: none; 
+// ::-webkit-scrollbar {
+//     display: none;
 // }
 
 .flex-container>div {
@@ -42,7 +46,7 @@ body {
 }
 
 .nullcolor {
-  background: #fff;
+  background: $tile-color;
 }
 
 .Ocolor {
@@ -50,21 +54,44 @@ body {
 }
 
 .Pcolor {
-  background: #fff;
+  background: $tile-color;
   background-image: url("https://www.ashlynnpai.com/assets/opengameart_hero1.png");
   background-size: 30px;
   background-repeat: no-repeat;
 }
 
 .goblin1color {
-  background: #fff;
+  background: $tile-color;
   background-image: url("https://www.ashlynnpai.com/assets/opengameart_goblin1.png");
   background-size: 60px;
   background-repeat: no-repeat;
 }
 
+.goblin1color:hover {
+  background-color: orange;
+}
+
+.goblin1color .tooltiptext {
+    visibility: hidden;
+    width: 120px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    padding: 5px 0;
+    border-radius: 6px;
+
+    /* Position the tooltip text - see examples below! */
+    position: absolute;
+    z-index: 1;
+}
+
+/* Show the tooltip text when you mouse over the tooltip container */
+.goblin1color:hover .tooltiptext {
+    visibility: visible;
+}
+
 .Meatchoppercolor {
-  background-color: #fff;
+  background-color: $tile-color;
   background-image: url("https://www.ashlynnpai.com/assets/7soul_chest.png");
   background-repeat: no-repeat;
 }
@@ -88,19 +115,22 @@ body {
 
 .nameplate {
   width: 250px;
-  height: 15px;
+  height: 13px;
   color: #fff;
   background: #000;
-  
+  padding: 2px;
+  border-radius: 3px;
+  box-shadow: 0 1px 5px #000 inset, 0 1px 0 #444;
 }
 
 .messageDisplay {
   height: 50px;
-  background: pink;
+  font-size: 34px;
+  color: red;
 }
 
 .hidden {
-  background: orange;
+  background: #000;
 }
 
 /*https://catalin.red/stylish-css3-progress-bars/*/
@@ -111,9 +141,9 @@ body {
     height: 20px;
     padding: 2px;
     width: 250px;
-    margin: 0;         
-    border-radius: 5px;
-    box-shadow: 0 1px 5px #000 inset, 0 1px 0 #444;           
+    margin: 0;
+    border-radius: 3px;
+    box-shadow: 0 1px 5px #000 inset, 0 1px 0 #444;
 }
 
 
@@ -122,7 +152,7 @@ body {
     height: 100%;
     border-radius: 3px;
     box-shadow: 0 1px 0 rgba(255, 255, 255, .5) inset;
-    transition: width .4s ease-in-out;   
+    transition: width .4s ease-in-out;
     text-align: center;
 }
 
@@ -140,7 +170,7 @@ body {
 
 .blankMob {
   width: 250px;
-  height: 50px; 
+  height: 50px;
 }
 
 .blankAvatar {
@@ -152,10 +182,10 @@ body {
     background-color: #1a1a1a;
   text-align: left;
     height: 30px;
-    width: 270px;
-    padding: 1px;     
+    width: 275px;
+    padding: 2px;
     border-radius: 5px;
-    box-shadow: 0 1px 5px #000 inset, 0 1px 0 #444;           
+    box-shadow: 0 1px 5px #000 inset, 0 1px 0 #444;
 }
 
 
@@ -164,7 +194,7 @@ body {
     height: 100%;
     border-radius: 3px;
     box-shadow: 0 1px 0 rgba(255, 255, 255, .5) inset;
-    transition: width .4s ease-in-out;   
+    transition: width .4s ease-in-out;
     text-align: center;
 }
 
@@ -183,7 +213,7 @@ body {
   height: 50px;
   border: solid 3px #000;
   background: #000;
-  border-radius: 5px;
+  border-radius: 3px;
   color: #fff;
 }
 
@@ -191,18 +221,60 @@ body {
   background: url(https://www.ashlynnpai.com/assets/horropen_water.png);
 }
 
-#toolbar2{
+#toolbar2 {
+  background: orange;
+}
+
+#toolbar3 {
+  background: orange;
+}
+
+#toolbar4 {
   background: orange;
 }
 
 #toolbar5 {
+  background: orange;
+}
+
+#toolbar6 {
+  background: orange;
+}
+
+#toolbar7 {
+  background: orange;
+}
+
+#toolbar8 {
+  background: orange;
+}
+
+#toolbar9 {
+  background: orange;
+}
+
+#toolbar0 {
  background:  url("https://www.ashlynnpai.com/assets/horrorpen_pot.png");
 }
 
 .display-log {
   width: 350px;
-  height: 150px;
+  height: 200px;
   overflow-y: scroll;
   background: pink;
   margin-left: 5px;
+  text-align: left;
+  background: #36454f;
+  color: #fff;
+}
+
+.displayStats {
+  width: 500px;
+  margin-left: 5px;
+  background: yellow;
+  text-align: left;
+}
+
+.displayStats h2 {
+  text-align: center;
 }

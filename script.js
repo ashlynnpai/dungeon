@@ -5,53 +5,57 @@ class Game extends React.Component {
     this.rowSize = 10;
     this.maxHealth = 20;
     this.maxMana = 10;
-    this.mobsInfo = [{name: "goblin1", displayName: "Goblin Footsoldier", attack: 1, health: 18, level: 1, url: "https://www.ashlynnpai.com/assets/opengameart_goblin1.png"}, {name: "goblin2", displayName: "Goblin Lieutenant", attack: 2, health: 24, level: 2, url: "https://www.ashlynnpai.com/assets/opengameart_goblin1.png"}
+    this.mobsInfo = [{name: "goblin1", displayName: "Goblin Footsoldier", attack: 1, health: 20, level: 1, url: "https://www.ashlynnpai.com/assets/opengameart_goblin1.png"}, {name: "goblin2", displayName: "Goblin Lieutenant", attack: 2, health: 30, level: 2, url: "https://www.ashlynnpai.com/assets/opengameart_goblin1.png"}
                     ];
-    this.weaponsInfo = [{name: "Hands", attack: 1, description: "These are deadly weapons."}, {name: "Meatchopper", attack: 2, 
+    this.weaponsInfo = [{name: "Hands", attack: 1, description: "These are deadly weapons."}, {name: "Meatchopper", attack: 2,
     description: "A rusty knife from someone's kitchen"}];
     this.itemsInfo = [{name: "Clogs", bonus: ["dodgeChance", .03], description: "These shoes were made for dancing"}, {name: "Mittens",
     bonus: ["hitChance", .03], description: "A Goon's favorite Mittens"}];
     this.level1Drops = ["Clogs", "healthPotion", "manaPotion", "Gold", "Mittens"];
     const startPoint = 0;
-    var grids = Array(this.size).fill("S");
+    let squares = Array(this.size).fill("S");
     let level1 = Array.from(Array(10).keys())
     let room1 = [11, 12, 13, 14, 20, 21, 22, 23, 24];
     let room2 = [16, 17, 18, 27, 28, 29, 39, 38, 37, 36, 35, 49, 59, 58, 57];
     let hall1 = [45, 44, 43, 42, 41, 40, 50, 51, 52, 53, 54, 60, 61, 62, 63, 64, 61, 62, 63, 64, 65, 66]
-    let boss1 = [];
     level1.push.apply(level1, room1.concat(room2).concat(hall1));
-    
-    let room3 = [76, 77, 78, 79, 89, 88, 87, 86];
+
+    let room3 = [76, 77, 78, 79, 89, 88, 87, 86, 96, 97, 98, 99];
+    let room4 = [85, 84, 83, 82, 81, 80, 90, 91, 92, 93, 100, 101, 102, 103];
+    let room5 = [104, 105, 106, 107, 108, 109, 119, 118, 117, 116, 115, 114, 113]
     let level2 = []
-    level2.push.apply(level2, room3)
-    let spaces = level1.concat(level2);
-    
-    for (let i=0; i<grids.length; i++) {
+    level2.push.apply(level2, room3.concat(room4).concat(room5));
+    let miniboss = [126, 127, 128, 136, 13, 138, 189, 146, 147, 148];
+
+    let room6 = [];
+    let level3= [];
+    let spaces = level1.concat(level2).concat(miniboss).concat(level3);
+
+    for (let i=0; i<squares.length; i++) {
       if(spaces.includes(i)) {
-        grids[i] = null;
+        squares[i] = null;
       }
     }
-    grids[startPoint] = "P";
-    grids[11] = "Meatchopper";
+    squares[startPoint] = "P";
+    squares[11] = "Meatchopper";
     //seed a random square with a mob or item and then remove it from a copy of the floor plan array so multiple items don't get put on the same square
-    let level1Copy = level1.slice();
-    level1Copy.splice(startPoint, 2);
-    let starterSwordIndex = level1Copy.indexOf(11);
-    level1Copy.splice(starterSwordIndex, 1);
-    
-    let level2Copy = level2.slice();
-    
-    //seed level 1
-    //change to picking a random point in each room?
-    for (let i=0; i<5; i++) {
-      let level1Index = Math.floor(Math.random() * level1Copy.length);
-      let occupySquare = level1Copy[level1Index];
-      grids[occupySquare] = "goblin1";
-      level1Copy.splice(level1Index, 1);
+    let spacesCopy = spaces.slice();
+    spacesCopy.splice(startPoint, 2);
+    let starterSwordIndex = spacesCopy.indexOf(11);
+    spacesCopy.splice(starterSwordIndex, 1);
+
+    let seeds = [{room: room1, amount: 1, mob: "goblin1"}, {room: room2, amount: 1, mob: "goblin1"},
+  {room: hall1, amount: 3, mob: "goblin1"}, {room: room3, amount: 1, mob: "goblin2"}, {room: room4, amount: 1, mob: "goblin2"},
+  {room: room5, amount: 1, mob: "goblin2"}];
+    for (let i=0; i<seeds.length; i++) {
+      let chosenSquares = this.pickSquare(seeds[i].room, seeds[i].amount);
+      console.log(chosenSquares);
+      squares = this.setGrid(chosenSquares, squares, seeds[i].mob);
+      spacesCopy = this.removeSquareFromCopy(chosenSquares, spacesCopy);
     }
-    
+
     this.state = {
-      squares: grids,
+      squares: squares,
       hidden: [],
       player_index: startPoint,
       yCoord: 0,
@@ -65,6 +69,7 @@ class Game extends React.Component {
       pet: null,
       living: true,
       weapons: ["Hands"],
+      attack: 1,
       inventory: [{healthPotion: 1}, {manaPotion: 0}, {gold: 0}],
       equipment: [],
       current_mob: "",
@@ -76,14 +81,38 @@ class Game extends React.Component {
       message: ""
       };
   }
-  
+
   componentWillMount() {
     document.addEventListener("keypress", this.onKeyPressed.bind(this));
   }
 
   componentWillUnmount() {
     document.removeEventListener("keypress", this.onKeyPressed.bind(this));
-  }      
+  }
+
+  pickSquare(room, amount) {
+    let squaresArray = [];
+    for (let i=0; i<amount; i++) {
+      let roomIndex = Math.floor(Math.random() * room.length);
+      squaresArray.push(room[roomIndex]);
+      }
+    return squaresArray;
+    }
+
+  removeSquareFromCopy(squares, spacesCopy) {
+    for (let i=0; i<squares.length; i++) {
+      let spacesSquareIndex = spacesCopy.indexOf(squares[i]);
+      spacesCopy.splice(spacesSquareIndex, 1);
+    }
+    return spacesCopy;
+  }
+
+  setGrid(chosenSquares, grids, mob) {
+    for (let i=0; i<chosenSquares.length; i++) {
+      grids[chosenSquares[i]] = mob;
+    }
+    return grids;
+  }
 
   checkVisible() {
     let squares = this.state.squares;
@@ -104,9 +133,9 @@ class Game extends React.Component {
          hidden.push(i);
       }
     }
-    this.setHidden(hidden);    
+    this.setHidden(hidden);
   }
-  
+
   setVisible(visible) {
       let squares = this.state.squares;
       for (let i=0; i<visible.length; i++) {
@@ -115,12 +144,12 @@ class Game extends React.Component {
        document.getElementById("square" + visible[i]).classList.add(squares[visible[i]] + "color");
       }
      }
-    
+
     this.setState({
       squares: squares
     })
   }
-  
+
   setHidden(hidden) {
     for (let i=0; i<hidden.length; i++) {
       document.getElementById("square" + hidden[i]).className = "hidden";
@@ -130,13 +159,13 @@ class Game extends React.Component {
       squares: squares
     })
   }
-  
+
   mobLookup(mob) {
     if (this.mobsInfo.filter(mobInfo => mobInfo.name == mob).length > 0) {
       return true;
     };
   }
-  
+
   weaponLookup(weapon) {
     if (this.weaponsInfo.filter(weaponInfo => weaponInfo.name == weapon).length > 0) {
       return true;
@@ -154,11 +183,10 @@ class Game extends React.Component {
     }
     this.setState({
       current_mob: mob
-    });  
+    });
     this.state.mob_hp = mob_hp;
     let player_hp = this.state.health;
     let filtered_weapons = this.weaponsInfo.filter(weaponInfo => weaponInfo.name == this.state.weapons[0]);
-    let player_attack = filtered_weapons[0].attack;
     let mobSpecial = "fire";
     var action = mobDisplayName + " is casting " + mobSpecial;
     this.state.combatLog.unshift(action);
@@ -166,20 +194,24 @@ class Game extends React.Component {
       combatLog: this.state.combatLog,
       message: action
     });
-    this.combatSequence(mobDisplayName, mob_hp, mob_attack, mobLevel, mobSpecial, player_hp, player_attack);     
+    this.combatSequence(mobDisplayName, mob_hp, mob_attack, mobLevel, mobSpecial, player_hp);
   }
-  
-  combatSequence(mobDisplayName, mob_hp, mob_attack, mobLevel, mobSpecial, player_hp, player_attack) {
+
+  combatSequence(mobDisplayName, mob_hp, mob_attack, mobLevel, mobSpecial, player_hp) {
     var log = this.state.combatLog;
-    let mobHitChance = .7;
+    let levelDiff = mobLevel > this.state.level ? mobLevel - this.state.level : 0;
+    let playerHitChance = this.state.hitChance - .1 * levelDiff;
+    let mobHitChance = .7 + .1 * levelDiff;
     mobHitChance -= this.state.dodgeChance;
-    var modifiedPlayerAttack = player_attack + (Math.round(Math.random()) * this.state.level);
+    let attack = this.state.attack;
+    var modifiedPlayerAttack = levelDiff >= this.state.level ? attack :
+        attack + (Math.round(Math.random()) * this.state.level);
     var modifiedMobAttack = mob_attack + (Math.round(Math.random()) * mobLevel);
     let player_roll = Math.random();
     let specialInfo = {fire: "water"};
     let specialCounter = specialInfo[mobSpecial];
 
-    if (player_roll <= this.state.hitChance) {
+    if (player_roll <= playerHitChance) {
       mob_hp = mob_hp - modifiedPlayerAttack;
       this.setState({
         mob_hp: mob_hp
@@ -191,11 +223,11 @@ class Game extends React.Component {
       let action = "Player misses.";
       log.unshift(action);
     }
-    
+
     this.setState({
      combatLog: log
     });
-    
+
     if (mob_hp <= 0) {
       let action = mobDisplayName + " dies.";
       log.unshift(action);
@@ -204,13 +236,13 @@ class Game extends React.Component {
       this.processItem(loot);
       drops.splice(Math.floor(Math.random() * drops.length, 1));
       this.state.currentAction = null;
-      let xp = this.state.xp += 5;
+      let xp = this.state.xp += (5 * mobLevel);
       let level = this.checkLevel();
       this.setState({
         mob_hp: 0,
         xp: xp,
         level: level,
-        combatLog: log, 
+        combatLog: log,
         playerSpecial: null,
         current_mob: null,
         currentAction: null,
@@ -218,7 +250,7 @@ class Game extends React.Component {
       });
       return;
     }
-    
+
     if (this.state.playerSpecial != specialCounter && specialCounter) {
       let specialDamage = modifiedMobAttack;
       player_hp = player_hp - modifiedMobAttack;
@@ -235,9 +267,9 @@ class Game extends React.Component {
       mobSpecial = null;
     }
     this.setState({
-      combatLog: log, 
+      combatLog: log,
     });
-    
+
     let mob_roll = Math.random();
     if (mob_roll <= mobHitChance) {
       player_hp = player_hp - modifiedMobAttack;
@@ -264,9 +296,9 @@ class Game extends React.Component {
       });
       return;
     }
-    setTimeout(this.combatSequence.bind(this), 3000, mobDisplayName, mob_hp, mob_attack, mobLevel, mobSpecial, player_hp, player_attack);   
+    setTimeout(this.combatSequence.bind(this), 3000, mobDisplayName, mob_hp, mob_attack, mobLevel, mobSpecial);
   }
-  
+
   regenerateHealth(health) {
     var maxHealth = this.maxHealth;
     if (health >= maxHealth) {
@@ -281,10 +313,10 @@ class Game extends React.Component {
       this.setState({
         health: health,
       });
-       setTimeout(this.regenerateHealth.bind(this), 3000, health);   
+       setTimeout(this.regenerateHealth.bind(this), 3000, health);
     }
   }
-  
+
   checkLevel() {
     let levelInfo = {1:50, 2:100, 3:200};
     let level = this.state.level;
@@ -302,18 +334,19 @@ class Game extends React.Component {
     }
     return level;
   }
-  
+
   processItem(item) {
     console.log(item);
     let inventory = this.state.inventory;
     let equipment = this.state.equipment;
     if(item == "healthPotion") {
-      inventory.healthPotion++;
+      inventory[0].healthPotion++;
     }
     else if (item == "manaPotion") {
-      inventory.manaPotion++;
+      inventory[1].manaPotion++;
     }
     else if (item == "Gold") {
+      inventory[2].gold += 5 * this.state.level;
     }
     else {
       let items = this.itemsInfo;
@@ -338,7 +371,7 @@ class Game extends React.Component {
       }
     }
 
-    
+
     this.setState({
       inventory: inventory,
       equipment: equipment,
@@ -347,7 +380,7 @@ class Game extends React.Component {
       attack: attack
     })
   }
-  
+
   onKeyPressed(e) {
     let current_square = this.state.player_index;
     let squares = this.state.squares;
@@ -359,7 +392,7 @@ class Game extends React.Component {
         }
         else if(e.key =='a' && current_square % 10 != 0) {
           var next_square = current_square - 1;
-        }  
+        }
         else if(e.key =='w' && current_square > 9) {
           var next_square = current_square - this.rowSize;
            if(squares[next_square] == null) {
@@ -370,7 +403,7 @@ class Game extends React.Component {
             })
             boardDiv.scrollTo(0, yCoord);
           }
-        }  
+        }
         else if(e.key =='s' && current_square < 190) {
           var next_square = current_square + this.rowSize;
           if(squares[next_square] == null) {
@@ -381,7 +414,7 @@ class Game extends React.Component {
             })
             boardDiv.scrollTo(0, yCoord);
           }
-        }  
+        }
         else if(e.key == 'r') {
           this.state.currentAction = "resting";
           var next_square = current_square;
@@ -394,7 +427,7 @@ class Game extends React.Component {
           squares[current_square] = null;
           squares[next_square] = "P";
         }
-        else if(this.mobLookup(squares[next_square])) {    
+        else if(this.mobLookup(squares[next_square])) {
           //fight the mob
           this.state.currentAction = "fighting";
           this.fightMob(squares[next_square]);
@@ -406,24 +439,26 @@ class Game extends React.Component {
           weapons.unshift(squares[next_square]);
           let message = "You equip " + weapons[0];
           let mainLog = this.state.mainLog;
+          let attack = weapons[0].attack;
           mainLog.push(message);
             this.setState({
-              weapons: weapons, 
+              weapons: weapons,
+              attack: attack,
               message: "You equip " + weapons[0],
               mainLog: mainLog
             });
-          
+
           squares[current_square] = null;
           squares[next_square] = "P";
         }
         else {
           return;
-        }     
+        }
         this.setState({
           squares: squares,
           player_index: next_square
          });
-        this.checkVisible(); 
+        this.checkVisible();
         }
       if (this.state.currentAction) {
         //set a special state and in combat check if state is true
@@ -436,8 +471,14 @@ class Game extends React.Component {
             this.state.playerSpecial = skill;
             let action = "You cast " + skill;
             log.push(action);
-          }   
+          }
           if (e.key =="4") {
+            let mobHealth = this.state.mob_hp;
+            mobHealth -= this.state.level*2
+            let action = "Stuff";
+            log.push(action);
+          }
+          if (e.key =="5") {
             let mobHealth = this.state.mob_hp;
             mobHealth -= this.state.level*2
             let action = "Stuff";
@@ -477,7 +518,7 @@ class Game extends React.Component {
       width: manaPercent + "%",
       color: "#fff"
     };
-    
+
     let mob = this.state.current_mob;
     let mobHealth = this.state.mob_hp;
     for(let i=0; i<this.mobsInfo.length; i++) {
@@ -496,95 +537,95 @@ class Game extends React.Component {
     else {
       var mobHealthColor = "red";
     }
-    
+
     var mobHealthBar = {
       width: mobHealthPercent + "%",
       color: "#fff"
     };
-   
-    var weapon = this.state.weapons[0];        
-    let filtered_weapons = this.weaponsInfo.filter(weaponInfo => weaponInfo.name == weapon);
-    var attackValue = filtered_weapons[0].attack;
-      
+
+    var weapon = this.state.weapons[0];
+    //let filtered_weapons = this.weaponsInfo.filter(weaponInfo => weaponInfo.name == weapon);
+    //var attackValue = filtered_weapons[0].attack;
+
     let levelInfo = {1:50, 2:100, 3:200};
     let level = this.state.level;
-    var xpGoal = levelInfo[level];  
+    var xpGoal = levelInfo[level];
     let xpPercent = Math.round((this.state.xp/xpGoal)*100);
     var xpBar = {
         width: xpPercent + "%",
         color: "#fff"
     };
-  
+
 
     return (
       <div onKeyPress={(e) => this.onKeyPressed(e)}>
-        
+
       <div className = "ui">
         <p>{this.state.level}</p>
         <div>
           <div className = "avatar">
             <img src ="https://www.ashlynnpai.com/assets/Jinn_hero2.png" />
           </div>
-        </div>  
+        </div>
         <div>
           <div className = "nameplate">
             <div>Hero</div>
-          </div>  
+          </div>
           <div className = {healthColor + " progress-bar"}>
-            <span style={healthBar}>{health}/{this.maxHealth}</span> 
+            <span style={healthBar}>{health}/{this.maxHealth}</span>
           </div>
           <div className = {"blue progress-bar"}>
-            <span style={manaBar}>{mana}/{this.maxMana}</span> 
+            <span style={manaBar}>{mana}/{this.maxMana}</span>
           </div>
         </div>
-    
-        
+
+
         <div>
           {mob ? (
-            <div>   
+            <div>
               <div className = "nameplate">
                 <div>{mob.displayName}</div>
-              </div>  
-              <div className = {mobHealthColor + " progress-bar"}>
-                <span style={mobHealthBar}>{mobHealth}/{mobMaxHealth}</span> 
               </div>
               <div className = {mobHealthColor + " progress-bar"}>
-                <span style={mobHealthBar}>{mobHealth}/{mobMaxHealth}</span> 
-              </div>           
-            </div>        
+                <span style={mobHealthBar}>{mobHealth}/{mobMaxHealth}</span>
+              </div>
+              <div className = {mobHealthColor + " progress-bar"}>
+                <span style={mobHealthBar}>{mobHealth}/{mobMaxHealth}</span>
+              </div>
+            </div>
             ) : (
             <div className = "blankMob">
-            </div>    
+            </div>
             )}
-          </div> 
-          <div>  
+          </div>
+          <div>
           {mob ? (
-            <div>  
+            <div>
               <div className = "avatar">
-                <img src ="https://www.ashlynnpai.com/assets/Jinn_goblin.png" />  
+                <img src ="https://www.ashlynnpai.com/assets/Jinn_goblin.png" />
               </div>
-              <p>{mob.level}</p>  
-            </div> 
-         
+              <p>{mob.level}</p>
+            </div>
+
           ) : (
              <div className = "blankAvatar">
-             </div> 
+             </div>
           )}
-        </div>   
+        </div>
      </div>
-        
+
      <div className="messageDisplay">
         <p>{this.state.message}</p>
      </div>
-    
-    <div id="board" className="flex-container" >      
-      {this.state.squares.map((square,index) => 
+
+    <div id="board" className="flex-container" >
+      {this.state.squares.map((square,index) =>
        <div className={square + "color"}  id={"square" + index} key={index}>{index} {square}</div>)}
     </div>
     <div className='ui'>
       <div>
         <div className = "blue xp-bar">
-           <span style={xpBar}>{this.state.xp}/{xpGoal}</span> 
+           <span style={xpBar}>{this.state.xp}/{xpGoal}</span>
          </div>
         <div className="toolbar">
           <span id="toolbar1">1</span>
@@ -592,44 +633,52 @@ class Game extends React.Component {
           <span id="toolbar3">3</span>
           <span id="toolbar4">4</span>
           <span id="toolbar5">5</span>
-        </div>  
-        <div className="toolbar">  
+        </div>
+        <div className="toolbar">
           <span id="toolbar6">6</span>
           <span id="toolbar7">7</span>
           <span id="toolbar8">8</span>
           <span id="toolbar9">9</span>
           <span id="toolbar0">0</span>
          </div>
-      </div>  
-     
+      </div>
+
       <div className="display-log">
-        {this.state.mainLog.map((logLine) => 
+        {this.state.mainLog.map((logLine) =>
        <div>{logLine}</div>)}
-      </div> 
+      </div>
       <div className="display-log">
-        {this.state.combatLog.map((combatEvent) => 
+        {this.state.combatLog.map((combatEvent) =>
        <div>{combatEvent}</div>)}
-      </div> 
-    </div>  
-    <div className="displayStats">      
-      <p>{weapon} Attack: {attackValue}</p>
-      <p>Health Potions: {this.state.inventory.healthPotion}</p>
-      <p>Mana Potions: {this.state.inventory.manaPotion}</p>
-      <p>Gold: {this.state.inventory.gold}</p>
-      {this.state.equipment.map((piece) => 
-    <div>{piece.name} {piece.bonus} {piece.description}</div>                       
-      )}  
-    </div>         
+      </div>
+    </div>
     <div className="displayStats">
-      <p>{this.state.attack}</p>
-      <p>{this.state.hitChance}</p>
-      <p>{this.state.dodgeChance}</p> 
-    </div>      
-  </div> 
+      <h2>Inventory</h2>
+      <p>{weapon} Attack: {this.state.attack}</p>
+      <p>Health Potions: {this.state.inventory[0].healthPotion}</p>
+      <p>Mana Potions: {this.state.inventory[1].manaPotion}</p>
+      <p>Gold: {this.state.inventory[2].gold}</p>
+
+      {this.state.equipment.map((piece) =>
+      <div>
+        <p>{piece.name} {piece.bonus[0]}:{piece.bonus[1]}</p>
+        <p>{piece.description}</p>
+      </div>
+      )}
+    </div>
+    <div className="displayStats">
+      <div>
+        <h2>Character</h2>
+        <p>Attack: {this.state.attack}</p>
+        <p>Hit Chance: {this.state.hitChance}</p>
+        <p>Dodge Chance: {this.state.dodgeChance}</p>
+      </div>
+    </div>
+  </div>
     );
   }
 }
- 
+
 
 
 ReactDOM.render(
