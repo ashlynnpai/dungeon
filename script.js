@@ -620,7 +620,13 @@ class Game extends React.Component {
 
     <div id="board" className="flex-container" >
       {this.state.squares.map((square,index) =>
-       <div className={square + "color"}  id={"square" + index} key={index}>{index} {square}</div>)}
+       <div className={square + "color"}  id={"square" + index} key={index}>{index} {square}
+         <div id='goblin1Info'>
+           <div>Goblin</div>
+           <div>Footsoldier</div>
+           <div>Level 1</div>
+         </div>
+       </div>)}
     </div>
     <div className='ui'>
       <div>
@@ -653,6 +659,7 @@ class Game extends React.Component {
       </div>
     </div>
     <div className="displayStats">
+
       <h2>Inventory</h2>
       <p>{weapon} Attack: {this.state.attack}</p>
       <p>Health Potions: {this.state.inventory[0].healthPotion}</p>
@@ -675,6 +682,7 @@ class Game extends React.Component {
       </div>
     </div>
   </div>
+
     );
   }
 }
