@@ -5,7 +5,7 @@ class Game extends React.Component {
     this.rowSize = 10;
     this.maxHealth = 20;
     this.maxMana = 10;
-    this.mobsInfo = [{name: "goblin1", displayName: "Goblin Footsoldier", attack: 1, health: 20, level: 1, url: "https://www.ashlynnpai.com/assets/opengameart_goblin1.png"}, {name: "goblin2", displayName: "Goblin Lieutenant", attack: 2, health: 30, level: 2, url: "https://www.ashlynnpai.com/assets/opengameart_goblin1.png"}
+    this.mobsInfo = [{name: "goblin1", displayName: "Goblin Footsoldier", attack: 1, health: 20, level: 1, url: "https://www.ashlynnpai.com/assets/opengameart_goblin1.png"}, {name: "goblin2", displayName: "Goblin Lieutenant", attack: 2, health: 30, level: 2, url: "https://www.ashlynnpai.com/assets/opengameart_goblin2.png"}
                     ];
     this.weaponsInfo = [{name: "Hands", attack: 1, description: "These are deadly weapons."}, {name: "Meatchopper", attack: 2,
     description: "A rusty knife from someone's kitchen"}];

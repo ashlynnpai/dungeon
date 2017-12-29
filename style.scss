@@ -26,13 +26,16 @@ body {
   overflow-y: scroll;
   display: flex;
   justify-content: center;
-  background-color: $board-color;
+  //background-color: $board-color;
   flex-direction: row;
   flex-wrap: wrap;
   margin: 0 auto;
   width: 990px;
   height: 400px;
   padding: 50px;
+  background: url("https://www.ashlynnpai.com/assets/tile4.png");
+  background-size: 80px;
+  margin-bottom: 5px;
 }
 
 // ::-webkit-scrollbar {
@@ -49,14 +52,10 @@ body {
   background: $tile-color;
 }
 
-.Ocolor {
-  background: $board-color;
-}
-
 .Pcolor {
-  background: $tile-color;
-  background-image: url("https://www.ashlynnpai.com/assets/opengameart_hero1.png");
-  background-size: 30px;
+  background-color:  $tile-color;
+  background-image: url("https://www.ashlynnpai.com/assets/calciumtrice1.png");
+  background-size: 50px;
   background-repeat: no-repeat;
 }
 
@@ -68,7 +67,6 @@ body {
 }
 
 .goblin1color:hover {
-  background-color: orange;
 }
 
 #goblin1Info {
@@ -81,9 +79,17 @@ body {
   display: block;
 }
 
+.goblin2color {
+  background: $tile-color;
+  background-image: url("https://www.ashlynnpai.com/assets/opengameart_goblin2.png");
+  background-size: 60px;
+  background-repeat: no-repeat;
+}
+
 .Meatchoppercolor {
   background-color: $tile-color;
-  background-image: url("https://www.ashlynnpai.com/assets/7soul_chest.png");
+  background-image: url("https://www.ashlynnpai.com/assets/dagger1.png");
+  background-size: 80px;
   background-repeat: no-repeat;
 }
 
@@ -121,7 +127,7 @@ body {
 }
 
 .hidden {
-  background: #000;
+  background: #36454f;
 }
 
 /*https://catalin.red/stylish-css3-progress-bars/*/
@@ -229,7 +235,8 @@ body {
 }
 
 #toolbar6 {
-  background: orange;
+  background:
+  url(https://www.ashlynnpai.com/assets/horrorpen_heal.png);
 }
 
 #toolbar7 {
@@ -241,7 +248,7 @@ body {
 }
 
 #toolbar9 {
-  background: orange;
+  background: url(https://www.ashlynnpai.com/assets/horrorpen_mana.png);
 }
 
 #toolbar0 {
