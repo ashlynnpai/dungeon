@@ -101,6 +101,18 @@ body {
   display: block;
 }
 
+.orc1color {
+  background: $tile-color;
+  background-image: url("https://www.ashlynnpai.com/assets/opengameart_orc1.png");
+  background-size: 60px;
+  background-repeat: no-repeat;
+  position: relative;
+}
+
+.orc1color:hover .squareInfo {
+  display: block;
+}
+
 .Icolor {
   background-color: $tile-color;
   background-image: url("https://www.ashlynnpai.com/assets/box.png");

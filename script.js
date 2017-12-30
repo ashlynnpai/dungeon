@@ -5,7 +5,7 @@ class Game extends React.Component {
     this.rowSize = 10;
     this.maxHealth = 20;
     this.maxMana = 10;
-    this.mobsInfo = [{name: "goblin1", displayName: "Goblin Footsoldier", attack: 1, health: 20, level: 1, url: "https://www.ashlynnpai.com/assets/opengameart_goblin1.png"}, {name: "goblin2", displayName: "Goblin Lieutenant", attack: 2, health: 30, level: 2, url: "https://www.ashlynnpai.com/assets/opengameart_goblin2.png"}
+    this.mobsInfo = [{name: "goblin1", displayName: "Goblin Footsoldier", attack: 1, health: 20, level: 1, url: "https://www.ashlynnpai.com/assets/opengameart_goblin1.png"}, {name: "goblin2", displayName: "Goblin Lieutenant", attack: 2, health: 30, level: 2, url: "https://www.ashlynnpai.com/assets/opengameart_goblin2.png"}, {name: "orc1", displayName: "Orc Captain", attack: 3, health: 50, level: 3, url: "https://www.ashlynnpai.com/assets/opengameart_orc1.png"}
                     ];
     this.weaponsInfo = [{name: "Hands", attack: 1, description: "These are deadly weapons."}, {name: "Meatchopper", attack: 2,
     description: "A rusty knife from someone's kitchen"}];
@@ -27,13 +27,18 @@ class Game extends React.Component {
     let room3 = [76, 77, 78, 79, 89, 88, 87, 86, 96, 97, 98, 99];
     let room4 = [85, 84, 83, 82, 81, 80, 90, 91, 92, 93, 100, 101, 102, 103, 110];
     let room5 = [104, 105, 106, 107, 108, 109, 119, 118, 117, 116, 115, 114, 113]
+    let miniboss = [126, 127, 128, 136, 137, 138, 139, 146, 147, 148];
     let level2 = []
-    level2.push.apply(level2, room3.concat(room4).concat(room5));
-    let miniboss = [126, 127, 128, 136, 13, 138, 189, 146, 147, 148];
+    level2.push.apply(level2, room3.concat(room4).concat(room5).concat(miniboss));
 
-    let room6 = [];
+
+    let room6 = [135, 134, 133, 132, 131, 130, 145, 144, 143, 142, 141, 140];
+    let room7 = [150, 151, 152, 160, 161, 162, 170, 171, 172, 180, 181, 190, 191];
+    let room8 = [163, 164, 165, 166, 167, 168, 169, 173, 174, 175, 176, 177, 178, 179];
+    let boss = [186, 187, 188, 189, 196, 197, 198, 199]
     let level3= [];
-    let spaces = level1.concat(level2).concat(miniboss).concat(level3);
+    level3.push.apply(level3, room6.concat(room7).concat(room8).concat(boss));
+    let spaces = level1.concat(level2).concat(level3);
 
     for (let i=0; i<squares.length; i++) {
       if(spaces.includes(i)) {
@@ -49,8 +54,10 @@ class Game extends React.Component {
     spacesCopy.splice(starterSwordIndex, 1);
 
     let seeds = [{room: room1, amount: 1, mob: "goblin1"}, {room: room2, amount: 1, mob: "goblin1"},
-  {room: hall1, amount: 3, mob: "goblin1"}, {room: room3, amount: 1, mob: "goblin2"}, {room: room4, amount: 1, mob: "goblin2"},
-  {room: room5, amount: 1, mob: "goblin2"}];
+  {room: hall1, amount: 2, mob: "goblin1"}, {room: room3, amount: 1, mob: "goblin2"}, {room: room4, amount: 1, mob: "goblin2"},
+  {room: room5, amount: 2, mob: "goblin2"}, {room: room6, amount: 1, mob: "orc1"}, {room: room7, amount: 1, mob: "orc1"},
+  {room: room8, amount: 2, mob: "orc1"}
+   ];
     for (let i=0; i<seeds.length; i++) {
       let chosenSquares = this.pickSquare(seeds[i].room, seeds[i].amount);
       squares = this.setGrid(chosenSquares, squares, seeds[i].mob);
@@ -113,6 +120,7 @@ class Game extends React.Component {
   setGrid(chosenSquares, grids, mob) {
     for (let i=0; i<chosenSquares.length; i++) {
       grids[chosenSquares[i]] = mob;
+      console.log(grids);
     }
     return grids;
   }
@@ -508,7 +516,7 @@ class Game extends React.Component {
         //set a special state and in combat check if state is true
         //only one state can be active
         let log = this.state.combatLog;
-        let skillKeys = {1: "water", 2: "reflect", 3: "shadow": 4: "cloak", 5: "nimble",
+        let skillKeys = {1: "water", 2: "reflect", 3: "shadow", 4: "cloak", 5: "nimble",
         6: "heal", 7: "", 8: "", 9: "health potion", 0: "mana potion"};
         let health = this.state.health;
         let mana = this.state.mana;
