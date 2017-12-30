@@ -209,6 +209,14 @@ class Game extends React.Component {
     }
     let playerHitChance = this.state.hitChance - .1 * levelDiff;
     let mobHitChance = .7 + .1 * levelDiff;
+    if (this.state.playerSpecial == "cloak") {
+      playerHitChance -= .2;
+      mobHitChance -= .2;
+    }
+    if (this.state.playerSpecial == "nimble") {
+      playerHitChance += .2;
+      mobHitChance += .2;
+    }
     mobHitChance -= this.state.dodgeChance;
     let attack = this.state.attack;
     if (levelDiff >= this.state.level) {
@@ -474,24 +482,56 @@ class Game extends React.Component {
         //set a special state and in combat check if state is true
         //only one state can be active
         let log = this.state.combatLog;
-        let skillKeys = {1: "water", 2: "", 3: ""};
+        let skillKeys = {1: "water", 2: "reflect", 3: "shadow": 4: "cloak", 5: "nimble",
+        6: "heal", 7: "", 8: "", 9: "health potion", 0: "mana potion"};
+        let health = this.state.health;
+        let mana = this.state.mana;
         if (e.key in skillKeys) {
-          if (e.key == "1" || e.key == "2" || e.key == "3") {
+          if (e.key == "1" || e.key == "2" || e.key == "3" || e.key == "4" || e.key == "5") {
             let skill = skillKeys[e.key];
             this.state.playerSpecial = skill;
-            let action = "You cast " + skill;
+            let action = "You use " + skill;
             log.push(action);
           }
-          if (e.key =="4") {
+          else if (e.key =="6") {
+            if (mana >= 10) {
+              health += 10;
+              mana -= 10;
+              let action = "You cast heal for 10 health.";
+              log.push(action);
+              this.setState({
+                health: health,
+                mana: mana,
+                combatLog: log
+              })
+            }
+          }
+          else if (e.key =="7") {
             let mobHealth = this.state.mob_hp;
             mobHealth -= this.state.level*2
             let action = "Stuff";
             log.push(action);
           }
-          if (e.key =="5") {
+          else if (e.key =="8") {
             let mobHealth = this.state.mob_hp;
             mobHealth -= this.state.level*2
             let action = "Stuff";
+            log.push(action);
+          }
+          else if (e.key =="9") {
+            if (this.state.inventory[1].manaPotion > 0) {
+              mana += 10;
+              this.state.inventory[1].manaPotion--;
+            }
+            let action = "You consume mana potion.";
+            log.push(action);
+          }
+          else if (e.key =="0") {
+            if (this.state.inventory[0].healthPotion > 0) {
+              health += 10;
+              this.state.inventory[0].healthPotion--;
+            }
+            let action = "You consume health potion.";
             log.push(action);
           }
           this.setState({
