@@ -12,6 +12,8 @@ class Game extends React.Component {
     this.itemsInfo = [{name: "Clogs", bonus: ["dodgeChance", .03], description: "These shoes were made for dancing"}, {name: "Mittens",
     bonus: ["hitChance", .03], description: "A Goon's favorite Mittens"}];
     this.level1Drops = ["Clogs", "healthPotion", "manaPotion", "Gold", "Mittens"];
+    this.mobSkills = [{name: "Firebomb", action: "throws", counter: "water"}, {name: "Lightning", action: "summons", counter: "reflect"},
+    {name: "Shadow", action: "casts", counter: "crystal"}];
     const startPoint = 0;
     let squares = Array(this.size).fill("S");
     let level1 = Array.from(Array(10).keys())
@@ -186,8 +188,9 @@ class Game extends React.Component {
     this.state.mob_hp = mob_hp;
     let player_hp = this.state.health;
     let filtered_weapons = this.weaponsInfo.filter(weaponInfo => weaponInfo.name == this.state.weapons[0]);
-    let mobSpecial = "fire";
-    var action = mobDisplayName + " is casting " + mobSpecial;
+    let mobSpecialIndex = Math.floor(Math.random() * this.mobSkills.length);
+    let mobSpecial = this.mobSkills[mobSpecialIndex];
+    let action = mobDisplayName + " " + mobSpecial.action + " " + mobSpecial.name;
     this.state.combatLog.unshift(action);
     this.setState({
       combatLog: this.state.combatLog,
@@ -217,8 +220,6 @@ class Game extends React.Component {
     }
     var modifiedMobAttack = mob_attack + (Math.round(Math.random()) * mobLevel);
     let player_roll = Math.random();
-    let specialInfo = {fire: "water"};
-    let specialCounter = specialInfo[mobSpecial];
 
     if (player_roll <= playerHitChance) {
       mob_hp = mob_hp - modifiedPlayerAttack;
@@ -259,20 +260,21 @@ class Game extends React.Component {
       });
       return;
     }
-
-    if (this.state.playerSpecial != specialCounter && specialCounter) {
-      player_hp -= modifiedMobAttack;
-      this.setState({
-        health: player_hp
-      });
-      let action = mobDisplayName + " casts " + mobSpecial + " for " + modifiedMobAttack;
-      log.unshift(action);
-    }
-    else if (this.state.playerSpecial == specialCounter) {
-      mob_hp = mob_hp - this.state.level;
-      let action = "You counter " + mobSpecial + " with " + specialCounter + " for " + this.state.level;
-      log.unshift(action);
-      mobSpecial = null;
+    if (mobSpecial) {
+      if (this.state.playerSpecial != mobSpecial.counter) {
+        player_hp -= modifiedMobAttack;
+        this.setState({
+          health: player_hp
+        });
+        let action = mobDisplayName + " " + mobSpecial.action + " " + mobSpecial.name;
+        log.unshift(action);
+      }
+      else if (this.state.playerSpecial == mobSpecial.counter) {
+        mob_hp -= this.state.level;
+        let action = "You counter " + mobSpecial.name + " with " + mobSpecial.counter + " for " + this.state.level;
+        log.unshift(action);
+        mobSpecial = null;
+      }
     }
     this.setState({
       combatLog: log,
@@ -635,7 +637,6 @@ class Game extends React.Component {
              }
            })()}
          </div>
-
        </div>)}
     </div>
     <div className='ui'>
@@ -645,20 +646,28 @@ class Game extends React.Component {
          </div>
         <div className="toolbar">
           <span id="toolbar1">1
-          <div className="toolbarTip">Water</div>
+            <div className="toolbarTip">WATER from your flask can put out flames. DEFENSIVE MOVE</div>
           </span>
-
-          <span id="toolbar2">2</span>
-          <span id="toolbar3">3</span>
+          <span id="toolbar2">2
+            <div className="toolbarTip">REFLECT magic of the arcane. DEFENSIVE MOVE</div>
+          </span>
+          <span id="toolbar3">3
+            <div className="toolbarTip">CRYSTAL of shadow wards against evil. DEFENSIVE MOVE</div>
+          </span>
           <span id="toolbar4">4</span>
           <span id="toolbar5">5</span>
         </div>
         <div className="toolbar">
-          <span id="toolbar6">6</span>
+          <span id="toolbar6">6
+            <div className="toolbarTip">HEAL yourself for half your total health. Costs 10 mana.</div>
+          </span>
           <span id="toolbar7">7</span>
           <span id="toolbar8">8</span>
-          <span id="toolbar9">9</span>
+          <span id="toolbar9">9
+            <div className="toolbarTip">HEALING POTION grants 10 health.</div>
+          </span>
           <span id="toolbar0">0</span>
+            <div className="toolbarTip">MANA POTION grants 10 mana.</div>
          </div>
       </div>
 

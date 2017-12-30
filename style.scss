@@ -103,9 +103,10 @@ body {
 
 .Meatchoppercolor {
   background-color: $tile-color;
-  background-image: url("https://www.ashlynnpai.com/assets/dagger1.png");
-  background-size: 80px;
+  background-image: url("https://www.ashlynnpai.com/assets/box.png");
+  background-size: 50px;
   background-repeat: no-repeat;
+  background-position: center;
 }
 
 
@@ -144,7 +145,7 @@ body {
 }
 
 .hidden {
-  background: #36454f;
+  background: #303030;
 }
 
 /*https://catalin.red/stylish-css3-progress-bars/*/
@@ -236,11 +237,13 @@ position: relative;
 }
 
 #toolbar2 {
-  background: orange;
+  background: url(https://www.ashlynnpai.com/assets/Reflection.png);
+position: relative;
 }
 
 #toolbar3 {
-  background: orange;
+  background: url(https://www.ashlynnpai.com/assets/crystal.png);
+  position: relative;
 }
 
 #toolbar4 {
@@ -269,7 +272,7 @@ position: relative;
 }
 
 #toolbar0 {
- background:  url("https://www.ashlynnpai.com/assets/horrorpen_pot.png");
+ background:  url(https://www.ashlynnpai.com/assets/horrorpen_pot.png);
 }
 
 
@@ -282,9 +285,11 @@ position: relative;
   bottom: 100%;
   left: 50%;
   margin-left: -150px;
-  border-radius: 50px;
+  border-radius: 5px;
   background: rgba(0,0,0,0.7);
   color: #fff;
+  margin-left: 10px;
+  text-align: left;
 }
 
 #toolbar1:hover .toolbarTip {
@@ -295,17 +300,16 @@ position: relative;
   width: 350px;
   height: 200px;
   overflow-y: scroll;
-  background: pink;
   margin-left: 5px;
   text-align: left;
-  background: #36454f;
+  background: #303030;
   color: #fff;
 }
 
 .displayStats {
   width: 500px;
   margin-left: 5px;
-  background: yellow;
+  background: beige;
   text-align: left;
 }
 
