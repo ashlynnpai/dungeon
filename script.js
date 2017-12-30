@@ -11,6 +11,8 @@ class Game extends React.Component {
     description: "A rusty knife from someone's kitchen"}];
     this.itemsInfo = [{name: "Clogs", bonus: ["dodgeChance", .03], description: "These shoes were made for dancing"}, {name: "Mittens",
     bonus: ["hitChance", .03], description: "A Goon's favorite Mittens"}];
+    this.findableItems = [{index: 11, item: "Meatchopper"}];
+    this.questItemsInfo = [{name: "Something"}];
     this.level1Drops = ["Clogs", "healthPotion", "manaPotion", "Gold", "Mittens"];
     this.mobSkills = [{name: "Firebomb", action: "throws", counter: "water"}, {name: "Lightning", action: "summons", counter: "reflect"},
     {name: "Shadow", action: "casts", counter: "crystal"}];
@@ -39,7 +41,7 @@ class Game extends React.Component {
       }
     }
     squares[startPoint] = "P";
-    squares[11] = "Meatchopper";
+    squares[11] = "I";
     //seed a random square with a mob or item and then remove it from a copy of the floor plan array so multiple items don't get put on the same square
     let spacesCopy = spaces.slice();
     spacesCopy.splice(startPoint, 2);
@@ -169,6 +171,12 @@ class Game extends React.Component {
 
   weaponLookup(weapon) {
     if (this.weaponsInfo.filter(weaponInfo => weaponInfo.name == weapon).length > 0) {
+      return true;
+    }
+  }
+
+  questItemLookup(questItem) {
+    if (this.questItemsInfo.filter(questItemInfo => questItem.name == questItem).length > 0) {
       return true;
     }
   }
@@ -387,8 +395,6 @@ class Game extends React.Component {
         }
       }
     }
-
-
     this.setState({
       inventory: inventory,
       equipment: equipment,
@@ -396,6 +402,42 @@ class Game extends React.Component {
       dodgeChance: dodgeChance,
       attack: attack
     })
+  }
+
+  processFindableItems(nextIndex) {
+    let retrievedItem = this.findableItems.filter(findableItem => findableItem.index == nextIndex);
+    let itemName = retrievedItem.item;
+    if (this.weaponLookup(itemName)) {
+      this.equipWeapon(itemName);
+    }
+    else if (this.questItemLookup(itemName)) {
+      this.processQuestItem(itemName);
+    }
+  }
+
+  processQuestItem(questItem) {
+
+  }
+
+  equipWeapon(newWeapon) {
+    let squares = this.state.squares;
+    let weapons = this.state.weapons;
+    let currentSquare = this.state.player_index;
+    weapons.unshift(newWeapon);
+    let message = "You equip " + weapons[0];
+    let mainLog = this.state.mainLog;
+    let filteredWeapons = this.weaponsInfo.filter(weaponInfo => weaponInfo.name == weapons[0]);
+    let attack = filteredWeapons[0].attack;
+    squares[currentSquare] = null;
+    squares[nextSquare] = "P";
+    mainLog.push(message);
+      this.setState({
+        weapons: weapons,
+        attack: attack,
+        message: "You equip " + weapons[0],
+        mainLog: mainLog,
+        squares: squares
+      });
   }
 
   onKeyPressed(e) {
@@ -445,29 +487,13 @@ class Game extends React.Component {
           squares[next_square] = "P";
         }
         else if(this.mobLookup(squares[next_square])) {
-          //fight the mob
           this.state.currentAction = "fighting";
           this.fightMob(squares[next_square]);
           squares[current_square] = null;
           squares[next_square] = "P";
         }
-        else if(this.weaponLookup(squares[next_square])) {
-          let weapons = this.state.weapons;
-          weapons.unshift(squares[next_square]);
-          let message = "You equip " + weapons[0];
-          let mainLog = this.state.mainLog;
-          let filtered_weapons = this.weaponsInfo.filter(weaponInfo => weaponInfo.name == weapons[0]);
-          let attack = filtered_weapons[0].attack;
-          mainLog.push(message);
-            this.setState({
-              weapons: weapons,
-              attack: attack,
-              message: "You equip " + weapons[0],
-              mainLog: mainLog
-            });
-
-          squares[current_square] = null;
-          squares[next_square] = "P";
+        else if(squares[next_square] == "I") {
+          this.processFindableItems(next_square);
         }
         else {
           return;
