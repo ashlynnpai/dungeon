@@ -5,8 +5,13 @@ class Game extends React.Component {
     this.rowSize = 10;
     this.maxHealth = 20;
     this.maxMana = 10;
-    this.mobsInfo = [{name: "goblin1", displayName: "Goblin Footsoldier", attack: 1, health: 20, level: 1, url: "https://www.ashlynnpai.com/assets/opengameart_goblin1.png"}, {name: "goblin2", displayName: "Goblin Lieutenant", attack: 2, health: 30, level: 2, url: "https://www.ashlynnpai.com/assets/opengameart_goblin2.png"}, {name: "orc1", displayName: "Orc Captain", attack: 3, health: 50, level: 3, url: "https://www.ashlynnpai.com/assets/opengameart_orc1.png"}
-                    ];
+    this.mobsInfo = [{name: "goblin1", displayName: "Goblin Footsoldier", attack: 1, health: 20, level: 1,
+    url: "https://www.ashlynnpai.com/assets/opengameart_goblin1.png"},
+    {name: "goblin2", displayName: "Goblin Lieutenant", attack: 2, health: 30, level: 2,
+    url: "https://www.ashlynnpai.com/assets/opengameart_goblin2.png"},
+    {name: "orc1", displayName: "Orc Captain", attack: 3, health: 50, level: 3,
+    url: "https://www.ashlynnpai.com/assets/opengameart_orc1.png"}
+    ];
     this.weaponsInfo = [{name: "Hands", attack: 1, description: "These are deadly weapons."}, {name: "Meatchopper", attack: 2,
     description: "A rusty knife from someone's kitchen"}];
     this.itemsInfo = [{name: "Clogs", bonus: ["dodgeChance", .03], description: "These shoes were made for dancing"}, {name: "Mittens",
@@ -120,7 +125,6 @@ class Game extends React.Component {
   setGrid(chosenSquares, grids, mob) {
     for (let i=0; i<chosenSquares.length; i++) {
       grids[chosenSquares[i]] = mob;
-      console.log(grids);
     }
     return grids;
   }
@@ -192,33 +196,33 @@ class Game extends React.Component {
   fightMob(mob) {
     for (let i=0; i<this.mobsInfo.length; i++) {
       if (this.mobsInfo[i].name == mob) {
-        var mobDisplayName = this.mobsInfo[i].displayName;
-        var mob_hp = this.mobsInfo[i].health;
-        var mobLevel = this.mobsInfo[i].level;
-        var mob_attack = this.mobsInfo[i].attack;
+        var mobHash = this.mobsInfo[i];
       }
     }
-    this.setState({
-      current_mob: mob
-    });
-    this.state.mob_hp = mob_hp;
-    let player_hp = this.state.health;
-    let filtered_weapons = this.weaponsInfo.filter(weaponInfo => weaponInfo.name == this.state.weapons[0]);
+    //choose mob's special skill
     let mobSpecialIndex = Math.floor(Math.random() * this.mobSkills.length);
     let mobSpecial = this.mobSkills[mobSpecialIndex];
-    let action = mobDisplayName + " " + mobSpecial.action + " " + mobSpecial.name;
+    let action = mobHash.displayName + " " + mobSpecial.action + " " + mobSpecial.name;
     this.state.combatLog.unshift(action);
     this.setState({
+      current_mob: mobHash,
+      mob_hp: mobHash.health,
       combatLog: this.state.combatLog,
       message: action
     });
-    this.combatSequence(mobDisplayName, mob_hp, mob_attack, mobLevel, mobSpecial, player_hp);
+    this.combatSequence(mobSpecial);
   }
 
-  combatSequence(mobDisplayName, mob_hp, mob_attack, mobLevel, mobSpecial, player_hp) {
-    var log = this.state.combatLog;
-    if (mobLevel > this.state.level) {
-      var levelDiff =  mobLevel - this.state.level;
+  combatSequence(mobSpecial) {
+    //update the mob health on this.state.mob_hp not in the {}
+    //this.state.playerSpecial gets updated in the keypress listener
+    let log = this.state.combatLog;
+    let mob = this.state.current_mob;
+    let playerHealth = this.state.health;
+    let mobHealth = this.state.mob_hp;
+    console.log("check1 " + mobHealth);
+    if (mob.level > this.state.level) {
+      var levelDiff =  mob.level - this.state.level;
     }
     else {
       var levelDiff = 0;
@@ -242,35 +246,32 @@ class Game extends React.Component {
       let randomHit = Math.round(Math.random() * this.state.level);
       var modifiedPlayerAttack = attack + randomHit;
     }
-    var modifiedMobAttack = mob_attack + (Math.round(Math.random()) * mobLevel);
-    let player_roll = Math.random();
+    var modifiedMobAttack = mob.attack + (Math.round(Math.random()) * mob.level);
+    let playerRoll = Math.random();
 
-    if (player_roll <= playerHitChance) {
-      mob_hp = mob_hp - modifiedPlayerAttack;
-      this.setState({
-        mob_hp: mob_hp
-      });
-      let action = "Player hits " + mobDisplayName + " for " + modifiedPlayerAttack;
+    if (playerRoll <= playerHitChance) {
+      mobHealth -= modifiedPlayerAttack;
+      let action = "Player hits " + mob.displayName + " for " + modifiedPlayerAttack;
       log.unshift(action);
+      console.log("check2 " + mobHealth);
     }
     else {
       let action = "Player misses.";
       log.unshift(action);
     }
-
     this.setState({
+     mob_hp: mobHealth,
      combatLog: log
     });
 
-    if (mob_hp <= 0) {
-      let action = mobDisplayName + " dies.";
+    if (mobHealth <= 0) {
+      let action = mob.displayName + " dies.";
       log.unshift(action);
       let drops = this.level1Drops;
       let loot = drops[Math.floor(Math.random() * drops.length)];
       this.processItem(loot);
       drops.splice(Math.floor(Math.random() * drops.length, 1));
-      this.state.currentAction = null;
-      let xp = this.state.xp += (5 * mobLevel);
+      let xp = this.state.xp += (10 * mob.level);
       let level = this.checkLevel();
       this.setState({
         mob_hp: 0,
@@ -286,51 +287,52 @@ class Game extends React.Component {
     }
     if (mobSpecial) {
       if (this.state.playerSpecial != mobSpecial.counter) {
-        player_hp -= modifiedMobAttack;
-        this.setState({
-          health: player_hp
-        });
-        let action = mobDisplayName + " " + mobSpecial.action + " " + mobSpecial.name;
+        playerHealth -= modifiedMobAttack;
+        let action = mob.displayName + " " + mobSpecial.action + " " + mobSpecial.name;
         log.unshift(action);
       }
       else if (this.state.playerSpecial == mobSpecial.counter) {
-        mob_hp -= this.state.level;
+        mobHealth -= this.state.level;
+        console.log("check3 " + mobHealth);
         let action = "You counter " + mobSpecial.name + " with " + mobSpecial.counter + " for " + this.state.level;
         log.unshift(action);
         mobSpecial = null;
       }
     }
     this.setState({
-      combatLog: log,
+      health: playerHealth,
+      mob_hp: mobHealth,
+      combatLog: log
     });
 
-    let mob_roll = Math.random();
-    if (mob_roll <= mobHitChance) {
-      player_hp -= modifiedMobAttack;
-      this.setState({
-        health: player_hp
-      });
-      let action = mobDisplayName + " hits you for " + modifiedMobAttack;
+    let mobRoll = Math.random();
+    if (mobRoll <= mobHitChance) {
+      playerHealth -= modifiedMobAttack;
+      let action = mob.displayName + " hits you for " + modifiedMobAttack;
       log.unshift(action);
     }
     else {
-      let action = mobDisplayName + " misses."
+      let action = mob.displayName + " misses."
       log.unshift(action);
     }
+    this.setState({
+      health: playerHealth,
+      combatLog: log
+    });
 
-    if (player_hp <= 0) {
-      player_hp = 0;
+    if (playerHealth <= 0) {
       let action = "You die."
       log.unshift(action);
       this.setState({
         health: 0,
         living: false,
-        combatLog: log
+        combatLog: log,
+        message: action
         //death scene
       });
       return;
     }
-    setTimeout(this.combatSequence.bind(this), 2000, mobDisplayName, mob_hp, mob_attack, mobLevel, mobSpecial, player_hp);
+    setTimeout(this.combatSequence.bind(this), 2000, mobSpecial);
   }
 
   regenerateHealth(health) {
@@ -520,6 +522,7 @@ class Game extends React.Component {
         6: "heal", 7: "", 8: "", 9: "health potion", 0: "mana potion"};
         let health = this.state.health;
         let mana = this.state.mana;
+        let mobHealth = this.state.mob_hp;
         if (e.key in skillKeys) {
           if (e.key == "1" || e.key == "2" || e.key == "3" || e.key == "4" || e.key == "5") {
             let skill = skillKeys[e.key];
@@ -533,21 +536,14 @@ class Game extends React.Component {
               mana -= 10;
               let action = "You cast heal for 10 health.";
               log.push(action);
-              this.setState({
-                health: health,
-                mana: mana,
-                combatLog: log
-              })
             }
           }
           else if (e.key =="7") {
-            let mobHealth = this.state.mob_hp;
             mobHealth -= this.state.level*2
             let action = "Stuff";
             log.push(action);
           }
           else if (e.key =="8") {
-            let mobHealth = this.state.mob_hp;
             mobHealth -= this.state.level*2
             let action = "Stuff";
             log.push(action);
@@ -569,6 +565,9 @@ class Game extends React.Component {
             log.push(action);
           }
           this.setState({
+            health: health,
+            mob_hp: mobHealth,
+            mana: mana,
             combatLog: log
           })
         }
@@ -605,12 +604,12 @@ class Game extends React.Component {
 
     let mob = this.state.current_mob;
     let mobHealth = this.state.mob_hp;
-    for(let i=0; i<this.mobsInfo.length; i++) {
-      if(this.mobsInfo[i].name == mob) {
-        var mobMaxHealth = this.mobsInfo[i].health;
-      }
-    }
-
+    // for(let i=0; i<this.mobsInfo.length; i++) {
+    //   if(this.mobsInfo[i].name == mob) {
+    //     var mobMaxHealth = this.mobsInfo[i].health;
+    //   }
+    // }
+    let mobMaxHealth = mob.health;
     let mobHealthPercent = Math.round((mobHealth/mobMaxHealth)*100);
     if (mobHealthPercent > 70) {
       var mobHealthColor = "green";
