@@ -92,6 +92,8 @@ class Game extends React.Component {
       attack: 1,
       inventory: [{healthPotion: 1}, {manaPotion: 0}, {gold: 0}],
       equipment: [],
+      quests: [{name: "A Small Clue", description: "Find some clue about what the goblins are doing here.",
+       item: "Rune", completed: false, xp: 10}],
       current_mob: "",
       mob_hp: 0,
       target_index: null,
@@ -423,7 +425,6 @@ class Game extends React.Component {
     let retrievedItem = this.findableItems.filter(findableItem => findableItem.index == nextIndex);
     let itemName = retrievedItem[0].item;
     if (this.weaponLookup(itemName)) {
-      console.log(this.weaponLookup(itemName));
       this.equipWeapon(itemName);
     }
     else if (this.questItemLookup(itemName)) {
@@ -431,8 +432,24 @@ class Game extends React.Component {
     }
   }
 
-  processQuestItem(questItem) {
-
+  processQuestItem(item) {
+    let log = this.state.mainLog;
+    let xp = this.state.xp;
+    let questItem = this.questItemsInfo.filter(questItemInfo => questItemInfo.name == item);
+    let fullName = questItem[0].longName;
+    let questDescription = questItem[0].description;
+    let action1 = "You find " + fullName + ". " + questDescription;
+    log.push(action1);
+    let quest = this.state.quests.filter(quest => quest.item == item);
+    quest[0].completed = true;
+    let action2 = "You completed " + quest.name + " and receive " + quest.xp;
+    log.push(action2);
+    xp += quest.xp;
+    this.setState({
+      quests: this.state.quests,
+      xp: xp,
+      mainLog: log
+    })
   }
 
   equipWeapon(newWeapon) {
@@ -609,23 +626,24 @@ class Game extends React.Component {
     };
 
     let mob = this.state.current_mob;
-    let mobHealth = this.state.mob_hp;
-    let mobMaxHealth = mob.health;
-    let mobHealthPercent = Math.round((mobHealth/mobMaxHealth)*100);
-    if (mobHealthPercent > 70) {
-      var mobHealthColor = "green";
+      if (mob) {
+        let mobHealth = this.state.mob_hp;
+        let mobMaxHealth = mob.health;
+        let mobHealthPercent = Math.round((mobHealth/mobMaxHealth)*100);
+        if (mobHealthPercent > 70) {
+          var mobHealthColor = "green";
+        }
+        else if (mobHealthPercent > 30) {
+          var mobHealthColor = "yellow";
+        }
+        else {
+          var mobHealthColor = "red";
+        }
+        var mobHealthBar = {
+          width: mobHealthPercent + "%",
+          color: "#fff"
+        };
     }
-    else if (mobHealthPercent > 30) {
-      var mobHealthColor = "yellow";
-    }
-    else {
-      var mobHealthColor = "red";
-    }
-
-    var mobHealthBar = {
-      width: mobHealthPercent + "%",
-      color: "#fff"
-    };
 
     var weapon = this.state.weapons[0];
 
@@ -637,6 +655,18 @@ class Game extends React.Component {
         width: xpPercent + "%",
         color: "#fff"
     };
+
+    var questsCompleted = [];
+    var questsCurrent = [];
+
+    for (i=0; i<this.state.quests.length; i++) {
+      if (this.state.quests[i].completed) {
+        questsCompleted.push(this.state.quests[i]);
+      }
+      else {
+        questsCurrent.push(this.state.quests[i]);
+      }
+    }
 
 
     return (
@@ -781,6 +811,22 @@ class Game extends React.Component {
         <p>Dodge Chance: {this.state.dodgeChance}</p>
       </div>
     </div>
+
+    <div className="displayStats">
+      {questsCurrent.map((current) =>
+      <div>
+        <p>{current.name}</p>
+        <p>{current.description}</p>
+      </div>
+      )}
+      {questsCompleted.map((complete) =>
+      <div>
+        <p>Checkmark {complete.name}</p>
+        <p>Checkmark {complete.description}</p>
+      </div>
+      )}
+    </div>
+
   </div>
 
     );
