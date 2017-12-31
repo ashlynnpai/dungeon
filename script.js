@@ -16,8 +16,9 @@ class Game extends React.Component {
     description: "A rusty knife from someone's kitchen"}];
     this.itemsInfo = [{name: "Clogs", bonus: ["dodgeChance", .03], description: "These shoes were made for dancing"}, {name: "Mittens",
     bonus: ["hitChance", .03], description: "A Goon's favorite Mittens"}];
-    this.findableItems = [{index: 11, item: "Meatchopper"}];
-    this.questItemsInfo = [{name: "Something"}];
+    this.findableItems = [{index: 11, item: "Meatchopper"}, {index: 9, item: "Rune"}];
+    this.questItemsInfo = [{name: "Rune", longName: "Rune of the Goblin", description:
+    "Your High Goblin is a little rusty, but it seems to say Firelord", xp: 10}];
     this.level1Drops = ["Clogs", "healthPotion", "manaPotion", "Gold", "Mittens"];
     this.mobSkills = [{name: "Firebomb", action: "throws", counter: "water"}, {name: "Lightning", action: "summons", counter: "reflect"},
     {name: "Shadow", action: "casts", counter: "crystal"}];
@@ -55,8 +56,12 @@ class Game extends React.Component {
     //seed a random square with a mob or item and then remove it from a copy of the floor plan array so multiple items don't get put on the same square
     let spacesCopy = spaces.slice();
     spacesCopy.splice(startPoint, 2);
-    let starterSwordIndex = spacesCopy.indexOf(11);
-    spacesCopy.splice(starterSwordIndex, 1);
+
+    for (let i=0; i<this.findableItems.length; i++) {
+      let chosenSquares = this.pickSquare(this.findableItems[i].index);
+      squares = this.setGrid(chosenSquares, squares, "I");
+      spacesCopy = this.removeSquareFromCopy(chosenSquares, spacesCopy);
+    }
 
     let seeds = [{room: room1, amount: 1, mob: "goblin1"}, {room: room2, amount: 1, mob: "goblin1"},
   {room: hall1, amount: 2, mob: "goblin1"}, {room: room3, amount: 1, mob: "goblin2"}, {room: room4, amount: 1, mob: "goblin2"},
@@ -188,7 +193,7 @@ class Game extends React.Component {
   }
 
   questItemLookup(questItem) {
-    if (this.questItemsInfo.filter(questItemInfo => questItem.name == questItem).length > 0) {
+    if (this.questItemsInfo.filter(questItemInfo => questItemInfo.name == questItem).length > 0) {
       return true;
     }
   }
@@ -416,8 +421,9 @@ class Game extends React.Component {
 
   processFindableItems(nextIndex) {
     let retrievedItem = this.findableItems.filter(findableItem => findableItem.index == nextIndex);
-    let itemName = retrievedItem.item;
+    let itemName = retrievedItem[0].item;
     if (this.weaponLookup(itemName)) {
+      console.log(this.weaponLookup(itemName));
       this.equipWeapon(itemName);
     }
     else if (this.questItemLookup(itemName)) {
@@ -438,8 +444,6 @@ class Game extends React.Component {
     let mainLog = this.state.mainLog;
     let filteredWeapons = this.weaponsInfo.filter(weaponInfo => weaponInfo.name == weapons[0]);
     let attack = filteredWeapons[0].attack;
-    squares[currentSquare] = null;
-    squares[nextSquare] = "P";
     mainLog.push(message);
       this.setState({
         weapons: weapons,
@@ -504,6 +508,8 @@ class Game extends React.Component {
         }
         else if(squares[next_square] == "I") {
           this.processFindableItems(next_square);
+          squares[current_square] = null;
+          squares[next_square] = "P";
         }
         else {
           return;
@@ -604,11 +610,6 @@ class Game extends React.Component {
 
     let mob = this.state.current_mob;
     let mobHealth = this.state.mob_hp;
-    // for(let i=0; i<this.mobsInfo.length; i++) {
-    //   if(this.mobsInfo[i].name == mob) {
-    //     var mobMaxHealth = this.mobsInfo[i].health;
-    //   }
-    // }
     let mobMaxHealth = mob.health;
     let mobHealthPercent = Math.round((mobHealth/mobMaxHealth)*100);
     if (mobHealthPercent > 70) {
@@ -642,7 +643,6 @@ class Game extends React.Component {
       <div onKeyPress={(e) => this.onKeyPressed(e)}>
 
       <div className = "ui">
-        <p>{this.state.level}</p>
         <div>
           <div className = "avatar">
             <img src ="https://www.ashlynnpai.com/assets/Jinn_hero2.png" />
@@ -695,8 +695,13 @@ class Game extends React.Component {
         </div>
      </div>
 
-     <div className="messageDisplay">
-        <p>{this.state.message}</p>
+     <div className="topInfo">
+        <div className="fastStats">
+          <p>Level {this.state.level}</p>
+          <p>Weapon {weapon}</p>
+          <p>Attack {this.state.attack}</p>
+        </div>
+        <div className="messageDisplay">{this.state.message}</div>
      </div>
 
     <div id="board" className="flex-container" >
