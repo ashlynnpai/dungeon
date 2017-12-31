@@ -284,6 +284,7 @@ class Game extends React.Component {
       let level = this.checkLevel();
       let mobIndex = this.state.targetIndex;
       let squares = this.state.squares;
+      let message = "Press R to rest and regain health."
       squares[mobIndex] = null;
       squares[this.state.player_index] = null;
       squares[mobIndex] = "P";
@@ -292,6 +293,7 @@ class Game extends React.Component {
         xp: xp,
         level: level,
         combatLog: log,
+        message: message,
         playerSpecial: null,
         current_mob: null,
         currentAction: null,
@@ -351,22 +353,33 @@ class Game extends React.Component {
     setTimeout(this.combatSequence.bind(this), 2000, mobSpecial);
   }
 
-  regenerateHealth(health) {
-    var maxHealth = this.maxHealth;
-    if (health >= maxHealth) {
+  regenerateHealth(health, mana) {
+    let maxHealth = this.maxHealth;
+    let maxMana = this.maxMana
+
+    if (health >= maxHealth && mana >= maxMana) {
       this.setState({
         health: maxHealth,
+        mana: maxMana,
         currentAction: null
       });
       return;
     }
-    else {
-      health += this.state.level;
-      this.setState({
-        health: health,
-      });
-       setTimeout(this.regenerateHealth.bind(this), 3000, health);
+
+    health += this.state.level * 2;
+    mana += this.state.level * 2;
+    if (health >= maxHealth) {
+     health = maxHealth;
     }
+    if (mana >= maxMana) {
+      mana = maxMana;
+    }
+
+    this.setState({
+      health: health,
+      mana: mana
+    });
+    setTimeout(this.regenerateHealth.bind(this), 1500, health, mana);
   }
 
   checkLevel() {
@@ -452,19 +465,25 @@ class Game extends React.Component {
     let log = this.state.mainLog;
     let xp = this.state.xp;
     let questItem = this.questItemsInfo.filter(questItemInfo => questItemInfo.name == item);
+    console.log(questItem);
     let fullName = questItem[0].longName;
     let questDescription = questItem[0].description;
     let action1 = "You find " + fullName + ". " + questDescription;
     log.unshift(action1);
+    let inventory = this.state.inventory;
+    inventory.push(item);
+    quests: [{name: "A Small Clue", description: "This hall was built by the dwarves. Find some clue about what happened here.",
+       item: "Rune", completed: false, xp: 10}]
     let quest = this.state.quests.filter(quest => quest.item == item);
     quest[0].completed = true;
-    let action2 = "You completed " + quest.name + " and receive " + quest.xp;
+    let action2 = "You completed " + quest[0].name + " and receive " + quest[0].xp + " xp.";
     log.unshift(action2);
-    xp += quest.xp;
+    xp += quest[0].xp;
     this.setState({
       quests: this.state.quests,
       xp: xp,
-      mainLog: log
+      mainLog: log,
+      inventory: inventory
     })
   }
 
@@ -524,7 +543,7 @@ class Game extends React.Component {
         else if(e.key == 'r') {
           this.state.currentAction = "resting";
           var next_square = current_square;
-          this.regenerateHealth(this.state.health);
+          this.regenerateHealth(this.state.health, this.state.mana);
         }
         else {
           return;
@@ -832,20 +851,22 @@ class Game extends React.Component {
               CLOAK. Decreases both your and your enemy's chance to hit. SPECIAL.
             </div>
           </span>
-          <span id="toolbar0">0</span>
-             <div className="toolbarTip">
-               NIMBLE. increases both your and your enemy's chance to hit.
-             </div>
+          <span id="toolbar0">0
+            <div className="toolbarTip">
+              NIMBLE. Increases both your and your enemy's chance to hit. SPECIAL.
+            </div>
+          </span>
+
          </div>
       </div>
 
       <div className="display-log">
         {this.state.mainLog.map((logLine) =>
-       <div>{logLine}</div>)}
+       <p>{logLine}</p>)}
       </div>
       <div className="display-log">
         {this.state.combatLog.map((combatEvent) =>
-       <div>{combatEvent}</div>)}
+       <p>{combatEvent}</p>)}
       </div>
     </div>
     <div className="displayStats">
