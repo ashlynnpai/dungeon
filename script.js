@@ -52,16 +52,20 @@ class Game extends React.Component {
       }
     }
     squares[startPoint] = "P";
-    squares[11] = "I";
     //seed a random square with a mob or item and then remove it from a copy of the floor plan array so multiple items don't get put on the same square
     let spacesCopy = spaces.slice();
     spacesCopy.splice(startPoint, 2);
 
+    let itemsSquares = [];
     for (let i=0; i<this.findableItems.length; i++) {
-      let chosenSquares = this.pickSquare(this.findableItems[i].index);
-      squares = this.setGrid(chosenSquares, squares, "I");
-      spacesCopy = this.removeSquareFromCopy(chosenSquares, spacesCopy);
-    }
+      itemsSquares.push(this.findableItems[i].index);
+      squares = this.setGrid(itemsSquares, squares, "I");
+      for (let j=0; j<itemsSquares.length; j++) {
+         let copyIndex = spacesCopy.indexOf(itemsSquares[j]);
+         spacesCopy.splice(copyIndex, 1);
+       }
+     }
+    console.log(spacesCopy);
 
     let seeds = [{room: room1, amount: 1, mob: "goblin1"}, {room: room2, amount: 1, mob: "goblin1"},
   {room: hall1, amount: 2, mob: "goblin1"}, {room: room3, amount: 1, mob: "goblin2"}, {room: room4, amount: 1, mob: "goblin2"},
@@ -69,10 +73,17 @@ class Game extends React.Component {
   {room: room8, amount: 2, mob: "orc1"}
    ];
     for (let i=0; i<seeds.length; i++) {
+      //choose the indices to be seeded
       let chosenSquares = this.pickSquare(seeds[i].room, seeds[i].amount);
+      //place the mobs
       squares = this.setGrid(chosenSquares, squares, seeds[i].mob);
-      spacesCopy = this.removeSquareFromCopy(chosenSquares, spacesCopy);
+       for (let j=0; j<chosenSquares.length; j++) {
+         let copyIndex = spacesCopy.indexOf(chosenSquares[j]);
+         spacesCopy.splice(copyIndex, 1);
+       }
     }
+
+
 
     this.state = {
       squares: squares,
@@ -96,7 +107,7 @@ class Game extends React.Component {
        item: "Rune", completed: false, xp: 10}],
       current_mob: "",
       mob_hp: 0,
-      target_index: null,
+      targetIndex: null,
       currentAction: null,
       mainLog: [],
       combatLog: [],
@@ -120,14 +131,6 @@ class Game extends React.Component {
       }
     return squaresArray;
     }
-
-  removeSquareFromCopy(squares, spacesCopy) {
-    for (let i=0; i<squares.length; i++) {
-      let spacesSquareIndex = spacesCopy.indexOf(squares[i]);
-      spacesCopy.splice(spacesSquareIndex, 1);
-    }
-    return spacesCopy;
-  }
 
   setGrid(chosenSquares, grids, mob) {
     for (let i=0; i<chosenSquares.length; i++) {
@@ -280,6 +283,9 @@ class Game extends React.Component {
       drops.splice(Math.floor(Math.random() * drops.length, 1));
       let xp = this.state.xp += (10 * mob.level);
       let level = this.checkLevel();
+      let mobIndex = this.state.targetIndex;
+      let squares = this.state.squares;
+      squares[mobIndex] = null;
       this.setState({
         mob_hp: 0,
         xp: xp,
@@ -288,7 +294,8 @@ class Game extends React.Component {
         playerSpecial: null,
         current_mob: null,
         currentAction: null,
-        level1Drops: drops
+        level1Drops: drops,
+        squares: squares
       });
       return;
     }
@@ -300,7 +307,6 @@ class Game extends React.Component {
       }
       else if (this.state.playerSpecial == mobSpecial.counter) {
         mobHealth -= this.state.level;
-        console.log("check3 " + mobHealth);
         let action = "You counter " + mobSpecial.name + " with " + mobSpecial.counter + " for " + this.state.level;
         log.unshift(action);
         mobSpecial = null;
@@ -518,10 +524,9 @@ class Game extends React.Component {
           squares[next_square] = "P";
         }
         else if(this.mobLookup(squares[next_square])) {
+          this.state.current_mob = squares[next_square];
+          this.state.targetIndex = next_square;
           this.state.currentAction = "fighting";
-          this.fightMob(squares[next_square]);
-          squares[current_square] = null;
-          squares[next_square] = "P";
         }
         else if(squares[next_square] == "I") {
           this.processFindableItems(next_square);
@@ -627,9 +632,9 @@ class Game extends React.Component {
 
     let mob = this.state.current_mob;
       if (mob) {
-        let mobHealth = this.state.mob_hp;
-        let mobMaxHealth = mob.health;
-        let mobHealthPercent = Math.round((mobHealth/mobMaxHealth)*100);
+        var mobHealth = this.state.mob_hp;
+        var mobMaxHealth = mob.health;
+        var mobHealthPercent = Math.round((mobHealth/mobMaxHealth)*100);
         if (mobHealthPercent > 70) {
           var mobHealthColor = "green";
         }
@@ -729,7 +734,8 @@ class Game extends React.Component {
         <div className="fastStats">
           <p>Level {this.state.level}</p>
           <p>Weapon {weapon}</p>
-          <p>Attack {this.state.attack}</p>
+          <p>
+            {this.state.attack}</p>
         </div>
         <div className="messageDisplay">{this.state.message}</div>
      </div>
