@@ -25,10 +25,11 @@ class Game extends React.Component {
     const startPoint = 0;
     let squares = Array(this.size).fill("S");
     let level1 = Array.from(Array(10).keys())
-    let room1 = [11, 12, 13, 14, 20, 21, 22, 23, 24];
+    let occupied = [9, 11]
+    let room1 = [12, 13, 14, 20, 21, 22, 23, 24];
     let room2 = [16, 17, 18, 27, 28, 29, 39, 38, 37, 36, 35, 49, 59, 58, 57];
     let hall1 = [30, 45, 44, 43, 42, 41, 40, 50, 51, 52, 53, 54, 56, 60, 61, 62, 63, 64, 61, 62, 63, 64, 65, 66]
-    level1.push.apply(level1, room1.concat(room2).concat(hall1));
+    level1.push.apply(level1, room1.concat(room2).concat(hall1).concat(occupied));
 
     let room3 = [76, 77, 78, 79, 89, 88, 87, 86, 96, 97, 98, 99];
     let room4 = [85, 84, 83, 82, 81, 80, 90, 91, 92, 93, 100, 101, 102, 103, 110];
@@ -82,8 +83,6 @@ class Game extends React.Component {
          spacesCopy.splice(copyIndex, 1);
        }
     }
-
-
 
     this.state = {
       squares: squares,
@@ -238,19 +237,13 @@ class Game extends React.Component {
     }
     let playerHitChance = this.state.hitChance - .1 * levelDiff;
     let mobHitChance = .7 + .1 * levelDiff;
-    console.log(playerHitChance);
-    console.log(mobHitChance);
     if (this.state.playerSpecial == "cloak") {
       playerHitChance -= .2;
       mobHitChance -= .2;
-      console.log(playerHitChance);
-      console.log(mobHitChance);
     }
     if (this.state.playerSpecial == "nimble") {
       playerHitChance += .2;
       mobHitChance += .2;
-      console.log(playerHitChance);
-      console.log(mobHitChance);
     }
     mobHitChance -= this.state.dodgeChance;
     let attack = this.state.attack;
@@ -311,12 +304,13 @@ class Game extends React.Component {
     if (mobSpecial) {
       if (this.state.playerSpecial != mobSpecial.counter) {
         playerHealth -= modifiedMobAttack;
-        let action = mob.displayName + " " + mobSpecial.action + " " + mobSpecial.name;
+        let action = mob.displayName + " " + mobSpecial.action + " " + mobSpecial.name
+        + " for " + modifiedMobAttack;
         log.unshift(action);
       }
       else if (this.state.playerSpecial == mobSpecial.counter) {
-        mobHealth -= this.state.level;
-        let action = "You counter " + mobSpecial.name + " with " + mobSpecial.counter + " for " + this.state.level;
+        mobHealth -= modifiedPlayerAttack;
+        let action = "You counter " + mobSpecial.name + " with " + mobSpecial.counter + " for " + modifiedPlayerAttack;
         log.unshift(action);
         mobSpecial = null;
       }
@@ -394,16 +388,23 @@ class Game extends React.Component {
   }
 
   processItem(item) {
+    console.log(item);
     let inventory = this.state.inventory;
     let equipment = this.state.equipment;
+    var hitChance = this.state.hitChance;
+    var dodgeChance = this.state.dodgeChance;
+    var attack = this.state.attack;
     if(item == "healthPotion") {
       inventory[0].healthPotion++;
+      var name = "Health Potion";
     }
     else if (item == "manaPotion") {
       inventory[1].manaPotion++;
+      var name = "Mana Potion";
     }
     else if (item == "Gold") {
       inventory[2].gold += 5 * this.state.level;
+      var name = 5 * this.state.level + " Gold";
     }
     else {
       let items = this.itemsInfo;
@@ -411,9 +412,6 @@ class Game extends React.Component {
         var name = items[i].name;
         if (name == item) {
           var bonus = items[i].bonus;
-          var hitChance = this.state.hitChance;
-          var dodgeChance = this.state.dodgeChance;
-          var attack = this.state.attack;
           if (bonus[0] == "hitChance") {
             hitChance += bonus[1];
           }
@@ -572,8 +570,8 @@ class Game extends React.Component {
         if (e.key in skillKeys) {
           if (e.key =="1") {
             if (mana >= 5) {
-              let furyDamage = level * 2 + attack;
-              mana -= 5;
+              let furyDamage = level * 2 + attack + Math.round(Math.random() * attack);
+              mana -= 2;
               mobHealth -= furyDamage;
               let action = "You use Fury for " + furyDamage + ".";
               log.unshift(action);
@@ -794,28 +792,49 @@ class Game extends React.Component {
          </div>
         <div className="toolbar">
           <span id="toolbar1">1
-            <div className="toolbarTip">WATER from your flask can put out flames. DEFENSIVE MOVE</div>
+            <div className="toolbarTip">
+              FURY. You become enraged and land a forceful hit on your enemy.
+              Costs 5 mana.
+            </div>
           </span>
           <span id="toolbar2">2
-            <div className="toolbarTip">REFLECT magic of the arcane. DEFENSIVE MOVE</div>
+            <div className="toolbarTip">Stuff</div>
           </span>
           <span id="toolbar3">3
-            <div className="toolbarTip">CRYSTAL of shadow wards against evil. DEFENSIVE MOVE</div>
+            <div className="toolbarTip">
+              HEAL yourself for half your total health. Costs 5 mana.
+             </div>
           </span>
-          <span id="toolbar4">4</span>
-          <span id="toolbar5">5</span>
+          <span id="toolbar4">4
+            <div className="toolbarTip">MANA POTION grants 10 mana.</div>
+          </span>
+          <span id="toolbar5">5
+             <div className="toolbarTip">HEALING POTION grants 10 health.</div>
+          </span>
         </div>
         <div className="toolbar">
           <span id="toolbar6">6
-            <div className="toolbarTip">HEAL yourself for half your total health. Costs 10 mana.</div>
+            <div className="toolbarTip">
+              FLOOD. A spray of water from your flask extinguishes flame. SPECIAL.
+            </div>
           </span>
-          <span id="toolbar7">7</span>
-          <span id="toolbar8">8</span>
+          <span id="toolbar7">7
+            <div className="toolbarTip">
+              REFLECT. You distract the caster and cause it to cast the spell on itself. SPECIAL.
+            </div>
+          </span>
+          <span id="toolbar8">8
+            <div className="toolbarTip">
+              CRYSTAL OF LIGHT. The crystal you carry wards off shadow. SPECIAL.
+            </div>
+          </span>
           <span id="toolbar9">9
-            <div className="toolbarTip">HEALING POTION grants 10 health.</div>
+            <div className="toolbarTip">
+              CLOAK. Decreases both your and your enemy's chance to hit. SPECIAL.
+            </div>
           </span>
           <span id="toolbar0">0</span>
-            <div className="toolbarTip">MANA POTION grants 10 mana.</div>
+              NIMBLE. increases both your and your enemy's chance to hit.
          </div>
       </div>
 
