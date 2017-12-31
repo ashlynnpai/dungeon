@@ -10,7 +10,7 @@ class Game extends React.Component {
     {name: "goblin2", displayName: "Goblin Lieutenant", attack: 2, health: 30, level: 2,
     url: "https://www.ashlynnpai.com/assets/opengameart_goblin2.png"},
     {name: "orc1", displayName: "Orc Captain", attack: 3, health: 50, level: 3,
-    url: "https://www.ashlynnpai.com/assets/opengameart_orc1.png"}
+    url: "https://www.ashlynnpai.com/assets/orc.png"}
     ];
     this.weaponsInfo = [{name: "Hands", attack: 1, description: "These are deadly weapons."}, {name: "Meatchopper", attack: 2,
     description: "A rusty knife from someone's kitchen"}];
@@ -103,7 +103,7 @@ class Game extends React.Component {
       attack: 1,
       inventory: [{healthPotion: 1}, {manaPotion: 0}, {gold: 0}],
       equipment: [],
-      quests: [{name: "A Small Clue", description: "Find some clue about what the goblins are doing here.",
+      quests: [{name: "A Small Clue", description: "This hall was built by the dwarves. Find some clue about what happened here.",
        item: "Rune", completed: false, xp: 10}],
       current_mob: "",
       mob_hp: 0,
@@ -632,6 +632,7 @@ class Game extends React.Component {
 
     let mob = this.state.current_mob;
       if (mob) {
+        var mobUrl = mob.url;
         var mobHealth = this.state.mob_hp;
         var mobMaxHealth = mob.health;
         var mobHealthPercent = Math.round((mobHealth/mobMaxHealth)*100);
@@ -718,7 +719,7 @@ class Game extends React.Component {
           {mob ? (
             <div>
               <div className = "avatar">
-                <img src ="https://www.ashlynnpai.com/assets/Jinn_goblin.png" />
+                <img src ={mob.url} />
               </div>
               <p>{mob.level}</p>
             </div>

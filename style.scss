@@ -55,8 +55,8 @@ body {
 
 .Pcolor {
   background-color:  $tile-color;
-  background-image: url("https://www.ashlynnpai.com/assets/calciumtrice1.png");
-  background-size: 50px;
+  background-image: url("https://www.ashlynnpai.com/assets/blondhero2.png");
+  background-size: 60px;
   background-repeat: no-repeat;
 }
 
@@ -103,7 +103,7 @@ body {
 
 .orc1color {
   background: $tile-color;
-  background-image: url("https://www.ashlynnpai.com/assets/opengameart_orc1.png");
+  background-image: url("https://www.ashlynnpai.com/assets/orc.png");
   background-size: 60px;
   background-repeat: no-repeat;
   position: relative;
@@ -115,10 +115,14 @@ body {
 
 .Icolor {
   background-color: $tile-color;
-  background-image: url("https://www.ashlynnpai.com/assets/box.png");
+  background-image: url("https://www.ashlynnpai.com/assets/greybox.png");
   background-size: 50px;
   background-repeat: no-repeat;
   background-position: center;
+}
+
+.Icolor:hover {
+  background-size: 70px;
 }
 
 
@@ -347,4 +351,40 @@ position: relative;
 
 .displayStats h2 {
   text-align: center;
+}
+
+
+#square19 {
+  background-color: #000;
+  background-image: url(https://www.ashlynnpai.com/assets/herostatue.png);
+  background-size: 60px;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+#square15 {
+  background-color: #000;;
+  background-image: url(https://www.ashlynnpai.com/assets/pool.png);
+  background-size: 60px;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+#square31 {
+  background-image: url(https://www.ashlynnpai.com/assets/water.png);
+}
+
+#square32 {
+  background-color: $tile-color;
+  background-image: url(https://www.ashlynnpai.com/assets/water.png);
+}
+
+#square33 {
+  background-color: $tile-color;
+  background-image: url(https://www.ashlynnpai.com/assets/water.png);
+}
+
+#square34 {
+  background-color: $tile-color;
+  background-image: url(https://www.ashlynnpai.com/assets/water.png);
 }
