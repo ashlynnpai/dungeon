@@ -388,7 +388,6 @@ class Game extends React.Component {
   }
 
   processItem(item) {
-    console.log(item);
     let inventory = this.state.inventory;
     let equipment = this.state.equipment;
     var hitChance = this.state.hitChance;
@@ -834,7 +833,9 @@ class Game extends React.Component {
             </div>
           </span>
           <span id="toolbar0">0</span>
-              NIMBLE. increases both your and your enemy's chance to hit.
+             <div className="toolbarTip">
+               NIMBLE. increases both your and your enemy's chance to hit.
+             </div>
          </div>
       </div>
 
