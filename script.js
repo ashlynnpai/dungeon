@@ -275,10 +275,12 @@ class Game extends React.Component {
     });
 
     if (mobHealth <= 0) {
-      let action = mob.displayName + " dies.";
+      let action1 = mob.displayName + " dies.";
       log.unshift(action);
       let drops = this.level1Drops;
       let loot = drops[Math.floor(Math.random() * drops.length)];
+      let action2 = "You loot " + loot;
+      log.unshift(action2);
       this.processItem(loot);
       drops.splice(Math.floor(Math.random() * drops.length, 1));
       let xp = this.state.xp += (10 * mob.level);
