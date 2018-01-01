@@ -12,16 +12,27 @@ class Game extends React.Component {
     {name: "orc1", displayName: "Orc Captain", attack: 3, health: 50, level: 3,
     url: "https://www.ashlynnpai.com/assets/Jinn_orc.png"}
     ];
-    this.weaponsInfo = [{name: "Hands", attack: 1, description: "These are deadly weapons."}, {name: "Meatchopper", attack: 2,
-    description: "A rusty knife from someone's kitchen"}];
-    this.itemsInfo = [{name: "Clogs", bonus: ["dodgeChance", .03], description: "These shoes were made for dancing"}, {name: "Mittens",
-    bonus: ["hitChance", .03], description: "A Goon's favorite Mittens"}];
+    this.weaponsInfo = [{name: "Hands", attack: 1, description: "These are deadly weapons."},
+    {name: "Meatchopper", attack: 2, description: "A rusty knife from someone's kitchen"},
+    {name: "Slicer", attack: 3, description: "Finally, a decent weapon worthy of your skills."},
+    {name: "Iceblade", attack: 5, description: "A legendary sword forged by the dwarves."}
+  ];
+    this.itemsInfo = [{name: "Clogs", bonus: ["dodgeChance", .03], description: "These shoes were made for dancing"},
+    {name: "Mittens", bonus: ["hitChance", .03], description: "A Goon's favorite Mittens"},
+    {name: "Bandana"}, bonus: ["hitChance", .04], description: "Tying this around your head makes you concentrate harder."},
+    {name: "Shoulderpads", bonus: ["dodgeChance", .04], description: "These shoulderpads make you feel so ... free."},
+    {name: "Ring", bonus: ["attack", 1], description: "A magic ring adds strength to your attack."},
+    {name: "Breastplate", bonus: ["hitChance", .05], description: "Now you look impressive."}
+  ];
     this.findableItems = [{index: 11, item: "Meatchopper"}, {index: 9, item: "Rune"}];
     this.questItemsInfo = [{name: "Rune", longName: "Rune of the Goblin", description:
     "Your High Goblin is a little rusty, but it seems to say Firelord", xp: 10}];
     this.level1Drops = ["Clogs", "healthPotion", "manaPotion", "Gold", "Mittens"];
+    this.level2Drops = ["Bandana", "healthPotion", "manaPotion", "Gold", "Shoulderpads"];
+    this.level3Drops = ["Ring", "healthPotion", "manaPotion", "Gold", "Breastplate"];
     this.mobSkills = [{name: "Firebomb", action: "throws", counter: "water"}, {name: "Lightning", action: "summons", counter: "reflect"},
     {name: "Shadow", action: "casts", counter: "crystal"}];
+    this.level3Drops = []
     const startPoint = 0;
     let squares = Array(this.size).fill("S");
     let level1 = Array.from(Array(10).keys())
@@ -68,9 +79,9 @@ class Game extends React.Component {
      }
 
 
-    let seeds = [{room: room1, amount: 1, mob: "goblin1"}, {room: room2, amount: 1, mob: "goblin1"},
-  {room: hall1, amount: 2, mob: "goblin1"}, {room: room3, amount: 1, mob: "goblin2"}, {room: room4, amount: 1, mob: "goblin2"},
-  {room: room5, amount: 2, mob: "goblin2"}, {room: room6, amount: 1, mob: "orc1"}, {room: room7, amount: 1, mob: "orc1"},
+    let seeds = [{room: room1, amount: 1, mob: "goblin1"}, {room: room2, amount: 2, mob: "goblin1"},
+  {room: hall1, amount: 2, mob: "goblin1"}, {room: room3, amount: 1, mob: "goblin2"}, {room: room4, amount: 2, mob: "goblin2"},
+  {room: room5, amount: 2, mob: "goblin2"}, {room: room6, amount: 1, mob: "orc1"}, {room: room7, amount: 2, mob: "orc1"},
   {room: room8, amount: 2, mob: "orc1"}
    ];
     for (let i=0; i<seeds.length; i++) {
