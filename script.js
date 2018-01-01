@@ -290,7 +290,7 @@ class Game extends React.Component {
       let action1 = mob.displayName + " dies.";
       log.unshift(action1);
       mainLog.unshift(action1);
-      let drops = this.level1Drops;
+      let drops = "this.level" + mob.level + "Drops";
       let random = Math.floor(Math.random() * drops.length);
       let loot = drops[random];
       drops.splice(random, 1);
@@ -621,12 +621,9 @@ class Game extends React.Component {
             }
           }
           else if (e.key =="2") {
-            // if (mana >= 10) {
-            //   health += 10;
-            //   mana -= 10;
-            //   let action = "You cast heal for 10 health.";
-            //   log.unshift(action);
-            // }
+            if (pet) {
+              //do something
+            }
           }
           else if (e.key =="3") {
             if (mana >= 4) {
@@ -732,6 +729,8 @@ class Game extends React.Component {
         color: "#fff"
     };
 
+    var pet = this.state.pet;
+
     var questsCompleted = [];
     var questsCurrent = [];
 
@@ -805,8 +804,7 @@ class Game extends React.Component {
         <div className="fastStats">
           <p>Level {this.state.level}</p>
           <p>Weapon {weapon}</p>
-          <p>
-            {this.state.attack}</p>
+          <p>Attack {this.state.attack}</p>
         </div>
         <div className="messageDisplay">{this.state.message}</div>
      </div>
@@ -830,49 +828,59 @@ class Game extends React.Component {
            <span style={xpBar}>{this.state.xp}/{xpGoal}</span>
          </div>
         <div className="toolbar">
-          <span id="toolbar1">1
+          <span id="toolbar1" className="toolbarItem">1
             <div className="toolbarTip">
               FURY. You become enraged and land a forceful hit on your enemy.
-              Costs 5 mana.
+              Costs 2 mana.
             </div>
           </span>
-          <span id="toolbar2">2
-            <div className="toolbarTip">Stuff</div>
+          <span id="toolbar2" className="toolbarItem">2
+            {pet ? (
+            <div className="toolbarTip">
+              BITE. Scrappys bite wounds the enemy.
+            </div>
+            ) : (
+            <div className="toolbarTip">
+              BITE. Do you really want to bite your target?
+            </div>
+            )}
           </span>
-          <span id="toolbar3">3
+          <span id="toolbar3" className="toolbarItem">3
             <div className="toolbarTip">
               HEAL yourself for half your total health. Costs 5 mana.
              </div>
           </span>
-          <span id="toolbar4">4
-            <div className="toolbarTip">MANA POTION grants 10 mana.</div>
+          <span id="toolbar4" className="toolbarItem">4
+            <div className="toolbarTip">MANA POTION grants 10 mana.
+            </div>
           </span>
-          <span id="toolbar5">5
-             <div className="toolbarTip">HEALING POTION grants 10 health.</div>
+          <span id="toolbar5" className="toolbarItem">5
+             <div className="toolbarTip">HEALING POTION grants 10 health.
+             </div>
           </span>
         </div>
         <div className="toolbar">
-          <span id="toolbar6">6
+          <span id="toolbar6" className="toolbarItem">6
             <div className="toolbarTip">
               FLOOD. A spray of water from your flask extinguishes flame. SPECIAL.
             </div>
           </span>
-          <span id="toolbar7">7
+          <span id="toolbar7" className="toolbarItem">7
             <div className="toolbarTip">
               REFLECT. You distract the caster and cause it to cast the spell on itself. SPECIAL.
             </div>
           </span>
-          <span id="toolbar8">8
+          <span id="toolbar8" className="toolbarItem">8
             <div className="toolbarTip">
               CRYSTAL OF LIGHT. The crystal you carry wards off shadow. SPECIAL.
             </div>
           </span>
-          <span id="toolbar9">9
+          <span id="toolbar9" className="toolbarItem">9
             <div className="toolbarTip">
               CLOAK. Decreases both your and your enemy's chance to hit. SPECIAL.
             </div>
           </span>
-          <span id="toolbar0">0
+          <span id="toolbar0" className="toolbarItem">0
             <div className="toolbarTip">
               NIMBLE. Increases both your and your enemy's chance to hit. SPECIAL.
             </div>

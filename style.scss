@@ -282,50 +282,61 @@ body {
   color: #fff;
 }
 
+
+.toolbarItem {
+  position: relative;
+}
+
 #toolbar1 {
   background: url(https://www.ashlynnpai.com/assets/horrorpen_storm.png);
+  //position: relative;
 }
 
 #toolbar2 {
   background: url(https://www.ashlynnpai.com/assets/83.png);
+  //position: relative;
 }
 
 #toolbar3 {
   background:
   url(https://www.ashlynnpai.com/assets/horrorpen_heal.png);
+  //position: relative;
 }
 
 #toolbar4 {
   background: url(https://www.ashlynnpai.com/assets/horrorpen_mana.png);
+//  position: relative;
 }
 
 #toolbar5 {
   background:  url(https://www.ashlynnpai.com/assets/horrorpen_pot.png);
+ // position: relative;
 }
 
 #toolbar6 {
   background: url(https://www.ashlynnpai.com/assets/horropen_water.png);
-position: relative;
+//position: relative;
 
 }
 
 #toolbar7 {
   background: url(https://www.ashlynnpai.com/assets/Reflection.png);
-position: relative;
+//position: relative;
 }
 
 #toolbar8 {
   background: url(https://www.ashlynnpai.com/assets/crystal.png);
-  position: relative;
+  //position: relative;
 }
 
 #toolbar9 {
   background: url(https://www.ashlynnpai.com/assets/horrorpen_124.png);
-  position: relative;
+  //position: relative;
 }
 
 #toolbar0 {
   background: url(https://www.ashlynnpai.com/assets/70.png);
+  //position: relative;
 }
 
 
@@ -345,9 +356,14 @@ position: relative;
   text-align: left;
 }
 
-#toolbar1:hover .toolbarTip {
+.toolbarItem:hover .toolbarTip {
   display: block;
 }
+
+
+// #toolbar1:hover .toolbarTip {
+//   display: block;
+// }
 
 .display-log {
   width: 350px;
