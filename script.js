@@ -20,19 +20,19 @@ class Game extends React.Component {
     this.itemsInfo = [{name: "Clogs", bonus: ["dodgeChance", .03], description: "These shoes were made for dancing"},
     {name: "Mittens", bonus: ["hitChance", .03], description: "A Goon's favorite Mittens"},
     {name: "Bandana", bonus: ["hitChance", .04], description: "Tying this around your head makes you concentrate harder."},
-    {name: "Shoulderpads", bonus: ["dodgeChance", .04], description: "These shoulderpads make you feel so ... free."},
+    {name: "Shoulderpads", bonus: ["dodgeChance", .04], description: "These shoulderpads look good on you. Really."},
     {name: "Ring", bonus: ["attack", 1], description: "A magic ring adds strength to your attack."},
     {name: "Breastplate", bonus: ["hitChance", .05], description: "Now you look impressive."}
   ];
     this.findableItems = [{index: 11, item: "Meatchopper"}, {index: 9, item: "Rune"}];
     this.questItemsInfo = [{name: "Rune", longName: "Rune of the Goblin", description:
     "Your High Goblin is a little rusty, but it seems to say Firelord", xp: 10}];
-    this.level1Drops = ["Clogs", "healthPotion", "manaPotion", "Gold", "Mittens"];
-    this.level2Drops = ["Bandana", "healthPotion", "manaPotion", "Gold", "Shoulderpads"];
-    this.level3Drops = ["Ring", "healthPotion", "manaPotion", "Gold", "Breastplate"];
+    this.dropsHash = {1: ["Clogs", "healthPotion", "manaPotion", "Gold", "Mittens"],
+      2: ["Bandana", "healthPotion", "manaPotion", "Gold", "Shoulderpads"],
+      3: ["Ring", "healthPotion", "manaPotion", "Gold", "Breastplate"]
+      };
     this.mobSkills = [{name: "Firebomb", action: "throws", counter: "water"}, {name: "Lightning", action: "summons", counter: "reflect"},
     {name: "Shadow", action: "casts", counter: "crystal"}];
-    this.level3Drops = []
     const startPoint = 0;
     let squares = Array(this.size).fill("S");
     let level1 = Array.from(Array(10).keys())
@@ -290,10 +290,9 @@ class Game extends React.Component {
       let action1 = mob.displayName + " dies.";
       log.unshift(action1);
       mainLog.unshift(action1);
-      let drops = "this.level" + mob.level + "Drops";
-      let random = Math.floor(Math.random() * drops.length);
-      let loot = drops[random];
-      drops.splice(random, 1);
+      let random = Math.floor(Math.random() * this.dropsHash[mob.level].length);
+      let loot = this.dropsHash[mob.level][random];
+      this.dropsHash[mob.level].splice(random, 1);
       this.processItem(loot);
       let xp = this.state.xp += (10 * mob.level);
       let action2 = "You receive " + xp + " xp.";
@@ -459,7 +458,7 @@ class Game extends React.Component {
         }
       }
     }
-    let action = "You receive " + name + ".";
+    let action = "You receive " + item + ".";
     let mainLog = this.state.mainLog;
     mainLog.unshift(action);
     this.setState({
