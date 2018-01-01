@@ -611,6 +611,9 @@ class Game extends React.Component {
               let furyDamage = level * 2 + attack + Math.round(Math.random() * attack);
               mana -= 3;
               mobHealth -= furyDamage;
+              if (mobHealth < 0) {
+                mobHealth = 0;
+              }
               let action = "You use Fury for " + furyDamage + ".";
               log.unshift(action);
             }
