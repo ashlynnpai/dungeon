@@ -19,7 +19,7 @@ class Game extends React.Component {
   ];
     this.itemsInfo = [{name: "Clogs", bonus: ["dodgeChance", .03], description: "These shoes were made for dancing"},
     {name: "Mittens", bonus: ["hitChance", .03], description: "A Goon's favorite Mittens"},
-    {name: "Bandana"}, bonus: ["hitChance", .04], description: "Tying this around your head makes you concentrate harder."},
+    {name: "Bandana", bonus: ["hitChance", .04], description: "Tying this around your head makes you concentrate harder."},
     {name: "Shoulderpads", bonus: ["dodgeChance", .04], description: "These shoulderpads make you feel so ... free."},
     {name: "Ring", bonus: ["attack", 1], description: "A magic ring adds strength to your attack."},
     {name: "Breastplate", bonus: ["hitChance", .05], description: "Now you look impressive."}
