@@ -11,7 +11,10 @@
 
 $font-stack: Roboto;
 $board-color: #4b535c;
-$tile-color: #cbc1b5;
+// $tile-color: #cbc1b5;
+// $tile-color: #777777;
+$tile-image: url("https://www.ashlynnpai.com/assets/marble2.png");
+$black: #161616;
 
 body {
   text-align: center;
@@ -50,21 +53,31 @@ body {
 }
 
 .nullcolor {
-  background: $tile-color;
+  background-image: $tile-image;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
 }
 
 .Pcolor {
-  background-color:  $tile-color;
-  background-image: url("https://www.ashlynnpai.com/assets/blondhero2.png");
-  background-size: 60px;
-  background-repeat: no-repeat;
+//   background-color:  $tile-color;
+
+//   background-image: url("https://www.ashlynnpai.com/assets/blondhero2.png");
+//   background-size: 60px;
+//   background-repeat: no-repeat;
+
+
+   background-image: url("https://www.ashlynnpai.com/assets/blondhero2.png"), $tile-image;
+  background-repeat: no-repeat, no-repeat;
+  background-position: center, center;
+  background-size: 60px, cover;
 }
 
 .goblin1color {
-  background: $tile-color;
-  background-image: url("https://www.ashlynnpai.com/assets/opengameart_goblin1.png");
-  background-size: 60px;
-  background-repeat: no-repeat;
+  background-image: url("https://www.ashlynnpai.com/assets/opengameart_goblin1.png"), $tile-image;
+  background-repeat: no-repeat, no-repeat;
+  background-position: center, center;
+  background-size: 60px, cover;
   position: relative;
 }
 
@@ -90,10 +103,10 @@ body {
 }
 
 .goblin2color {
-  background: $tile-color;
-  background-image: url("https://www.ashlynnpai.com/assets/opengameart_goblin2.png");
-  background-size: 60px;
-  background-repeat: no-repeat;
+  background-image: url("https://www.ashlynnpai.com/assets/opengameart_goblin2.png"), $tile-image;
+  background-repeat: no-repeat, no-repeat;
+  background-position: center, center;
+  background-size: 60px, cover;
   position: relative;
 }
 
@@ -102,10 +115,10 @@ body {
 }
 
 .orc1color {
-  background: $tile-color;
-  background-image: url("https://www.ashlynnpai.com/assets/orc.png");
-  background-size: 60px;
-  background-repeat: no-repeat;
+  background-image: url("https://www.ashlynnpai.com/assets/orc.png"), $tile-image;
+  background-repeat: no-repeat, no-repeat;
+  background-position: center, center;
+  background-size: 60px, cover;
   position: relative;
 }
 
@@ -114,18 +127,20 @@ body {
 }
 
 .Icolor {
-  background-color: $tile-color;
-  background-image: url("https://www.ashlynnpai.com/assets/greybox.png");
-  background-size: 50px;
-  background-repeat: no-repeat;
-  background-position: center;
+  background-image: url("https://www.ashlynnpai.com/assets/greybox.png"), $tile-image;
+  background-repeat: no-repeat, no-repeat;
+  background-position: center, center;
+  background-size: 60px, cover;
+  position: relative;
 }
 
 .Icolor:hover {
-  background-size: 70px;
+  background-image: url("https://www.ashlynnpai.com/assets/greybox.png"), $tile-image;
+  background-repeat: no-repeat, no-repeat;
+  background-position: center, center;
+  background-size: 80px, cover;
+  position: relative;
 }
-
-
 
 .ui {
   display: flex;
@@ -140,42 +155,43 @@ body {
   height:60px;
   width: 60px;
   border: solid 1px;
-  background: #000;
+  background: $black;
   border-radius: 5px;
+  padding: 1px;
 }
 
 .nameplate {
   width: 250px;
   height: 13px;
   color: #fff;
-  background: #000;
+  background: $black;
   padding: 2px;
   border-radius: 3px;
-  box-shadow: 0 1px 5px #000 inset, 0 1px 0 #444;
+  box-shadow: 0 1px 5px $black inset, 0 1px 0 #444;
 }
 
 .topInfo {
-  height: 60px;
+  height: 40px;
   width: 100%;
   display: flex;
-  margin: 10px;
+  margin-top: 10px;
 }
 
 .fastStats {
-  width: 180px;
-  background: #000;
+  width: 100px;
+  background: $black;
   color: #fff;
   font-size: 10px;
   text-align: left;
   line-height: .7;
   padding-left: 20px;
+  border-radius: 5px;
 }
 
 .messageDisplay {
-  font-size: 34px;
-  background: beige;
+  font-size: 30px;
   width: 780px;
-  color: red;
+  color: #993232;
   text-align: center;
 }
 
@@ -193,7 +209,7 @@ body {
     width: 250px;
     margin: 0;
     border-radius: 3px;
-    box-shadow: 0 1px 5px #000 inset, 0 1px 0 #444;
+    box-shadow: 0 1px 5px $black inset, 0 1px 0 #444;
 }
 
 
@@ -235,7 +251,7 @@ body {
     width: 275px;
     padding: 2px;
     border-radius: 5px;
-    box-shadow: 0 1px 5px #000 inset, 0 1px 0 #444;
+    box-shadow: 0 1px 5px $black inset, 0 1px 0 #444;
 }
 
 
@@ -260,18 +276,18 @@ body {
   display: inline-block;
   width: 50px;
   height: 50px;
-  border: solid 3px #000;
-  background: #000;
+  border: solid 3px $black;
+  background: $black;
   border-radius: 3px;
   color: #fff;
 }
 
 #toolbar1 {
-
+  background: url(https://www.ashlynnpai.com/assets/horrorpen_storm.png);
 }
 
 #toolbar2 {
-
+  background: url(https://www.ashlynnpai.com/assets/83.png);
 }
 
 #toolbar3 {
@@ -309,7 +325,7 @@ position: relative;
 }
 
 #toolbar0 {
-
+  background: url(https://www.ashlynnpai.com/assets/70.png);
 }
 
 
@@ -356,7 +372,7 @@ position: relative;
 
 
 #square19 {
-  background-color: #000;
+  background-color: $black;
   background-image: url(https://www.ashlynnpai.com/assets/herostatue.png);
   background-size: 60px;
   background-repeat: no-repeat;
@@ -364,7 +380,7 @@ position: relative;
 }
 
 #square15 {
-  background-color: #000;;
+  background-color: $black;
   background-image: url(https://www.ashlynnpai.com/assets/pool.png);
   background-size: 60px;
   background-repeat: no-repeat;
@@ -376,16 +392,13 @@ position: relative;
 }
 
 #square32 {
-  background-color: $tile-color;
   background-image: url(https://www.ashlynnpai.com/assets/water.png);
 }
 
 #square33 {
-  background-color: $tile-color;
   background-image: url(https://www.ashlynnpai.com/assets/water.png);
 }
 
 #square34 {
-  background-color: $tile-color;
   background-image: url(https://www.ashlynnpai.com/assets/water.png);
 }
