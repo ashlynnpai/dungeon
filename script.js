@@ -226,6 +226,7 @@ class Game extends React.Component {
     //update the mob health on this.state.mob_hp not in the {}
     //this.state.playerSpecial gets updated in the keypress listener
     let log = this.state.combatLog;
+    let mainLog = this.state.mainLog;
     let mob = this.state.current_mob;
     let playerHealth = this.state.health;
     let mobHealth = this.state.mob_hp;
@@ -260,6 +261,9 @@ class Game extends React.Component {
     if (playerRoll <= playerHitChance) {
       mobHealth -= modifiedPlayerAttack;
       let action = "Player hits " + mob.displayName + " for " + modifiedPlayerAttack;
+      if (mobHealth < 0) {
+        mobHealth = 0;
+      }
       log.unshift(action);
     }
     else {
@@ -273,16 +277,21 @@ class Game extends React.Component {
 
     if (mobHealth <= 0) {
       let action1 = mob.displayName + " dies.";
+      log.unshift(action1);
+      mainLog.unshift(action1);
       let drops = this.level1Drops;
       let random = Math.floor(Math.random() * drops.length);
       let loot = drops[random];
       drops.splice(random, 1);
       this.processItem(loot);
       let xp = this.state.xp += (10 * mob.level);
+      let action2 = "You receive " + xp + " xp.";
+      mainLog.unshift(action2);
       let level = this.checkLevel();
       let mobIndex = this.state.targetIndex;
       let squares = this.state.squares;
-      let message = "Press R to rest and regain health."
+      let tip = "Press R to rest and regain health."
+      mainLog.unshift(tip);
       squares[mobIndex] = null;
       squares[this.state.player_index] = null;
       squares[mobIndex] = "P";
@@ -291,7 +300,7 @@ class Game extends React.Component {
         xp: xp,
         level: level,
         combatLog: log,
-        message: message,
+        mainLog: mainLog,
         playerSpecial: null,
         current_mob: null,
         currentAction: null,
@@ -310,6 +319,9 @@ class Game extends React.Component {
       else if (this.state.playerSpecial == mobSpecial.counter) {
         mobHealth -= modifiedPlayerAttack;
         let action = "You counter " + mobSpecial.name + " with " + mobSpecial.counter + " for " + modifiedPlayerAttack;
+        if (mobHealth < 0) {
+          mobHealth = 0;
+        }
         log.unshift(action);
         mobSpecial = null;
       }
@@ -383,12 +395,14 @@ class Game extends React.Component {
     let levelInfo = {1:50, 2:100, 3:200};
     let level = this.state.level;
     let xp = this.state.xp;
+    let log = this.state.mainLog;
     if (levelInfo[level] <= xp) {
       level++;
       let message = "You are now level " + level;
+      log.unshift(message);
       this.setState({
         message: message,
-        mainLog: this.state.mainLog.unshift(message),
+        mainLog: log,
         health: this.state.health += 20,
         mana: this.state.mana += 10,
         xp: xp - levelInfo[level]
@@ -398,7 +412,6 @@ class Game extends React.Component {
   }
 
   processItem(item) {
-    console.log("item " + item);
     let inventory = this.state.inventory;
     let equipment = this.state.equipment;
     var hitChance = this.state.hitChance;
@@ -463,7 +476,6 @@ class Game extends React.Component {
     let log = this.state.mainLog;
     let xp = this.state.xp;
     let questItem = this.questItemsInfo.filter(questItemInfo => questItemInfo.name == item);
-    console.log(questItem);
     let fullName = questItem[0].longName;
     let questDescription = questItem[0].description;
     let action1 = "You find " + fullName + ". " + questDescription;
