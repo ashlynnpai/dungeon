@@ -273,13 +273,11 @@ class Game extends React.Component {
 
     if (mobHealth <= 0) {
       let action1 = mob.displayName + " dies.";
-      log.unshift(action1);
       let drops = this.level1Drops;
-      let loot = drops[Math.floor(Math.random() * drops.length)];
-      let action2 = "You loot " + loot;
-      log.unshift(action2);
+      let random = Math.floor(Math.random() * drops.length);
+      let loot = drops[random];
+      drops.splice(random, 1);
       this.processItem(loot);
-      drops.splice(Math.floor(Math.random() * drops.length, 1));
       let xp = this.state.xp += (10 * mob.level);
       let level = this.checkLevel();
       let mobIndex = this.state.targetIndex;
@@ -297,7 +295,6 @@ class Game extends React.Component {
         playerSpecial: null,
         current_mob: null,
         currentAction: null,
-        level1Drops: drops,
         player_index: mobIndex,
         squares: squares
       });
@@ -401,6 +398,7 @@ class Game extends React.Component {
   }
 
   processItem(item) {
+    console.log("item " + item);
     let inventory = this.state.inventory;
     let equipment = this.state.equipment;
     var hitChance = this.state.hitChance;
@@ -587,9 +585,9 @@ class Game extends React.Component {
 
         if (e.key in skillKeys) {
           if (e.key =="1") {
-            if (mana >= 5) {
+            if (mana >= 3) {
               let furyDamage = level * 2 + attack + Math.round(Math.random() * attack);
-              mana -= 2;
+              mana -= 3;
               mobHealth -= furyDamage;
               let action = "You use Fury for " + furyDamage + ".";
               log.unshift(action);
@@ -608,9 +606,9 @@ class Game extends React.Component {
             // }
           }
           else if (e.key =="3") {
-            if (mana >= 5) {
+            if (mana >= 4) {
               health += 10;
-              mana -= 5;
+              mana -= 4;
               let action = "You cast heal for 10 health.";
               log.unshift(action);
             }
