@@ -748,7 +748,7 @@ class Game extends React.Component {
 
     return (
       <div onKeyPress={(e) => this.onKeyPressed(e)}>
-
+      <div className = "main">
       <div className = "ui">
         <div>
           <div className = "avatar">
@@ -803,10 +803,14 @@ class Game extends React.Component {
      </div>
 
      <div className="topInfo">
-        <div className="fastStats">
+       <div className="fastStats">
           <p>Level {this.state.level}</p>
-          <p>Weapon {weapon}</p>
+          <p>{weapon}</p>
           <p>Attack {this.state.attack}</p>
+       </div>
+       <div className="fastStats">
+          <p>Hit {this.state.hitChance} </p>
+          <p>Dodge {this.state.dodgeChance} </p>
         </div>
         <div className="messageDisplay">{this.state.message}</div>
      </div>
@@ -915,14 +919,6 @@ class Game extends React.Component {
       </div>
       )}
     </div>
-    <div className="displayStats">
-      <div>
-        <h2>Character</h2>
-        <p>Attack: {this.state.attack}</p>
-        <p>Hit Chance: {this.state.hitChance}</p>
-        <p>Dodge Chance: {this.state.dodgeChance}</p>
-      </div>
-    </div>
 
     <div className="displayStats">
       {questsCurrent.map((current) =>
@@ -938,9 +934,8 @@ class Game extends React.Component {
       </div>
       )}
     </div>
-
   </div>
-
+</div>
     );
   }
 }
