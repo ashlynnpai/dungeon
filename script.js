@@ -25,8 +25,8 @@ class Game extends React.Component {
     {name: "Breastplate", bonus: ["hitChance", .05], description: "Now you look impressive."}
   ];
     this.findableItems = [{index: 11, item: "Meatchopper"}, {index: 9, item: "Rune"}];
-    this.questItemsInfo = [{name: "Rune", longName: "Rune of the Goblin", description:
-    "Your High Goblin is a little rusty, but it seems to say Firelord", xp: 10}];
+    this.questItemsInfo = [{name: "Rune", longName: "Rune of Narheru", description:
+    "This rune was created by the elves for protection.", xp: 10}];
     this.dropsHash = {1: ["Clogs", "healthPotion", "manaPotion", "Gold", "Mittens"],
       2: ["Bandana", "healthPotion", "manaPotion", "Gold", "Shoulderpads"],
       3: ["Ring", "healthPotion", "manaPotion", "Gold", "Breastplate"]
@@ -113,6 +113,7 @@ class Game extends React.Component {
       attack: 1,
       inventory: [{healthPotion: 1}, {manaPotion: 0}, {gold: 0}],
       equipment: [],
+      questItems: [],
       quests: [{name: "A Small Clue", description: "This hall was built by the dwarves. Find some clue about what happened here.",
        item: "Rune", completed: false, xp: 10}],
       current_mob: "",
@@ -490,8 +491,8 @@ class Game extends React.Component {
     let questDescription = questItem[0].description;
     let action1 = "You find " + fullName + ". " + questDescription;
     log.unshift(action1);
-    let inventory = this.state.inventory;
-    inventory.push(item);
+    let questItems = this.state.questItems;
+    questItems.push(item);
     quests: [{name: "A Small Clue", description: "This hall was built by the dwarves. Find some clue about what happened here.",
        item: "Rune", completed: false, xp: 10}]
     let quest = this.state.quests.filter(quest => quest.item == item);
@@ -503,7 +504,7 @@ class Game extends React.Component {
       quests: this.state.quests,
       xp: xp,
       mainLog: log,
-      inventory: inventory
+      questItems: questItems
     })
   }
 
@@ -888,8 +889,11 @@ class Game extends React.Component {
               NIMBLE. Increases both your and your enemy's chance to hit. SPECIAL.
             </div>
           </span>
-
          </div>
+        <div className = "toolbar" id = "questItems">
+          {this.state.questItems.map((questItem) =>
+            <span>{questItem}</span>)}
+           </div>
       </div>
 
       <div className="display-log">
