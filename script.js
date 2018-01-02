@@ -520,7 +520,6 @@ class Game extends React.Component {
       this.setState({
         weapons: weapons,
         attack: attack,
-        message: "You equip " + weapons[0],
         mainLog: mainLog,
         squares: squares
       });
@@ -792,9 +791,7 @@ class Game extends React.Component {
               <div className = "avatar">
                 <img src ={mob.url} />
               </div>
-              <p>{mob.level}</p>
             </div>
-
           ) : (
              <div className = "blankAvatar">
              </div>
