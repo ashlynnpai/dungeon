@@ -20,11 +20,15 @@ $boardWidth: 1000px;
 body {
   text-align: center;
   font-family: $font-stack;
-  width: 1200px;
   margin: 0 auto;
   //background: #642930; wine
   //background: $tile-color;
   background: #9898C3;
+}
+
+.main {
+  width: $boardWidth;
+  margin: 0 auto;
 }
 
 .flex-container {
@@ -34,8 +38,8 @@ body {
   //background-color: $board-color;
   flex-direction: row;
   flex-wrap: wrap;
-  margin: 0 auto;
-  width: $boardWidth;
+  //margin: 0 auto;
+  //width: $boardWidth;
   height: 400px;
   padding: 50px;
   background: url("https://www.ashlynnpai.com/assets/tile4.png");
@@ -145,9 +149,9 @@ body {
 
 .ui {
   display: flex;
-  margin: 0 auto;
+  //margin: 0 auto;
   justify-content: center;
-  width: $boardWidth;
+  //width: $boardWidth;
 }
 
 .ui>div {
@@ -175,10 +179,12 @@ body {
 
 .topInfo {
   height: 60px;
-  width: $boardWidth;
+  //width: $boardWidth;
   display: flex;
   margin-top: 30px;
-  margin: 0 auto;
+  //margin: 0 auto;
+  background: #c39898; //rose
+  background: #FF9933; //orange
 }
 
 .fastStats {
@@ -193,8 +199,6 @@ body {
 
 .messageDisplay {
   font-size: 30px;
-  width: 900px;
-  background: $black;
   color: #993232;
   text-align: center;
 }
