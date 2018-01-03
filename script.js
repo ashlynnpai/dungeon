@@ -403,7 +403,7 @@ class Game extends React.Component {
   }
 
   checkLevel() {
-    let levelInfo = {1:50, 2:100, 3:200, 4:1000};
+    let levelInfo = {1:50, 2:150, 3:300, 4:1000};
     let level = this.state.level;
     let xp = this.state.xp;
     let log = this.state.mainLog;
