@@ -3,8 +3,6 @@ class Game extends React.Component {
     super(props);
     this.size = 200;
     this.rowSize = 10;
-    this.maxHealth = 20;
-    this.maxMana = 10;
     this.mobsInfo = [{name: "goblin1", displayName: "Goblin Footsoldier", attack: 1, health: 20, level: 1,
     url: "https://www.ashlynnpai.com/assets/Jinn_goblin.png"},
     {name: "goblin2", displayName: "Goblin Lieutenant", attack: 2, health: 30, level: 2,
@@ -101,7 +99,9 @@ class Game extends React.Component {
       player_index: startPoint,
       yCoord: 0,
       health: 20,
+      maxHealth: 20,
       mana: 10,
+      maxMana: 10,
       level: 1,
       xp: 0,
       hitChance: .70,
@@ -374,8 +374,8 @@ class Game extends React.Component {
   }
 
   regenerateHealth(health, mana) {
-    let maxHealth = this.maxHealth;
-    let maxMana = this.maxMana
+    let maxHealth = this.state.maxHealth;
+    let maxMana = this.state.maxMana
 
     if (health >= maxHealth && mana >= maxMana) {
       this.setState({
@@ -403,7 +403,7 @@ class Game extends React.Component {
   }
 
   checkLevel() {
-    let levelInfo = {1:50, 2:100, 3:200};
+    let levelInfo = {1:50, 2:100, 3:200, 4:1000};
     let level = this.state.level;
     let xp = this.state.xp;
     let log = this.state.mainLog;
@@ -411,12 +411,16 @@ class Game extends React.Component {
       level++;
       let message = "You are now level " + level;
       log.unshift(message);
+      this.state.maxHealth += 20;
+      this.state.maxMana += 10;
       this.setState({
         message: message,
         mainLog: log,
-        health: this.state.health += 20,
-        mana: this.state.mana += 10,
-        xp: xp - levelInfo[level]
+        maxHealth: this.state.maxHealth,
+        maxMana: this.state.maxMana,
+        health: maxHealth,
+        mana: maxMana,
+        xp: 0,
       })
     }
     return level;
@@ -677,7 +681,7 @@ class Game extends React.Component {
 
   render() {
     let health = this.state.health;
-    let healthPercent = Math.round((health/this.maxHealth)*100);
+    let healthPercent = Math.round((health/this.state.maxHealth)*100);
     if (healthPercent > 70) {
       var healthColor = "green";
     }
@@ -693,7 +697,7 @@ class Game extends React.Component {
     };
 
     let mana = this.state.mana;
-    let manaPercent = Math.round((mana/this.maxMana)*100);
+    let manaPercent = Math.round((mana/this.state.maxMana)*100);
     var manaBar = {
       width: manaPercent + "%",
       color: "#fff"
@@ -760,10 +764,10 @@ class Game extends React.Component {
             <div>Hero</div>
           </div>
           <div className = {healthColor + " progress-bar"}>
-            <span style={healthBar}>{health}/{this.maxHealth}</span>
+            <span style={healthBar}>{health}/{this.state.maxHealth}</span>
           </div>
           <div className = {"blue progress-bar"}>
-            <span style={manaBar}>{mana}/{this.maxMana}</span>
+            <span style={manaBar}>{mana}/{this.state.maxMana}</span>
           </div>
         </div>
 
