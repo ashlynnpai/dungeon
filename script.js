@@ -471,7 +471,7 @@ class Game extends React.Component {
           else if (bonus[0] == "attack") {
             attack += bonus[1];
           }
-          equipment.push(items[i]);
+          equipment.unshift(items[i]);
         }
       }
     }
@@ -508,7 +508,7 @@ class Game extends React.Component {
     let action1 = "You find " + fullName + ". " + questDescription;
     log.unshift(action1);
     let questItems = this.state.questItems;
-    questItems.push(questItem[0]);
+    questItems.unshift(questItem[0]);
     let quest = this.state.quests.filter(quest => quest.item == item);
     quest[0].completed = true;
     let action2 = "You completed " + quest[0].name + " and receive " + quest[0].xp + " xp.";
