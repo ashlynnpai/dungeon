@@ -22,22 +22,30 @@ class Game extends React.Component {
     {name: "Ring", bonus: ["attack", 1], description: "A magic ring adds strength to your attack."},
     {name: "Breastplate", bonus: ["hitChance", .05], description: "Now you look impressive."}
   ];
-    this.findableItems = [{index: 11, item: "Meatchopper"}, {index: 9, item: "Rune"}];
+    this.findableItems = [{index: 11, item: "Meatchopper"}, {index: 9, item: "Rune"}, {index: 59, item: "Brooch"},
+  {index: 110, item: "Necklace"}, {index: 119, item: "Book"}, {index: 190, item: "Orb"}];
     this.questItemsInfo = [{name: "Rune", longName: "Rune of Narheru", description:
-    "This rune was created by the elves for protection.", xp: 10}];
+    "This rune was created by the elves for protection.", url: "https://www.ashlynnpai.com/assets/Ruin%20Stone_01.png"},
+    {name: "Brooch", longName: "Brooch of Wisdom", description:
+    "Grants enlightenment.", url: "https://www.ashlynnpai.com/assets/Ornament_03.png"},
+    {name: "Necklace", longName: "Necklace of Flight", description:
+    "You feel lighter than air.", url: "https://www.ashlynnpai.com/assets/Necklace_03.png"},
+    {name: "Book", longName: "Book of the Art of Combat", description:
+    "You have learned the secrets of swordplay.", url: ""}, {name: "Orb", longName: "Orb of Seeing", description:
+    "You see into your enemys mind.", url: ""}];
     this.dropsHash = {1: ["Clogs", "healthPotion", "manaPotion", "Gold", "Mittens"],
       2: ["Bandana", "healthPotion", "manaPotion", "Gold", "Shoulderpads"],
       3: ["Ring", "healthPotion", "manaPotion", "Gold", "Breastplate"]
       };
-    this.mobSkills = [{name: "Firebomb", action: "throws", counter: "water"}, {name: "Lightning", action: "summons", counter: "reflect"},
-    {name: "Shadow", action: "casts", counter: "crystal"}];
+    this.mobSkills = [{name: "Firebomb", action: "throws", counter: "water"}, {name: "Ice Spars", action: "summons", counter: "fire"},
+    {name: "Shadow", action: "casts", counter: "light"}];
     const startPoint = 0;
     let squares = Array(this.size).fill("S");
     let level1 = Array.from(Array(10).keys())
     let occupied = [9, 11]
-    let room1 = [12, 13, 14, 20, 21, 22, 23, 24];
+    let room1 = [12, 13, 14, 20, 21, 22, 23, 24, 26];
     let room2 = [16, 17, 18, 27, 28, 29, 39, 38, 37, 36, 35, 49, 59, 58, 57];
-    let hall1 = [30, 45, 44, 43, 42, 41, 40, 50, 51, 52, 53, 54, 56, 60, 61, 62, 63, 64, 61, 62, 63, 64, 65, 66]
+    let hall1 = [30, 45, 44, 43, 42, 41, 40, 50, 51, 52, 53, 54, 55, 56, 60, 61, 62, 63, 64, 61, 62, 63, 64, 65, 66];
     level1.push.apply(level1, room1.concat(room2).concat(hall1).concat(occupied));
 
     let room3 = [76, 77, 78, 79, 89, 88, 87, 86, 96, 97, 98, 99];
@@ -115,7 +123,11 @@ class Game extends React.Component {
       equipment: [],
       questItems: [],
       quests: [{name: "A Small Clue", description: "This hall was built by the dwarves. Find some clue about what happened here.",
-       item: "Rune", completed: false, xp: 10}],
+       item: "Rune", completed: false, xp: 10}, {name: "Find the Brooch", description: "Find the brooch.",
+       item: "Brooch", completed: false, xp: 10}, {name: "Find the Necklace", description: "Find the Necklace.",
+       item: "Necklace", completed: false, xp: 20}, {name: "Find the Book", description: "Find the Book.",
+       item: "Book", completed: false, xp: 20}, {name: "Find the Orb", description: "Find the Orb.",
+       item: "Orb", completed: false, xp: 30}],
       current_mob: "",
       mob_hp: 0,
       targetIndex: null,
@@ -496,9 +508,7 @@ class Game extends React.Component {
     let action1 = "You find " + fullName + ". " + questDescription;
     log.unshift(action1);
     let questItems = this.state.questItems;
-    questItems.push(item);
-    quests: [{name: "A Small Clue", description: "This hall was built by the dwarves. Find some clue about what happened here.",
-       item: "Rune", completed: false, xp: 10}]
+    questItems.push(questItem[0]);
     let quest = this.state.quests.filter(quest => quest.item == item);
     quest[0].completed = true;
     let action2 = "You completed " + quest[0].name + " and receive " + quest[0].xp + " xp.";
@@ -602,7 +612,7 @@ class Game extends React.Component {
         //only one state can be active at a time
         let log = this.state.combatLog;
         let skillKeys = {1: "Fury", 2: "whatever", 3: "heal", 4: "mana potion", 5: "health potion",
-        6: "water", 7: "reflect", 8: "crystal", 9: "cloak", 0: "nimble"};
+        6: "water", 7: "fire", 8: "light", 9: "cloak", 0: "nimble"};
         let health = this.state.health;
         let mana = this.state.mana;
         let mobHealth = this.state.mob_hp;
@@ -875,28 +885,28 @@ class Game extends React.Component {
           </span>
           <span id="toolbar7" className="toolbarItem">7
             <div className="toolbarTip">
-              REFLECT. You distract the caster and cause it to cast the spell on itself. SPECIAL.
+              FIRE. Flame from your torch melts spears of ice. SPECIAL.
             </div>
           </span>
           <span id="toolbar8" className="toolbarItem">8
             <div className="toolbarTip">
-              CRYSTAL OF LIGHT. The crystal you carry wards off shadow. SPECIAL.
+              LIGHT. Light banishes the shadow. SPECIAL.
             </div>
           </span>
           <span id="toolbar9" className="toolbarItem">9
             <div className="toolbarTip">
-              CLOAK. Decreases both your and your enemy's chance to hit. SPECIAL.
+              CLOAK. Decreases both your and your enemys chance to hit. SPECIAL.
             </div>
           </span>
           <span id="toolbar0" className="toolbarItem">0
             <div className="toolbarTip">
-              NIMBLE. Increases both your and your enemy's chance to hit. SPECIAL.
+              NIMBLE. Increases both your and your enemys chance to hit. SPECIAL.
             </div>
           </span>
          </div>
         <div className = "toolbar" id = "questItems">
           {this.state.questItems.map((questItem) =>
-            <span>{questItem}</span>)}
+            <span><img src={questItem.url}></img></span>)}
            </div>
       </div>
 
