@@ -348,6 +348,13 @@ body {
   //position: relative;
 }
 
+.potionCount {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  font-size: 14px;
+  padding: 5px;
+}
 
 .toolbarTip {
   display: none;
@@ -394,8 +401,12 @@ body {
   color: #fff;
 }
 
+.bottom {
+  display: flex;
+}
+
 .questLog {
-  width: 300px;
+  width: 400px;
   background: $black;
   text-align: left;
   padding: 20px;
@@ -404,7 +415,7 @@ body {
 }
 
 .questLogName {
-  background: orange;
+  background: #ff9528;
   padding: 20px;
   border-radius: 5px;
 }
@@ -422,11 +433,15 @@ body {
   display: flex;
   background: $black;
   color: #fff;
+  width: 500px;
+  margin: 50px;
 }
 
 .inventory > div {
-  width: 50px;
-  height: 50px;
+  position: relative;
+  width: 60px;
+  height: 60px;
+  border: solid 3px #404040;
 }
 
 #square19 {

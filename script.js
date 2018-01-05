@@ -875,10 +875,12 @@ class Game extends React.Component {
              </div>
           </span>
           <span id="toolbar4" className="toolbarItem">4
+            <div className="potionCount">{this.state.inventory[1].manaPotion}</div>
             <div className="toolbarTip">MANA POTION grants 10 mana.
             </div>
           </span>
           <span id="toolbar5" className="toolbarItem">5
+             <div className="potionCount">{this.state.inventory[0].healthPotion}</div>
              <div className="toolbarTip">HEALING POTION grants 10 health.
              </div>
           </span>
@@ -925,34 +927,37 @@ class Game extends React.Component {
        <p>{combatEvent}</p>)}
       </div>
     </div>
-
-    <div className="questLog">
-      <h3>Quests</h3>
-      {questsCurrent.map((current) =>
-      <div>
-        <p className = "questLogName">{current.name}</p>
-        <p className = "questLogDescription">{current.description}</p>
+    <div className = "bottom">
+      <div className="questLog">
+        <h3>Quests</h3>
+        {questsCurrent.map((current) =>
+        <div>
+          <p className = "questLogName">{current.name}</p>
+          <p className = "questLogDescription">{current.description}</p>
+        </div>
+        )}
+        {questsCompleted.map((complete) =>
+        <div>
+          <p className = "questLogName">&#9986 {complete.name}</p>
+          <p className = "questLogDescription">&#9986 {complete.description}</p>
+        </div>
+        )}
       </div>
-      )}
-      {questsCompleted.map((complete) =>
-      <div>
-        <p className = "questLogName">&#9986 {complete.name}</p>
-        <p className = "questLogDescription">&#9986 {complete.description}</p>
-      </div>
-      )}
-    </div>
+      <div className="inventory">
+        <div className = "potionCount">
+          <img src="https://www.ashlynnpai.com/assets/horrorpen_pot.png"/>   {this.state.inventory[0].healthPotion}</div>
+        <div className = "potionCount">
+          <img src="https://www.ashlynnpai.com/assets/horrorpen_mana.png"/>{this.state.inventory[1].manaPotion}
+        </div>
+        <div>Gold: {this.state.inventory[2].gold}</div>
 
-    <div className="inventory">
-      <div>Health Potions: {this.state.inventory[0].healthPotion}</div>
-      <div>Mana Potions: {this.state.inventory[1].manaPotion}</div>
-      <div>Gold: {this.state.inventory[2].gold}</div>
-
-      {this.state.equipment.map((piece) =>
-      <div>
-        <div>{piece.name} {piece.bonus[0]}:{piece.bonus[1]}</div>
-        <div>{piece.description}</div>
+        {this.state.equipment.map((piece) =>
+        <div>
+          <div>{piece.name} {piece.bonus[0]}:{piece.bonus[1]}</div>
+          <div>{piece.description}</div>
+        </div>
+        )}
       </div>
-      )}
     </div>
   </div>
 </div>
