@@ -92,7 +92,7 @@ class Game extends React.Component {
    ];
     for (let i=0; i<seeds.length; i++) {
       //choose the indices to be seeded
-      let chosenSquares = this.pickSquare(seeds[i].room, seeds[i].amount);
+      let chosenSquares = this.pickSquare(seeds[i].room, seeds[i].amount, spacesCopy);
       //place the mobs
       squares = this.setGrid(chosenSquares, squares, seeds[i].mob);
        for (let j=0; j<chosenSquares.length; j++) {
@@ -152,14 +152,20 @@ class Game extends React.Component {
     document.removeEventListener("keypress", this.onKeyPressed.bind(this));
   }
 
-  pickSquare(room, amount) {
+  pickSquare(room, amount, spacesCopy) {
     let squaresArray = [];
     for (let i=0; i<amount; i++) {
-      let roomIndex = Math.floor(Math.random() * room.length);
-      squaresArray.push(room[roomIndex]);
+      let seededMob = false;
+      while (!seededMob) {
+        let roomIndex = Math.floor(Math.random() * room.length);
+        if (spacesCopy.includes(roomIndex) == false) {
+          squaresArray.push(room[roomIndex]);
+          seededMob = true;
+        }
       }
-    return squaresArray;
     }
+    return squaresArray;
+  }
 
   setGrid(chosenSquares, grids, mob) {
     for (let i=0; i<chosenSquares.length; i++) {
