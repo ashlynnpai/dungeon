@@ -936,8 +936,8 @@ class Game extends React.Component {
       )}
       {questsCompleted.map((complete) =>
       <div>
-        <p>Checkmark {complete.name}</p>
-        <p>Checkmark {complete.description}</p>
+        <p className = "questLogName">&#9986 {complete.name}</p>
+        <p className = "questLogDescription">&#9986 {complete.description}</p>
       </div>
       )}
     </div>
