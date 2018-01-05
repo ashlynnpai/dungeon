@@ -122,12 +122,18 @@ class Game extends React.Component {
       inventory: [{healthPotion: 1}, {manaPotion: 0}, {gold: 0}],
       equipment: [],
       questItems: [],
-      quests: [{name: "A Small Clue", description: "This hall was built by the dwarves. Find some clue about what happened here.",
-       item: "Rune", completed: false, xp: 10}, {name: "Find the Brooch", description: "Find the brooch.",
-       item: "Brooch", completed: false, xp: 10}, {name: "Find the Necklace", description: "Find the Necklace.",
-       item: "Necklace", completed: false, xp: 20}, {name: "Find the Book", description: "Find the Book.",
-       item: "Book", completed: false, xp: 20}, {name: "Find the Orb", description: "Find the Orb.",
-       item: "Orb", completed: false, xp: 30}],
+      quests: [
+       {name: "Find the Orb", description: "Find the Orb.",
+        item: "Orb", completed: false, xp: 30},
+       {name: "Find the Book", description: "Find the Book.",
+       item: "Book", completed: false, xp: 20},
+       {name: "Find the Necklace", description: "Find the Necklace.",
+       item: "Necklace", completed: false, xp: 20},
+       {name: "Find the Brooch", description: "Find the brooch.",
+       item: "Brooch", completed: false, xp: 10},
+       {name: "A Small Clue", description: "This hall was built by the dwarves. Find some clue about what happened here.",
+       item: "Rune", completed: false, xp: 10}
+      ],
       current_mob: "",
       mob_hp: 0,
       targetIndex: null,
@@ -919,6 +925,23 @@ class Game extends React.Component {
        <p>{combatEvent}</p>)}
       </div>
     </div>
+
+    <div className="questLog">
+      <h3>Quests</h3>
+      {questsCurrent.map((current) =>
+      <div>
+        <p className = "questLogName">{current.name}</p>
+        <p className = "questLogDescription">{current.description}</p>
+      </div>
+      )}
+      {questsCompleted.map((complete) =>
+      <div>
+        <p>Checkmark {complete.name}</p>
+        <p>Checkmark {complete.description}</p>
+      </div>
+      )}
+    </div>
+
     <div className="displayStats">
 
       <h2>Inventory</h2>
@@ -931,21 +954,6 @@ class Game extends React.Component {
       <div>
         <p>{piece.name} {piece.bonus[0]}:{piece.bonus[1]}</p>
         <p>{piece.description}</p>
-      </div>
-      )}
-    </div>
-
-    <div className="displayStats">
-      {questsCurrent.map((current) =>
-      <div>
-        <p>{current.name}</p>
-        <p>{current.description}</p>
-      </div>
-      )}
-      {questsCompleted.map((complete) =>
-      <div>
-        <p>Checkmark {complete.name}</p>
-        <p>Checkmark {complete.description}</p>
       </div>
       )}
     </div>

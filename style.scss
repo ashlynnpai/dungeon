@@ -394,17 +394,33 @@ body {
   color: #fff;
 }
 
-.displayStats {
-  width: 500px;
-  margin-left: 5px;
-  background: beige;
+.questLog {
+  width: 300px;
+  background: $black;
   text-align: left;
+  padding: 20px;
+  color: #fff;
+  margin-top: 20px;
 }
 
-.displayStats h2 {
+.questLog h23 {
   text-align: center;
 }
 
+.questLogName {
+  background: orange;
+  padding: 20px;
+  border-radius: 5px;
+}
+
+.questLogName:hover + .questLogDescription {
+  display: block;
+}
+
+.questLogDescription {
+  display: none;
+  padding: 20px;
+}
 
 #square19 {
   background-color: $black;
