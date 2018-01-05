@@ -22,7 +22,7 @@ class Game extends React.Component {
     {name: "Ring", bonus: ["attack", 1], description: "A magic ring adds strength to your attack."},
     {name: "Breastplate", bonus: ["hitChance", .05], description: "Now you look impressive."}
   ];
-  this.findableItems = [{index: 11, item: "Meatchopper"}, {index: 9, item: "Rune"}, {index: 59, item: "Brooch"},
+  this.findableItems = [{index: 9, item: "Rune"}, {index: 11, item: "Meatchopper"}, {index: 59, item: "Brooch"},
 {index: 110, item: "Necklace"}, {index: 114, item: "Slicer"},
 {index: 119, item: "Book"}, {index: 152, item: "Iceblade"}, {index: 190, item: "Orb"}];
     this.questItemsInfo = [{name: "Rune", longName: "Rune of Narheru", description:
@@ -43,14 +43,13 @@ class Game extends React.Component {
     const startPoint = 0;
     let squares = Array(this.size).fill("S");
     let level1 = Array.from(Array(10).keys())
-    let occupied = [9, 11]
-    let room1 = [12, 13, 14, 20, 21, 22, 23, 24, 26];
-    let room2 = [16, 17, 18, 27, 28, 29, 39, 38, 37, 36, 35, 49, 59, 58, 57];
-    let hall1 = [30, 45, 44, 43, 42, 41, 40, 50, 51, 52, 53, 54, 55, 56, 60, 61, 62, 63, 64, 61, 62, 63, 64, 65, 66];
-    level1.push.apply(level1, room1.concat(room2).concat(hall1).concat(occupied));
+    let room1 = [3, 4, 12, 13, 14, 20, 21, 22, 23, 24, 25, 30];
+    let room2 = [16, 17, 18, 26, 27, 28, 29, 39, 38, 37, 36, 35, 49, 59, 58, 57];
+    let hall1 = [40, 41, 42, 43, 44, 45, 46, 50, 51, 52, 53, 54, 55, 56, 60, 61, 61, 62, 62, 63, 63, 64, 64, 65, 66];
+    level1.push.apply(level1, room1.concat(room2).concat(hall1));
 
-    let room3 = [76, 77, 78, 79, 89, 88, 87, 86, 96, 97, 98, 99];
-    let room4 = [85, 84, 83, 82, 81, 80, 90, 91, 92, 93, 100, 101, 102, 103, 110];
+    let room3 = [75, 76, 77, 78, 79, 89, 88, 87, 86, 96, 97, 98, 99];
+    let room4 = [85, 84, 83, 82, 81, 80, 90, 91, 92, 93, 100, 101, 102, 103, 110, 111, 112];
     let room5 = [104, 105, 106, 107, 108, 109, 119, 118, 117, 116, 115, 114, 113]
     let miniboss = [126, 127, 128, 136, 137, 138, 139, 146, 147, 148];
     let level2 = []
@@ -60,7 +59,7 @@ class Game extends React.Component {
     let room6 = [135, 134, 133, 132, 131, 130, 145, 144, 143, 142, 141, 140];
     let room7 = [150, 151, 152, 160, 161, 162, 170, 171, 172, 180, 181, 190, 191];
     let room8 = [163, 164, 165, 166, 167, 168, 169, 173, 174, 175, 176, 177, 178, 179];
-    let boss = [186, 187, 188, 189, 196, 197, 198, 199]
+    let boss = [185, 186, 187, 188, 189, 195, 196, 197, 198, 199]
     let level3= [];
     level3.push.apply(level3, room6.concat(room7).concat(room8).concat(boss));
     let spaces = level1.concat(level2).concat(level3);
