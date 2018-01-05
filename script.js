@@ -158,7 +158,8 @@ class Game extends React.Component {
       let seededMob = false;
       while (!seededMob) {
         let roomIndex = Math.floor(Math.random() * room.length);
-        if (spacesCopy.includes(roomIndex) == false) {
+        let squareChoice = room[roomIndex];
+        if (spacesCopy.includes(squareChoice)) {
           squaresArray.push(room[roomIndex]);
           seededMob = true;
         }
