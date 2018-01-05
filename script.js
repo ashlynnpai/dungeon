@@ -22,8 +22,9 @@ class Game extends React.Component {
     {name: "Ring", bonus: ["attack", 1], description: "A magic ring adds strength to your attack."},
     {name: "Breastplate", bonus: ["hitChance", .05], description: "Now you look impressive."}
   ];
-    this.findableItems = [{index: 11, item: "Meatchopper"}, {index: 9, item: "Rune"}, {index: 59, item: "Brooch"},
-  {index: 110, item: "Necklace"}, {index: 119, item: "Book"}, {index: 190, item: "Orb"}];
+  this.findableItems = [{index: 11, item: "Meatchopper"}, {index: 9, item: "Rune"}, {index: 59, item: "Brooch"},
+{index: 110, item: "Necklace"}, {index: 114, item: "Slicer"},
+{index: 119, item: "Book"}, {index: 152, item: "Iceblade"}, {index: 190, item: "Orb"}];
     this.questItemsInfo = [{name: "Rune", longName: "Rune of Narheru", description:
     "This rune was created by the elves for protection.", url: "https://www.ashlynnpai.com/assets/Ruin%20Stone_01.png"},
     {name: "Brooch", longName: "Brooch of Wisdom", description:
@@ -69,36 +70,41 @@ class Game extends React.Component {
         squares[i] = null;
       }
     }
+
+    //seed the player
     squares[startPoint] = "P";
-    //seed a random square with a mob or item and then remove it from a copy of the floor plan array so multiple items don't get put on the same square
     let spacesCopy = spaces.slice();
     spacesCopy.splice(startPoint, 2);
 
-    let itemsSquares = [];
-    for (let i=0; i<this.findableItems.length; i++) {
-      itemsSquares.push(this.findableItems[i].index);
-      squares = this.setGrid(itemsSquares, squares, "I");
-      for (let j=0; j<itemsSquares.length; j++) {
-         let copyIndex = spacesCopy.indexOf(itemsSquares[j]);
-         spacesCopy.splice(copyIndex, 1);
-       }
-     }
+    // seed the findable items (quest items and weapons)
 
+    for (let i=0; i<this.findableItems.length; i++) {
+      let itemIndex = this.findableItems[i].index;
+      squares[itemIndex] = "I";
+      let indexOfSpacesCopy = spacesCopy.indexOf(itemIndex);
+      spacesCopy.splice(indexOfSpacesCopy, 1);
+     }
 
     let seeds = [{room: room1, amount: 1, mob: "goblin1"}, {room: room2, amount: 2, mob: "goblin1"},
   {room: hall1, amount: 2, mob: "goblin1"}, {room: room3, amount: 1, mob: "goblin2"}, {room: room4, amount: 2, mob: "goblin2"},
   {room: room5, amount: 2, mob: "goblin2"}, {room: room6, amount: 1, mob: "orc1"}, {room: room7, amount: 2, mob: "orc1"},
   {room: room8, amount: 2, mob: "orc1"}
    ];
+
     for (let i=0; i<seeds.length; i++) {
-      //choose the indices to be seeded
-      let chosenSquares = this.pickSquare(seeds[i].room, seeds[i].amount, spacesCopy);
-      //place the mobs
-      squares = this.setGrid(chosenSquares, squares, seeds[i].mob);
-       for (let j=0; j<chosenSquares.length; j++) {
-         let copyIndex = spacesCopy.indexOf(chosenSquares[j]);
-         spacesCopy.splice(copyIndex, 1);
-       }
+      for (let j=0; j<seeds[i].amount; j++) {
+        let seededMob = false;
+        while (!seededMob) {
+          let mobIndex = Math.floor(Math.random() * seeds[i].room.length);
+          let squareChoice = seeds[i].room[mobIndex];
+          if (spacesCopy.includes(squareChoice)) {
+            squares[squareChoice] = seeds[i].mob;
+            let indexOfSpacesCopy = spacesCopy.indexOf(mobIndex);
+            spacesCopy.splice(indexOfSpacesCopy, 1);
+            seededMob = true;
+          }
+        }
+      }
     }
 
     this.state = {
@@ -150,29 +156,6 @@ class Game extends React.Component {
 
   componentWillUnmount() {
     document.removeEventListener("keypress", this.onKeyPressed.bind(this));
-  }
-
-  pickSquare(room, amount, spacesCopy) {
-    let squaresArray = [];
-    for (let i=0; i<amount; i++) {
-      let seededMob = false;
-      while (!seededMob) {
-        let roomIndex = Math.floor(Math.random() * room.length);
-        let squareChoice = room[roomIndex];
-        if (spacesCopy.includes(squareChoice)) {
-          squaresArray.push(room[roomIndex]);
-          seededMob = true;
-        }
-      }
-    }
-    return squaresArray;
-  }
-
-  setGrid(chosenSquares, grids, mob) {
-    for (let i=0; i<chosenSquares.length; i++) {
-      grids[chosenSquares[i]] = mob;
-    }
-    return grids;
   }
 
   checkVisible() {
