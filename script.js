@@ -942,18 +942,15 @@ class Game extends React.Component {
       )}
     </div>
 
-    <div className="displayStats">
-
-      <h2>Inventory</h2>
-      <p>{weapon} Attack: {this.state.attack}</p>
-      <p>Health Potions: {this.state.inventory[0].healthPotion}</p>
-      <p>Mana Potions: {this.state.inventory[1].manaPotion}</p>
-      <p>Gold: {this.state.inventory[2].gold}</p>
+    <div className="inventory">
+      <div>Health Potions: {this.state.inventory[0].healthPotion}</div>
+      <div>Mana Potions: {this.state.inventory[1].manaPotion}</div>
+      <div>Gold: {this.state.inventory[2].gold}</div>
 
       {this.state.equipment.map((piece) =>
       <div>
-        <p>{piece.name} {piece.bonus[0]}:{piece.bonus[1]}</p>
-        <p>{piece.description}</p>
+        <div>{piece.name} {piece.bonus[0]}:{piece.bonus[1]}</div>
+        <div>{piece.description}</div>
       </div>
       )}
     </div>

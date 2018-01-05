@@ -403,10 +403,6 @@ body {
   margin-top: 20px;
 }
 
-.questLog h23 {
-  text-align: center;
-}
-
 .questLogName {
   background: orange;
   padding: 20px;
@@ -420,6 +416,17 @@ body {
 .questLogDescription {
   display: none;
   padding: 20px;
+}
+
+.inventory {
+  display: flex;
+  background: $black;
+  color: #fff;
+}
+
+.inventory > div {
+  width: 50px;
+  height: 50px;
 }
 
 #square19 {
