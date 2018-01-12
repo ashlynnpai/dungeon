@@ -408,14 +408,18 @@ class Game extends React.Component {
     setTimeout(this.combatSequence.bind(this), 2000, mobSpecial);
   }
 
-  regenerateHealth(health, mana) {
+  regenerateHealth() {
+    let health = this.state.health;
+    let mana = this.state.mana;
     let maxHealth = this.state.maxHealth;
-    let maxMana = this.state.maxMana
+    let maxMana = this.state.maxMana;
+    let energy = this.state.petEnergy;
 
-    if (health >= maxHealth && mana >= maxMana) {
+    if (health >= maxHealth && mana >= maxMana && energy >= this.maxPetEnergy) {
       this.setState({
         health: maxHealth,
         mana: maxMana,
+        petEnergy: this.maxPetEnergy,
         currentAction: null
       });
       return;
@@ -423,18 +427,23 @@ class Game extends React.Component {
 
     health += this.state.level * 2;
     mana += this.state.level * 2;
+    energy += this.state.level * 2;
     if (health >= maxHealth) {
      health = maxHealth;
     }
     if (mana >= maxMana) {
       mana = maxMana;
     }
+    if (energy >= this.maxPetEnergy) {
+      energy = this.maxPetEnergy;
+    }
 
     this.setState({
       health: health,
-      mana: mana
+      mana: mana,
+      petEnergy: energy
     });
-    setTimeout(this.regenerateHealth.bind(this), 1500, health, mana);
+    setTimeout(this.regenerateHealth.bind(this), 1500);
   }
 
   checkLevel() {
@@ -600,7 +609,7 @@ class Game extends React.Component {
         else if(e.key == 'r') {
           this.state.currentAction = "resting";
           var next_square = current_square;
-          this.regenerateHealth(this.state.health, this.state.mana);
+          this.regenerateHealth();
         }
         else {
           return;
@@ -667,8 +676,16 @@ class Game extends React.Component {
             }
           }
           else if (e.key =="2") {
+            let pet = this.state.pet;
             if (pet) {
-              //do something
+              var energy = this.state.petEnergy;
+              if (energy >= 5) {
+                mobHealth -= (level * 2);
+                energy -= 5;
+                let action = "Scrappy bites for " + (level * 2) + ".";
+                log.unshift(action);
+                this.state.petEnergy = energy;
+              }
             }
             else {
               let action = "Your mouth is filled with fleas but you do no damage.";
