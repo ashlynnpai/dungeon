@@ -23,6 +23,7 @@ $board-color: #4b535c;
 $tile-image: url("https://www.ashlynnpai.com/assets/marble2.png");
 $black: #161616;
 $boardWidth: 1000px;
+$orange: #FF9933;
 
 body {
   text-align: center;
@@ -205,7 +206,7 @@ body {
   margin-top: 30px;
   //margin: 0 auto;
   background: #c39898; //rose
-  background: #FF9933; //orange
+  background: $orange; //orange
 }
 
 .fastStats {
@@ -240,6 +241,17 @@ body {
     margin: 0;
     border-radius: 3px;
     box-shadow: 0 1px 5px $black inset, 0 1px 0 #444;
+}
+
+#petAvatar {
+    width: 40px;
+    height: 40px;
+}
+
+#petBar, #petNameplate {
+   width: 150px;
+   margin-right: 20px;
+   font-size: 14px;
 }
 
 
@@ -296,6 +308,10 @@ body {
 
 .blue span {
   background-color: blue;
+}
+
+.orange span {
+  background-color: $orange;
 }
 
 .toolbar {
@@ -436,7 +452,7 @@ body {
 }
 
 .questLogName {
-  background: #ff9528;
+  background: $orange;
   padding: 20px;
   border-radius: 5px;
 }

@@ -3,6 +3,7 @@ class Game extends React.Component {
     super(props);
     this.size = 200;
     this.rowSize = 10;
+    this.maxPetEnergy = 10;
     this.mobsInfo = [{name: "goblin1", displayName: "Goblin Footsoldier", attack: 1, health: 20, level: 1,
     url: "https://www.ashlynnpai.com/assets/Jinn_goblin.png"},
     {name: "goblin2", displayName: "Goblin Lieutenant", attack: 2, health: 30, level: 2,
@@ -70,15 +71,16 @@ class Game extends React.Component {
         squares[i] = null;
       }
     }
-
-    //seed the player
-    squares[startPoint] = "P";
-    this.petStartPoint = 79;
-    squares[this.petStartPoint] = "pet";
+    //make a copy of empty squares for modification
     let spacesCopy = spaces.slice();
-
+    //seed the player and remove the square from empty squares
+    squares[startPoint] = "P";
     spacesCopy.splice(startPoint, 2);
-    spacesCopy.splice(this.petStartPoint, 1);
+    //seed the pet
+    let petStartPoint = 79;
+    squares[petStartPoint] = "pet";
+    let petIndex = spacesCopy.indexOf(petStartPoint);
+    spacesCopy.splice(petIndex, 1);
 
     // seed the findable items (quest items and weapons)
 
@@ -117,15 +119,16 @@ class Game extends React.Component {
       player_index: startPoint,
       yCoord: 0,
       health: 20,
-      maxHealth: 20,
+      maxHealth: 20, //has to increase on level
       mana: 10,
-      maxMana: 10,
+      maxMana: 10, //has to increase on level
       level: 1,
       xp: 0,
       hitChance: .70,
       dodgeChance: 0,
       specialSkill: null,
-      pet: false,
+      pet: true,
+      petEnergy: 10,
       living: true,
       weapons: ["Hands"],
       attack: 1,
@@ -586,7 +589,7 @@ class Game extends React.Component {
           squares[current_square] = null;
           squares[next_square] = "P";
         }
-        else if(next_square == this.petStartPoint) {
+        else if(squares[next_square] == "pet") {
           this.state.pet = true;
           let action = "Scrappy would like to join you on your adventure. You have gained a skill BITE."
           this.state.mainLog.unshift(action);
@@ -726,6 +729,15 @@ class Game extends React.Component {
 
     let pet = this.state.pet;
     let petUrl = "https://www.ashlynnpai.com/assets/yoppy.png";
+    if (pet) {
+      var petEnergy = this.state.petEnergy;
+      var maxPetEnergy = this.maxPetEnergy;
+      var petEnergyPercent = Math.round((petEnergy/maxPetEnergy)*100);
+      var petEnergyBar = {
+        width: petEnergyPercent + "%",
+        color: "#fff"
+      };
+    }
 
     let mob = this.state.current_mob;
       if (mob) {
@@ -778,21 +790,30 @@ class Game extends React.Component {
       <div className = "ui">
         <div>
           {pet ? (
-            <div>
-              <div className = "nameplate">
-                <div>Scrappy</div>
-              </div>
-              <div className = {mobHealthColor + " progress-bar"}>
-                <span style={mobHealthBar}>{mobHealth}/{mobMaxHealth}</span>
-              </div>
-              <div className = "avatar">
-                <img src ={petUrl} />
-              </div>
+            <div className="avatar" id="petAvatar">
+              <img width="30" src="https://www.ashlynnpai.com/assets/yoppy.jpg" />
             </div>
-            ) : (
-            <div></div>
+          ) : (
+            <div className = "blankAvatar">
+            </div>
           )}
         </div>
+        <div>
+          {pet ? (
+             <div>
+               <div className="nameplate" id="petNameplate">
+                <div>Scrappy</div>
+               </div>
+               <div className={"orange progress-bar"} id="petBar">
+                <span style={petEnergyBar}>{petEnergy}/{maxPetEnergy}</span>
+               </div>
+             </div>
+            ) : (
+              <div className = "blankMob">
+              </div>
+            )}
+       </div>
+
         <div>
           <div className = "avatar">
             <img src ="https://www.ashlynnpai.com/assets/Jinn_hero2.png" />
