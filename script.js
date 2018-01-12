@@ -297,9 +297,28 @@ class Game extends React.Component {
       let action = "Player misses.";
       log.unshift(action);
     }
+
+    let pet = this.state.pet;
+    if (pet) {
+      let petRoll = Math.random();
+      if (petRoll <= .8) {
+        let petDamage = this.state.level;
+        mobHealth -= petDamage;
+        let action = "Scrappy hits " + mob.displayName + " for " + petDamage;
+        if (mobHealth < 0) {
+          mobHealth = 0;
+        }
+        log.unshift(action);
+      }
+      else {
+        let action = "Scrappy misses.";
+        log.unshift(action);
+      }
+    }
+
     this.setState({
-     mob_hp: mobHealth,
-     combatLog: log
+      mob_hp: mobHealth,
+      combatLog: log
     });
 
     if (mobHealth <= 0) {
@@ -335,6 +354,7 @@ class Game extends React.Component {
       });
       return;
     }
+
     if (mobSpecial) {
       if (this.state.playerSpecial != mobSpecial.counter) {
         playerHealth -= modifiedMobAttack;
