@@ -85,6 +85,20 @@ body {
   background-size: 60px, cover;
 }
 
+.petcolor {
+  background-image: url("https://www.ashlynnpai.com/assets/hp-cat-icon.png"), $tile-image;
+  background-repeat: no-repeat, no-repeat;
+  background-position: center, center;
+  background-size: 30px, cover;
+}
+
+.petcolor:hover {
+  background-image: url("https://www.ashlynnpai.com/assets/hp-cat-icon.png"), $tile-image;
+  background-repeat: no-repeat, no-repeat;
+  background-position: center, center;
+  background-size: 40px, cover;
+}
+
 .goblin1color {
   background-image: url("https://www.ashlynnpai.com/assets/opengameart_goblin1.png"), $tile-image;
   background-repeat: no-repeat, no-repeat;
@@ -309,7 +323,7 @@ body {
 }
 
 #toolbar2 {
-  background: url(https://www.ashlynnpai.com/assets/83.png);
+  background: url(https://www.ashlynnpai.com/assets/bite.png);
   //position: relative;
 }
 

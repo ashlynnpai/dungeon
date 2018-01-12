@@ -41,6 +41,7 @@ class Game extends React.Component {
     this.mobSkills = [{name: "Firebomb", action: "throws", counter: "water"}, {name: "Ice Spars", action: "summons", counter: "fire"},
     {name: "Shadow", action: "casts", counter: "light"}];
     const startPoint = 0;
+
     let squares = Array(this.size).fill("S");
     let level1 = Array.from(Array(10).keys())
     let room1 = [3, 4, 12, 13, 14, 20, 21, 22, 23, 24, 25, 30];
@@ -72,8 +73,12 @@ class Game extends React.Component {
 
     //seed the player
     squares[startPoint] = "P";
+    this.petStartPoint = 79;
+    squares[this.petStartPoint] = "pet";
     let spacesCopy = spaces.slice();
+
     spacesCopy.splice(startPoint, 2);
+    spacesCopy.splice(this.petStartPoint, 1);
 
     // seed the findable items (quest items and weapons)
 
@@ -120,7 +125,7 @@ class Game extends React.Component {
       hitChance: .70,
       dodgeChance: 0,
       specialSkill: null,
-      pet: null,
+      pet: false,
       living: true,
       weapons: ["Hands"],
       attack: 1,
@@ -581,6 +586,13 @@ class Game extends React.Component {
           squares[current_square] = null;
           squares[next_square] = "P";
         }
+        else if(next_square == this.petStartPoint) {
+          this.state.pet = true;
+          let action = "Scrappy would like to join you on your adventure. You have gained a skill BITE."
+          this.state.mainLog.unshift(action);
+          squares[current_square] = null;
+          squares[next_square] = "P";
+        }
         else if(this.mobLookup(squares[next_square])) {
           //this.state.current_mob = squares[next_square];
           this.state.targetIndex = next_square;
@@ -634,6 +646,10 @@ class Game extends React.Component {
           else if (e.key =="2") {
             if (pet) {
               //do something
+            }
+            else {
+              let action = "Your mouth is filled with fleas but you do no damage.";
+              log.unshift(action);
             }
           }
           else if (e.key =="3") {
@@ -708,6 +724,9 @@ class Game extends React.Component {
       color: "#fff"
     };
 
+    let pet = this.state.pet;
+    let petUrl = "https://www.ashlynnpai.com/assets/yoppy.png";
+
     let mob = this.state.current_mob;
       if (mob) {
         var mobUrl = mob.url;
@@ -740,8 +759,6 @@ class Game extends React.Component {
         color: "#fff"
     };
 
-    var pet = this.state.pet;
-
     var questsCompleted = [];
     var questsCurrent = [];
 
@@ -759,6 +776,23 @@ class Game extends React.Component {
       <div onKeyPress={(e) => this.onKeyPressed(e)}>
       <div className = "main">
       <div className = "ui">
+        <div>
+          {pet ? (
+            <div>
+              <div className = "nameplate">
+                <div>Scrappy</div>
+              </div>
+              <div className = {mobHealthColor + " progress-bar"}>
+                <span style={mobHealthBar}>{mobHealth}/{mobMaxHealth}</span>
+              </div>
+              <div className = "avatar">
+                <img src ={petUrl} />
+              </div>
+            </div>
+            ) : (
+            <div></div>
+          )}
+        </div>
         <div>
           <div className = "avatar">
             <img src ="https://www.ashlynnpai.com/assets/Jinn_hero2.png" />
