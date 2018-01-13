@@ -35,9 +35,9 @@ class Game extends React.Component {
     {name: "Book", longName: "Book of the Art of Combat", description:
     "You have learned the secrets of swordplay.", url: ""}, {name: "Orb", longName: "Orb of Seeing", description:
     "You see into your enemys mind.", url: ""}];
-    this.dropsHash = {1: ["Boots", "healthPotion", "manaPotion", "Gold", "Bracers"],
-      2: ["Helm", "healthPotion", "manaPotion", "Gold", "Belt"],
-      3: ["Gloves", "healthPotion", "manaPotion", "Gold", "Breastplate"]
+    this.dropsHash = {1: ["Boots", "healthPotion", "manaPotion", "healthPotion", "Bracers"],
+      2: ["Helm", "healthPotion", "manaPotion", "healthPotion", "Belt"],
+      3: ["Gloves", "healthPotion", "manaPotion", "manaPotion", "Breastplate"]
       };
     this.mobSkills = [{name: "Firebomb", action: "throws", counter: "water"}, {name: "Ice Spars", action: "summons", counter: "fire"},
     {name: "Shadow", action: "casts", counter: "light"}];
@@ -132,7 +132,7 @@ class Game extends React.Component {
       living: true,
       weapons: ["Hands"],
       attack: 1,
-      inventory: [{healthPotion: 1}, {manaPotion: 0}, {gold: 0}],
+      inventory: [{healthPotion: 1}, {manaPotion: 0}],
       equipment: [],
       questItems: [],
       quests: [
@@ -485,10 +485,6 @@ class Game extends React.Component {
     else if (item == "manaPotion") {
       inventory[1].manaPotion++;
       var name = "Mana Potion";
-    }
-    else if (item == "Gold") {
-      inventory[2].gold += 5 * this.state.level;
-      var name = 5 * this.state.level + " Gold";
     }
     else {
       let items = this.itemsInfo;
