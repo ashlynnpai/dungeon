@@ -16,12 +16,12 @@ class Game extends React.Component {
     {name: "Slicer", attack: 3, description: "Finally, a decent weapon worthy of your skills."},
     {name: "Iceblade", attack: 5, description: "A legendary sword forged by the dwarves."}
   ];
-    this.itemsInfo = [{name: "Clogs", bonus: ["dodgeChance", .03], description: "These shoes were made for dancing"},
-    {name: "Mittens", bonus: ["hitChance", .03], description: "A Goon's favorite Mittens"},
-    {name: "Bandana", bonus: ["hitChance", .04], description: "Tying this around your head makes you concentrate harder."},
-    {name: "Shoulderpads", bonus: ["dodgeChance", .04], description: "These shoulderpads look good on you. Really."},
-    {name: "Ring", bonus: ["attack", 1], description: "A magic ring adds strength to your attack."},
-    {name: "Breastplate", bonus: ["hitChance", .05], description: "Now you look impressive."}
+    this.itemsInfo = [{name: "Boots", bonus: ["dodgeChance", .03], url: "https://www.ashlynnpai.com/assets/Light%20Boot_1.png", description: "Dodge +.03"},
+    {name: "Bracers", bonus: ["hitChance", .03], url: "https://www.ashlynnpai.com/assets/Leather%20Bracelet_1.PNG", description: "Hit +.03"},
+    {name: "Helm", bonus: ["hitChance", .04], url: "https://www.ashlynnpai.com/assets/Light%20Helm_1.PNG", description: "Hit +.04"},
+    {name: "Belt", bonus: ["dodgeChance", .04], url: "https://www.ashlynnpai.com/assets/Light%20Belt_1.png", description: "Dodge +.04"},
+    {name: "Gloves", bonus: ["attack", 1], url: "https://www.ashlynnpai.com/assets/Leather%20Glove_1.png", description: "Attack +1"},
+    {name: "Breastplate", bonus: ["hitChance", .05], url: "https://www.ashlynnpai.com/assets/Light%20Armor_1.png", description: "Hit +.05"}
   ];
   this.findableItems = [{index: 9, item: "Rune"}, {index: 11, item: "Meatchopper"}, {index: 59, item: "Brooch"},
 {index: 110, item: "Necklace"}, {index: 114, item: "Slicer"},
@@ -35,9 +35,9 @@ class Game extends React.Component {
     {name: "Book", longName: "Book of the Art of Combat", description:
     "You have learned the secrets of swordplay.", url: ""}, {name: "Orb", longName: "Orb of Seeing", description:
     "You see into your enemys mind.", url: ""}];
-    this.dropsHash = {1: ["Clogs", "healthPotion", "manaPotion", "Gold", "Mittens"],
-      2: ["Bandana", "healthPotion", "manaPotion", "Gold", "Shoulderpads"],
-      3: ["Ring", "healthPotion", "manaPotion", "Gold", "Breastplate"]
+    this.dropsHash = {1: ["Boots", "healthPotion", "manaPotion", "Gold", "Bracers"],
+      2: ["Helm", "healthPotion", "manaPotion", "Gold", "Belt"],
+      3: ["Gloves", "healthPotion", "manaPotion", "Gold", "Breastplate"]
       };
     this.mobSkills = [{name: "Firebomb", action: "throws", counter: "water"}, {name: "Ice Spars", action: "summons", counter: "fire"},
     {name: "Shadow", action: "casts", counter: "light"}];
@@ -1027,18 +1027,11 @@ class Game extends React.Component {
           </div>
         )}
       </div>
-      <div className="inventory">
-        <div className = "potionCount">
-          <img src="https://www.ashlynnpai.com/assets/horrorpen_pot.png"/>   {this.state.inventory[0].healthPotion}</div>
-        <div className = "potionCount">
-          <img src="https://www.ashlynnpai.com/assets/horrorpen_mana.png"/>{this.state.inventory[1].manaPotion}
-        </div>
-        <div>Gold: {this.state.inventory[2].gold}</div>
-
+      <div className="equipment">
         {this.state.equipment.map((piece) =>
         <div>
-          <div>{piece.name} {piece.bonus[0]}:{piece.bonus[1]}</div>
-          <div>{piece.description}</div>
+           <img width="50" src={piece.url} />
+           <div>{piece.description}</div>
         </div>
         )}
       </div>
