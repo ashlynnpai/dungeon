@@ -920,6 +920,7 @@ class Game extends React.Component {
              switch (square) {
                case "goblin1": return "Goblin Footsoldier Level 1";
                case "goblin2": return "Goblin Lieutenant Level 2";
+               case "orc1": return "Orc Captain Level 3";
              }
            })()}
          </div>

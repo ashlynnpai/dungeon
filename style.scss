@@ -13,8 +13,8 @@
 // You can find the original tileset at:
 // http://rltiles.sf.net
 
-//Harmonia Pastelis Icons by Teekatas Suwannakrua, free for non-commercial use
-//http://www.iconarchive.com/show/harmonia-pastelis-icons-by-raindropmemory/hp-cat-icon.html
+//"[LPC] Cats and Dogs" Artist: bluecarrot16 License: CC-BY 3.0 / GPL 3.0 / GPL 2.0 / OGA-BY 3.0
+//http://opengameart.org/content/lpc-cats-and-dogs
 //cat photo by yoppy CC by 2.0
 //https://www.flickr.com/photos/spilt-milk/5751145842/in/album-72157626662521361/
 
@@ -89,17 +89,17 @@ body {
 }
 
 .petcolor {
-  background-image: url("https://www.ashlynnpai.com/assets/hp-cat-icon.png"), $tile-image;
+  background-image: url("https://www.ashlynnpai.com/assets/cat1.png"), $tile-image;
   background-repeat: no-repeat, no-repeat;
   background-position: center, center;
-  background-size: 30px, cover;
+  background-size: 70px, cover;
 }
 
 .petcolor:hover {
-  background-image: url("https://www.ashlynnpai.com/assets/hp-cat-icon.png"), $tile-image;
+  background-image: url("https://www.ashlynnpai.com/assets/cat1.png"), $tile-image;
   background-repeat: no-repeat, no-repeat;
   background-position: center, center;
-  background-size: 40px, cover;
+  background-size: 80px, cover;
 }
 
 .goblin1color {
@@ -144,7 +144,7 @@ body {
 }
 
 .orc1color {
-  background-image: url("https://www.ashlynnpai.com/assets/orc.png"), $tile-image;
+  background-image: url("https://www.ashlynnpai.com/assets/redorc.png"), $tile-image;
   background-repeat: no-repeat, no-repeat;
   background-position: center, center;
   background-size: 60px, cover;
