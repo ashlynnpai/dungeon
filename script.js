@@ -1012,16 +1012,19 @@ class Game extends React.Component {
       <div className="questLog">
         <h3>Quests</h3>
         {questsCurrent.map((current) =>
-        <div>
-          <p className = "questLogName">{current.name}</p>
-          <p className = "questLogDescription">{current.description}</p>
-        </div>
+          <div className="questLogEntry">
+            <div className="questLogName">{current.name}</div>
+            <div className="questLogDescription">{current.description}</div>
+          </div>
         )}
         {questsCompleted.map((complete) =>
-        <div>
-          <p className = "questLogName">&#9986 {complete.name}</p>
-          <p className = "questLogDescription">&#9986 {complete.description}</p>
-        </div>
+          <div className="questLogEntry">
+            <div className="questLogName">
+              <img width="20" src="https://www.ashlynnpai.com/assets/check.png" />
+              {complete.name}
+            </div>
+            <div className="questLogDescription">{complete.description}</div>
+          </div>
         )}
       </div>
       <div className="inventory">
