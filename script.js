@@ -455,13 +455,15 @@ class Game extends React.Component {
       level++;
       let message = "You are now level " + level;
       log.unshift(message);
-      this.state.maxHealth += 20;
-      this.state.maxMana += 10;
+      let maxHealth = this.state.maxHealth;
+      let maxMana = this.state.maxMana
+      maxHealth += 20;
+      maxMana += 10;
       this.setState({
         message: message,
         mainLog: log,
-        maxHealth: this.state.maxHealth,
-        maxMana: this.state.maxMana,
+        maxHealth: maxHealth,
+        maxMana: maxMana,
         health: maxHealth,
         mana: maxMana,
         xp: 0,
