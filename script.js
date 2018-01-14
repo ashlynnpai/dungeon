@@ -77,7 +77,7 @@ class Game extends React.Component {
     squares[startPoint] = "P";
     spacesCopy.splice(startPoint, 2);
     //seed the pet
-    let petStartPoint = 79;
+    let petStartPoint = 14;
     squares[petStartPoint] = "pet";
     let petIndex = spacesCopy.indexOf(petStartPoint);
     spacesCopy.splice(petIndex, 1);
@@ -128,7 +128,7 @@ class Game extends React.Component {
       dodgeChance: 0,
       specialSkill: null,
       buff: null,
-      pet: true,
+      pet: false,
       petEnergy: 10,
       living: true,
       weapons: ["Hands"],
