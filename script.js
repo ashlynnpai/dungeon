@@ -689,9 +689,9 @@ class Game extends React.Component {
             let pet = this.state.pet;
             if (pet) {
               var energy = this.state.petEnergy;
-              if (energy >= 5) {
+              if (energy >= 3) {
                 mobHealth -= (level * 2);
-                energy -= 5;
+                energy -= 3;
                 let action = "Scrappy bites for " + (level * 2) + ".";
                 log.unshift(action);
                 this.state.petEnergy = energy;
