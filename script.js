@@ -731,13 +731,15 @@ class Game extends React.Component {
             var buff = this.state.buff;
             buff = skill;
             log.unshift(action);
+            this.setState({
+              buff: buff
+            })
           }
           this.setState({
             health: health,
             mob_hp: mobHealth,
             mana: mana,
             combatLog: log,
-            buff: buff
           })
         }
         else {
@@ -823,16 +825,26 @@ class Game extends React.Component {
  ]
 
     const buffs = [
-      {name: "water", url: "https://www.ashlynnpai.com/assets/horropen_water.png"},
-      {name: "fire", url: "https://www.ashlynnpai.com/assets/14.png"},
-      {name: "light", url: "https://www.ashlynnpai.com/assets/18.png"},
-      {name: "cloak", url: "https://www.ashlynnpai.com/assets/horrorpen_124.png"},
-      {name: "nimble", url: "https://www.ashlynnpai.com/assets/70.png"}
+      {name: "water", url: "https://www.ashlynnpai.com/assets/horropen_water.png", type: "good"},
+      {name: "fire", url: "https://www.ashlynnpai.com/assets/14.png", type: "good"},
+      {name: "light", url: "https://www.ashlynnpai.com/assets/18.png", type: "good"},
+      {name: "cloak", url: "https://www.ashlynnpai.com/assets/horrorpen_124.png", type: "good"},
+      {name: "nimble", url: "https://www.ashlynnpai.com/assets/70.png", type: "good"}
     ]
 
     if (this.state.buff) {
       let currentBuff = buffs.filter(b => b.name == this.state.buff);
       var buffUrl = currentBuff[0].url;
+      if (currentBuff[0].type == "good") {
+        var buffStyle = {
+          border: '3px solid #000'
+        };
+      }
+      else {
+        var buffStyle = {
+          border: '3px solid red'
+        };
+      }
     }
     else {
       var buffUrl = null;
@@ -897,7 +909,7 @@ class Game extends React.Component {
             <span style={manaBar}>{mana}/{this.state.maxMana}</span>
           </div>
           <div className="buffSection">
-            <img width="30" src={buffUrl}/>
+            <img style={buffStyle} width="30" src={buffUrl}/>
           </div>
         </div>
 
