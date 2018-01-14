@@ -717,6 +717,9 @@ class Game extends React.Component {
           else if (e.key =="4") {
             if (this.state.inventory[1].manaPotion > 0) {
               mana += 10;
+              if (mana > this.state.maxMana) {
+                mana = this.state.maxMana;
+              }
               this.state.inventory[1].manaPotion--;
             }
             let action = "You consume mana potion.";
@@ -725,6 +728,9 @@ class Game extends React.Component {
           else if (e.key =="5") {
             if (this.state.inventory[0].healthPotion > 0) {
               health += 10;
+              if (health > this.state.maxHealth) {
+                health = this.state.maxHealth;
+              }
               this.state.inventory[0].healthPotion--;
             }
             let action = "You consume health potion.";
