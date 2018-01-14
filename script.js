@@ -7,7 +7,7 @@ class Game extends React.Component {
     this.mobsInfo = [{name: "goblin1", displayName: "Goblin Footsoldier", attack: 1, health: 20, level: 1,
     url: "https://www.ashlynnpai.com/assets/Jinn_goblin.png"},
     {name: "goblin2", displayName: "Goblin Lieutenant", attack: 2, health: 30, level: 2,
-    url: "https://www.ashlynnpai.com/assets/Jinn_goblin.png.png"},
+    url: "https://www.ashlynnpai.com/assets/Jinn_goblin.png"},
     {name: "orc1", displayName: "Orc Captain", attack: 3, health: 50, level: 3,
     url: "https://www.ashlynnpai.com/assets/Jinn_orc.png"}
     ];
@@ -329,8 +329,10 @@ class Game extends React.Component {
       let loot = this.dropsHash[mob.level][random];
       this.dropsHash[mob.level].splice(random, 1);
       this.processItem(loot);
-      let xp = this.state.xp += (10 * mob.level);
-      let action2 = "You receive " + xp + " xp.";
+      let killXp = 10 * mob.level;
+      let xp = this.state.xp
+      xp += killXp;
+      let action2 = "You receive " + killXp + " xp.";
       mainLog.unshift(action2);
       let level = this.checkLevel();
       let mobIndex = this.state.targetIndex;
@@ -487,11 +489,11 @@ class Game extends React.Component {
       var name = "Mana Potion";
     }
     else {
-      let items = this.itemsInfo;
-      for (let i=0; i<items.length; i++) {
-        var name = items[i].name;
-        if (name == item) {
-          var bonus = items[i].bonus;
+      let itemInfos = this.itemsInfo;
+      for (let i=0; i<itemInfos.length; i++) {
+        if (itemInfos[i].name == item) {
+          var name = itemInfos[i].name;
+          var bonus = itemInfos[i].bonus;
           if (bonus[0] == "hitChance") {
             hitChance += bonus[1];
           }
@@ -501,11 +503,11 @@ class Game extends React.Component {
           else if (bonus[0] == "attack") {
             attack += bonus[1];
           }
-          equipment.unshift(items[i]);
+          equipment.unshift(itemInfos[i]);
         }
       }
     }
-    let action = "You receive " + item + ".";
+    let action = "You receive " + name + ".";
     let mainLog = this.state.mainLog;
     mainLog.unshift(action);
     this.setState({
@@ -929,7 +931,7 @@ class Game extends React.Component {
     <div className='ui'>
       <div>
         <div className = "blue xp-bar">
-           <span style={xpBar}>{this.state.xp}/{xpGoal}</span>
+           <span style={xpBar}>{this.state.xp}/{xpGoal}XP</span>
          </div>
         <div className="toolbar">
           <span id="toolbar1" className="toolbarItem">1
