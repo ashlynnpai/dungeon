@@ -127,6 +127,7 @@ class Game extends React.Component {
       hitChance: .70,
       dodgeChance: 0,
       specialSkill: null,
+      buff: null,
       pet: true,
       petEnergy: 10,
       living: true,
@@ -323,6 +324,7 @@ class Game extends React.Component {
 
     if (mobHealth <= 0) {
       let action1 = mob.displayName + " dies.";
+      this.state.buff = null;
       log.unshift(action1);
       mainLog.unshift(action1);
       let random = Math.floor(Math.random() * this.dropsHash[mob.level].length);
@@ -453,8 +455,6 @@ class Game extends React.Component {
     let xp = this.state.xp;
     let log = this.state.mainLog;
     if (levelInfo[level] <= xp) {
-      console.log(levelInfo[level]);
-      console.log(xp);
       xp -= levelInfo[level];
       level++;
       let message = "You are now level " + level;
@@ -654,7 +654,7 @@ class Game extends React.Component {
         //set a special state and in combat check if state is true
         //only one state can be active at a time
         let log = this.state.combatLog;
-        let skillKeys = {1: "Fury", 2: "whatever", 3: "heal", 4: "mana potion", 5: "health potion",
+        let skillKeys = {1: "fury", 2: "bite", 3: "heal", 4: "mana potion", 5: "health potion",
         6: "water", 7: "fire", 8: "light", 9: "cloak", 0: "nimble"};
         let health = this.state.health;
         let mana = this.state.mana;
@@ -728,13 +728,16 @@ class Game extends React.Component {
             let skill = skillKeys[e.key];
             this.state.playerSpecial = skill;
             let action = "You use " + skill;
+            var buff = this.state.buff;
+            buff = skill;
             log.unshift(action);
           }
           this.setState({
             health: health,
             mob_hp: mobHealth,
             mana: mana,
-            combatLog: log
+            combatLog: log,
+            buff: buff
           })
         }
         else {
@@ -819,6 +822,22 @@ class Game extends React.Component {
 {number: 0, name: "NIMBLE", description: "Increases both your and your enemys chance to hit."}
  ]
 
+    const buffs = [
+      {name: "water", url: "https://www.ashlynnpai.com/assets/horropen_water.png"},
+      {name: "fire", url: "https://www.ashlynnpai.com/assets/14.png"},
+      {name: "light", url: "https://www.ashlynnpai.com/assets/18.png"},
+      {name: "cloak", url: "https://www.ashlynnpai.com/assets/horrorpen_124.png"},
+      {name: "nimble", url: "https://www.ashlynnpai.com/assets/70.png"}
+    ]
+
+    if (this.state.buff) {
+      let currentBuff = buffs.filter(b => b.name == this.state.buff);
+      var buffUrl = currentBuff[0].url;
+    }
+    else {
+      var buffUrl = null;
+    }
+
     var questsCompleted = [];
     var questsCurrent = [];
 
@@ -876,6 +895,9 @@ class Game extends React.Component {
           </div>
           <div className = {"blue progress-bar"}>
             <span style={manaBar}>{mana}/{this.state.maxMana}</span>
+          </div>
+          <div className="buffSection">
+            <img width="30" src={buffUrl}/>
           </div>
         </div>
 
