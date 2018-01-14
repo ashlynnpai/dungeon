@@ -236,16 +236,20 @@ class Game extends React.Component {
         var mobHash = this.mobsInfo[i];
       }
     }
+
     //choose mob's special skill
     let mobSpecialIndex = Math.floor(Math.random() * this.mobSkills.length);
     let mobSpecial = this.mobSkills[mobSpecialIndex];
     let action = mobHash.displayName + " " + mobSpecial.action + " " + mobSpecial.name;
+    let buff = this.state.buff;
+    buff = mobSpecial.name;
     this.state.combatLog.unshift(action);
     this.setState({
       current_mob: mobHash,
       mob_hp: mobHash.health,
       combatLog: this.state.combatLog,
-      message: action
+      message: action,
+      buff: buff
     });
     this.combatSequence(mobSpecial);
   }
@@ -829,7 +833,10 @@ class Game extends React.Component {
       {name: "fire", url: "https://www.ashlynnpai.com/assets/14.png", type: "good"},
       {name: "light", url: "https://www.ashlynnpai.com/assets/18.png", type: "good"},
       {name: "cloak", url: "https://www.ashlynnpai.com/assets/horrorpen_124.png", type: "good"},
-      {name: "nimble", url: "https://www.ashlynnpai.com/assets/70.png", type: "good"}
+      {name: "nimble", url: "https://www.ashlynnpai.com/assets/70.png", type: "good"},
+      {name: "Firebomb", url: "https://www.ashlynnpai.com/assets/Wall%20of%20Fire.png", type: "bad"},
+      {name: "Ice Spars", url: "https://www.ashlynnpai.com/assets/Blizzard.png", type: "bad"},
+      {name: "Shadow", url: "https://www.ashlynnpai.com/assets/shadow.png", type: "bad"}
     ]
 
     if (this.state.buff) {
