@@ -808,6 +808,14 @@ class Game extends React.Component {
         color: "#fff"
     };
 
+    const specialSkills = [
+{number: 6, name: "FLOOD", description: "A spray of water from your flask extinguishes flame."},
+{number: 7, name: "FIRE", description: "Flame from your torch melts spears of ice."},
+{number: 8, name: "LIGHT", description: "Light banishes the shadow."},
+{number: 9, name: "CLOAK", description: "Decreases both your and your enemys chance to hit."},
+{number: 0, name: "NIMBLE", description: "Increases both your and your enemys chance to hit."}
+ ]
+
     var questsCompleted = [];
     var questsCurrent = [];
 
@@ -938,7 +946,7 @@ class Game extends React.Component {
             <div className="toolbarTip">
               <p id="offensive">FURY</p>
               <p id="skillCost">Costs 2 mana.</p>
-              <div>You become enraged and land a forceful hit on your enemy.</div>
+              <div id="skillDescription">You become enraged and land a forceful hit on your enemy.</div>
             </div>
           </span>
           <span id="toolbar2" className="toolbarItem">2
@@ -946,12 +954,12 @@ class Game extends React.Component {
             <div className="toolbarTip">
               <p id="offensive">BITE</p>
               <p id="skillCost">Costs 5 energy</p>
-              <div>Scrappys bite wounds the enemy.</div>
+              <div id="skillDescription">Scrappys bite wounds the enemy.</div>
             </div>
             ) : (
             <div className="toolbarTip">
               <p id="offensive">BITE</p>
-              <div>Do you really want to bite your target?</div>
+              <div id="skillDescription">Do you really want to bite your target?</div>
             </div>
             )}
           </span>
@@ -959,7 +967,7 @@ class Game extends React.Component {
             <div className="toolbarTip">
               <p id="defensive">HEAL</p>
               <p id="skillCost">Costs 5 mana.</p>
-              <div>HEAL yourself for half your total health.</div>
+              <div id="skillDescription">HEAL yourself for half your total health.</div>
              </div>
           </span>
           <span id="toolbar4" className="toolbarItem">4
@@ -967,7 +975,7 @@ class Game extends React.Component {
             <div className="toolbarTip">
               <p id="defensive">MANA POTION</p>
               <p id="skillCost">Consumes one potion.</p>
-              <div>Restores 10 mana.</div>
+              <div id="skillDescription">Restores 10 mana.</div>
             </div>
           </span>
           <span id="toolbar5" className="toolbarItem">5
@@ -975,46 +983,20 @@ class Game extends React.Component {
              <div className="toolbarTip">
                <p id="defensive">HEALING POTION</p>
                <p id="skillCost">Consumes one potion.</p>
-               <div>Restores 10 health.</div>
+               <div id="skillDescription">Restores 10 health.</div>
              </div>
           </span>
         </div>
         <div className="toolbar">
-          <span id="toolbar6" className="toolbarItem">6
+           {specialSkills.map((skill) =>
+            <span id={"toolbar"+skill.number} className="toolbarItem">{skill.number}
             <div className="toolbarTip">
-              <p id="offensive">FLOOD</p>
-              <div>A spray of water from your flask extinguishes flame. </div>
+              <p id="offensive">{skill.name}</p>
+              <div id="skillDescription">{skill.description}</div>
               <div id="skillCost">SPECIAL. Only one special skill can be active at a time</div>
             </div>
           </span>
-          <span id="toolbar7" className="toolbarItem">7
-            <div className="toolbarTip">
-              <p id="offensive">FIRE</p>
-              <div>Flame from your torch melts spears of ice.</div>
-              <div id="skillCost">SPECIAL. Only one special skill can be active at a time</div>
-            </div>
-          </span>
-          <span id="toolbar8" className="toolbarItem">8
-            <div className="toolbarTip">
-              <p id="offensive">LIGHT</p>
-              <div>Light banishes the shadow.</div>
-              <div id="skillCost">SPECIAL. Only one special skill can be active at a time</div>
-            </div>
-          </span>
-          <span id="toolbar9" className="toolbarItem">9
-            <div className="toolbarTip">
-              <p id="defensive">CLOAK</p>
-              <div>Decreases both your and your enemys chance to hit.</div>
-              <div id="skillCost">SPECIAL. Only one special skill can be active at a time</div>
-            </div>
-          </span>
-          <span id="toolbar0" className="toolbarItem">0
-            <div className="toolbarTip">
-              <p id="offensive">NIMBLE</p>
-              <div>Increases both your and your enemys chance to hit.</div>
-              <div id="skillCost">SPECIAL. Only one special skill can be active at a time</div>
-            </div>
-          </span>
+         )}
          </div>
         <div className = "toolbar" id = "questItems">
           {this.state.questItems.map((questItem) =>
