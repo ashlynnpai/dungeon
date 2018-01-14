@@ -334,7 +334,6 @@ class Game extends React.Component {
       xp += killXp;
       let action2 = "You receive " + killXp + " xp.";
       mainLog.unshift(action2);
-      let level = this.checkLevel();
       let mobIndex = this.state.targetIndex;
       let squares = this.state.squares;
       let tip = "Press R to rest and regain health."
@@ -345,7 +344,6 @@ class Game extends React.Component {
       this.setState({
         mob_hp: 0,
         xp: xp,
-        level: level,
         combatLog: log,
         mainLog: mainLog,
         playerSpecial: null,
@@ -354,6 +352,7 @@ class Game extends React.Component {
         player_index: mobIndex,
         squares: squares
       });
+      this.checkLevel();
       return;
     }
 
@@ -449,11 +448,14 @@ class Game extends React.Component {
   }
 
   checkLevel() {
-    let levelInfo = {1:50, 2:150, 3:300, 4:1000};
+    let levelInfo = {1:50, 2:100, 3:200, 4:1000};
     let level = this.state.level;
     let xp = this.state.xp;
     let log = this.state.mainLog;
     if (levelInfo[level] <= xp) {
+      console.log(levelInfo[level]);
+      console.log(xp);
+      xp -= levelInfo[level];
       level++;
       let message = "You are now level " + level;
       log.unshift(message);
@@ -468,7 +470,8 @@ class Game extends React.Component {
         maxMana: maxMana,
         health: maxHealth,
         mana: maxMana,
-        xp: 0,
+        xp: xp,
+        level: level
       })
     }
     return level;
@@ -552,6 +555,7 @@ class Game extends React.Component {
       mainLog: log,
       questItems: questItems
     })
+    this.checkLevel();
   }
 
   equipWeapon(newWeapon) {
@@ -798,8 +802,7 @@ class Game extends React.Component {
     }
 
     var weapon = this.state.weapons[0];
-
-    let levelInfo = {1:50, 2:100, 3:200};
+    let levelInfo = {1:50, 2:100, 3:200, 4:1000};
     let level = this.state.level;
     var xpGoal = levelInfo[level];
     let xpPercent = Math.round((this.state.xp/xpGoal)*100);
