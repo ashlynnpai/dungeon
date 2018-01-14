@@ -400,12 +400,12 @@ body {
   position: absolute;
   z-index: 1;
   width: 300px;
-  height: 100px;
+  height: 200px;
   bottom: 100%;
   left: 50%;
   margin-left: -150px;
   border-radius: 5px;
-  background: rgba(0,0,0,0.7);
+  background: rgba(0,0,0,0.8);
   color: #fff;
   margin-left: 10px;
   text-align: left;
@@ -415,11 +415,20 @@ body {
   display: block;
 }
 
+#offensive {
+  color: $orange;
+  padding-left: 10px;
+}
 
-// #toolbar1:hover .toolbarTip {
-//   display: block;
-// }
+#defensive {
+  color: #99FF00;
+  padding-left: 10px;
+}
 
+#skillCost {
+  color: #ffffaa;
+  padding-left: 10px;
+}
 
 #questItems {
   margin-top: 10px;
@@ -438,6 +447,11 @@ body {
   text-align: left;
   background: $black;
   color: #fff;
+}
+
+#logLine {
+  font-size: 14px;
+  padding-left: 5px;
 }
 
 .bottom {

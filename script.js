@@ -934,61 +934,83 @@ class Game extends React.Component {
         <div className="toolbar">
           <span id="toolbar1" className="toolbarItem">1
             <div className="toolbarTip">
-              FURY. You become enraged and land a forceful hit on your enemy.
-              Costs 2 mana.
+              <p id="offensive">FURY</p>
+              <p id="skillCost">Costs 2 mana.</p>
+              <div>You become enraged and land a forceful hit on your enemy.</div>
             </div>
           </span>
           <span id="toolbar2" className="toolbarItem">2
             {pet ? (
             <div className="toolbarTip">
-              BITE. Scrappys bite wounds the enemy.
+              <p id="offensive">BITE</p>
+              <p id="skillCost">Costs 5 energy</p>
+              <div>Scrappys bite wounds the enemy.</div>
             </div>
             ) : (
             <div className="toolbarTip">
-              BITE. Do you really want to bite your target?
+              <p id="offensive">BITE</p>
+              <div>Do you really want to bite your target?</div>
             </div>
             )}
           </span>
           <span id="toolbar3" className="toolbarItem">3
             <div className="toolbarTip">
-              HEAL yourself for half your total health. Costs 5 mana.
+              <p id="defensive">HEAL</p>
+              <p id="skillCost">Costs 5 mana.</p>
+              <div>HEAL yourself for half your total health.</div>
              </div>
           </span>
           <span id="toolbar4" className="toolbarItem">4
             <div className="potionCount">{this.state.inventory[1].manaPotion}</div>
-            <div className="toolbarTip">MANA POTION grants 10 mana.
+            <div className="toolbarTip">
+              <p id="defensive">MANA POTION</p>
+              <p id="skillCost">Consumes one potion.</p>
+              <div>Restores 10 mana.</div>
             </div>
           </span>
           <span id="toolbar5" className="toolbarItem">5
              <div className="potionCount">{this.state.inventory[0].healthPotion}</div>
-             <div className="toolbarTip">HEALING POTION grants 10 health.
+             <div className="toolbarTip">
+               <p id="defensive">HEALING POTION</p>
+               <p id="skillCost">Consumes one potion.</p>
+               <div>Restores 10 health.</div>
              </div>
           </span>
         </div>
         <div className="toolbar">
           <span id="toolbar6" className="toolbarItem">6
             <div className="toolbarTip">
-              FLOOD. A spray of water from your flask extinguishes flame. SPECIAL.
+              <p id="offensive">FLOOD</p>
+              <div>A spray of water from your flask extinguishes flame. </div>
+              <div id="skillCost">SPECIAL. Only one special skill can be active at a time</div>
             </div>
           </span>
           <span id="toolbar7" className="toolbarItem">7
             <div className="toolbarTip">
-              FIRE. Flame from your torch melts spears of ice. SPECIAL.
+              <p id="offensive">FIRE</p>
+              <div>Flame from your torch melts spears of ice.</div>
+              <div id="skillCost">SPECIAL. Only one special skill can be active at a time</div>
             </div>
           </span>
           <span id="toolbar8" className="toolbarItem">8
             <div className="toolbarTip">
-              LIGHT. Light banishes the shadow. SPECIAL.
+              <p id="offensive">LIGHT</p>
+              <div>Light banishes the shadow.</div>
+              <div id="skillCost">SPECIAL. Only one special skill can be active at a time</div>
             </div>
           </span>
           <span id="toolbar9" className="toolbarItem">9
             <div className="toolbarTip">
-              CLOAK. Decreases both your and your enemys chance to hit. SPECIAL.
+              <p id="defensive">CLOAK</p>
+              <div>Decreases both your and your enemys chance to hit.</div>
+              <div id="skillCost">SPECIAL. Only one special skill can be active at a time</div>
             </div>
           </span>
           <span id="toolbar0" className="toolbarItem">0
             <div className="toolbarTip">
-              NIMBLE. Increases both your and your enemys chance to hit. SPECIAL.
+              <p id="offensive">NIMBLE</p>
+              <div>Increases both your and your enemys chance to hit.</div>
+              <div id="skillCost">SPECIAL. Only one special skill can be active at a time</div>
             </div>
           </span>
          </div>
@@ -1000,16 +1022,16 @@ class Game extends React.Component {
 
       <div className="display-log">
         {this.state.mainLog.map((logLine) =>
-       <p>{logLine}</p>)}
+       <div id="logLine">{logLine}</div>)}
       </div>
       <div className="display-log">
         {this.state.combatLog.map((combatEvent) =>
-       <p>{combatEvent}</p>)}
+       <div id="logLine">{combatEvent}</div>)}
       </div>
     </div>
     <div className = "bottom">
       <div className="questLog">
-        <h3>Quests</h3>
+        <p>Quests</p>
         {questsCurrent.map((current) =>
           <div className="questLogEntry">
             <div className="questLogName">{current.name}</div>
