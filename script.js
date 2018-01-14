@@ -427,7 +427,8 @@ class Game extends React.Component {
         health: maxHealth,
         mana: maxMana,
         petEnergy: this.maxPetEnergy,
-        currentAction: null
+        currentAction: null,
+        buff: null
       });
       return;
     }
@@ -448,9 +449,10 @@ class Game extends React.Component {
     this.setState({
       health: health,
       mana: mana,
-      petEnergy: energy
+      petEnergy: energy,
+      buff: "rest"
     });
-    setTimeout(this.regenerateHealth.bind(this), 1500);
+    setTimeout(this.regenerateHealth.bind(this), 1000);
   }
 
   checkLevel() {
@@ -836,7 +838,8 @@ class Game extends React.Component {
       {name: "nimble", url: "https://www.ashlynnpai.com/assets/70.png", type: "good"},
       {name: "Firebomb", url: "https://www.ashlynnpai.com/assets/Wall%20of%20Fire.png", type: "bad"},
       {name: "Ice Spars", url: "https://www.ashlynnpai.com/assets/Blizzard.png", type: "bad"},
-      {name: "Shadow", url: "https://www.ashlynnpai.com/assets/shadow.png", type: "bad"}
+      {name: "Shadow", url: "https://www.ashlynnpai.com/assets/shadow.png", type: "bad"},
+      {name: "rest", url: "https://www.ashlynnpai.com/assets/Tent-Sleep-icon.png", type: "good"}
     ]
 
     if (this.state.buff) {
