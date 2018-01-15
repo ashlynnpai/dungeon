@@ -971,7 +971,8 @@ class Game extends React.Component {
         {this.state.overlay ? (
         <div className="overlay">
           <div>
-            <h1>Dungeon</h1>
+            <Tips />
+
             <button onClick={() => this.toggleOverlay()} className="overlayButton">
               <img width="50" src="https://www.ashlynnpai.com/assets/greatsword.png" />
             </button>
@@ -1221,6 +1222,33 @@ class Game extends React.Component {
     );
   }
 }
+
+const Tips = () => {
+
+  return (
+  <div className="tips">
+    <h1>Dungeon</h1>
+    <p>The dwarven halls of  have been overrun by goblins. Discover
+      what leads them and destroy it.</p>
+    <h3>Movement</h3>
+    <span className="shortcutKey">W</span>
+    <span className="shortcutKey">A</span>
+    <span className="shortcutKey">S</span>
+    <span className="shortcutKey">D</span>
+    <p>Move into an occupied square to fight monsters or open chests.</p>
+    <h3>Combat</h3>
+    <span className="shortcutKey">1</span> -
+    <span className="shortcutKey">0</span>
+    <p>Combat is interactive. Mouse over the skill toolbar to read
+      the tooltips. Press keys 1-0 to use skills.</p>
+    <p>There is an autoattack but to beat the game you should use
+      your skills.</p>
+    <h3>Rest</h3>
+    <span className="shortcutKey">R</span>
+    <p>Press r to rest and regenerate health and mana. Your character
+      cannot move until it is done resting.</p>
+  </div>
+)};
 
 ReactDOM.render(
   <Game />,
