@@ -11,11 +11,15 @@ class Game extends React.Component {
     {name: "orc1", displayName: "Orc Captain", attack: 3, health: 50, level: 3,
     url: "https://www.ashlynnpai.com/assets/Jinn_orc.png"}
     ];
-    this.weaponsInfo = [{name: "Hands", attack: 1, description: "These are deadly weapons."},
-    {name: "Meatchopper", attack: 2, description: "A rusty knife from someone's kitchen"},
-    {name: "Slicer", attack: 3, description: "Finally, a decent weapon worthy of your skills."},
-    {name: "Iceblade", attack: 5, description: "A legendary sword forged by the dwarves."}
+
+
+    this.weaponsInfo = [
+    {name: "Hands", attack: 1, description: "These are deadly weapons.", url: "https://www.ashlynnpai.com/assets/Power%20of%20blessing.png"},
+    {name: "Meatchopper", attack: 2, description: "A rusty knife from someone's kitchen.", url: "https://www.ashlynnpai.com/assets/dagger.png"},
+    {name: "Slicer", attack: 3, description: "This blade belonged to a goblin.", url: "https://www.ashlynnpai.com/assets/shortsword.png"},
+    {name: "Iceblade", attack: 5, description: "A legendary sword forged by the dwarves.", url: "https://www.ashlynnpai.com/assets/greatsword.png"}
   ];
+
     this.itemsInfo = [{name: "Boots", bonus: ["dodgeChance", .03], url: "https://www.ashlynnpai.com/assets/Light%20Boot_1.png", description: "Dodge +.03"},
     {name: "Bracers", bonus: ["hitChance", .03], url: "https://www.ashlynnpai.com/assets/Leather%20Bracelet_1.PNG", description: "Hit +.03"},
     {name: "Helm", bonus: ["hitChance", .04], url: "https://www.ashlynnpai.com/assets/Light%20Helm_1.PNG", description: "Hit +.04"},
@@ -131,7 +135,7 @@ class Game extends React.Component {
       pet: false,
       petEnergy: 10,
       living: true,
-      weapons: ["Hands"],
+      weapons: [{name: "Hands", attack: 1, description: "These are deadly weapons.", url: "https://www.ashlynnpai.com/assets/Power%20of%20blessing.png"}],
       attack: 1,
       inventory: [{healthPotion: 1}, {manaPotion: 0}],
       equipment: [],
@@ -568,12 +572,13 @@ class Game extends React.Component {
     let squares = this.state.squares;
     let weapons = this.state.weapons;
     let currentSquare = this.state.player_index;
-    weapons.unshift(newWeapon);
-    let message = "You equip " + weapons[0];
     let mainLog = this.state.mainLog;
-    let filteredWeapons = this.weaponsInfo.filter(weaponInfo => weaponInfo.name == weapons[0]);
+    let filteredWeapons = this.weaponsInfo.filter(weaponInfo => weaponInfo.name == newWeapon);
+    weapons.unshift(filteredWeapons[0]);
     let attack = filteredWeapons[0].attack;
-    mainLog.unshift(message);
+    let action = "You equip " + filteredWeapons[0].name + " for attack " + attack + ". " + filteredWeapons[0].description;
+    console.log("equip " + weapons);
+    mainLog.unshift(action);
       this.setState({
         weapons: weapons,
         attack: attack,
@@ -818,7 +823,6 @@ class Game extends React.Component {
         };
     }
 
-    var weapon = this.state.weapons[0];
     let levelInfo = {1:50, 2:100, 3:200, 4:1000};
     let level = this.state.level;
     var xpGoal = levelInfo[level];
@@ -847,6 +851,8 @@ class Game extends React.Component {
       {name: "Shadow", url: "https://www.ashlynnpai.com/assets/shadow.png", type: "bad"},
       {name: "rest", url: "https://www.ashlynnpai.com/assets/Tent-Sleep-icon.png", type: "good"}
     ]
+
+    var weapon = this.state.weapons[0].name;
 
     if (this.state.buff) {
       let currentBuff = buffs.filter(b => b.name == this.state.buff);
@@ -1086,11 +1092,19 @@ class Game extends React.Component {
         )}
       </div>
       <div className="equipment">
+        {this.state.weapons.map((w) =>
+         <div>
+           <img src={w.url} />
+           <div>{w.name}</div>
+         </div>
+        )}
+      </div>
+      <div className="equipment">
         {this.state.equipment.map((piece) =>
-        <div>
-           <img width="50" src={piece.url} />
+         <div>
+           <img src={piece.url} />
            <div>{piece.description}</div>
-        </div>
+         </div>
         )}
       </div>
     </div>
