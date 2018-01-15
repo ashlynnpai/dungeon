@@ -158,7 +158,8 @@ class Game extends React.Component {
       currentAction: null,
       mainLog: [],
       combatLog: [],
-      message: ""
+      message: "",
+      sound: true
       };
   }
 
@@ -168,6 +169,19 @@ class Game extends React.Component {
 
   componentWillUnmount() {
     document.removeEventListener("keypress", this.onKeyPressed.bind(this));
+  }
+
+  toggleSound() {
+    if (this.state.sound) {
+      this.setState({
+        sound: false
+      })
+    }
+    else {
+      this.setState({
+        sound: true
+      })
+    }
   }
 
   checkVisible() {
@@ -245,6 +259,10 @@ class Game extends React.Component {
     let mobSpecialIndex = Math.floor(Math.random() * this.mobSkills.length);
     let mobSpecial = this.mobSkills[mobSpecialIndex];
     let action = mobHash.displayName + " " + mobSpecial.action + " " + mobSpecial.name;
+    if (this.state.sound) {
+      let alertAudio = new Audio('https://www.ashlynnpai.com/assets/sms-alert-5-daniel_simon.mp3');
+      alertAudio.play();
+    }
     let buff = this.state.buff;
     buff = mobSpecial.name;
     this.state.combatLog.unshift(action);
@@ -295,6 +313,10 @@ class Game extends React.Component {
     let playerRoll = Math.random();
 
     if (playerRoll <= playerHitChance) {
+      if (this.state.sound) {
+        let fightAudio = new Audio('https://www.ashlynnpai.com/assets/Swords_Collide-Sound_Explorer-2015600826.mp3');
+        fightAudio.play();
+      }
       mobHealth -= modifiedPlayerAttack;
       let action = "Player hits " + mob.displayName + " for " + modifiedPlayerAttack;
       if (mobHealth < 0) {
@@ -427,12 +449,20 @@ class Game extends React.Component {
     let energy = this.state.petEnergy;
 
     if (health >= maxHealth && mana >= maxMana && energy >= this.maxPetEnergy) {
+      if (this.state.sound) {
+        let chimeAudio = new Audio('https://www.ashlynnpai.com/assets/Electronic_Chime-KevanGC-495939803.mp3');
+        chimeAudio.play();
+      }
+      let action = "You are done resting."
+      let log = this.state.mainLog
+      log.unshift(action);
       this.setState({
         health: maxHealth,
         mana: maxMana,
         petEnergy: this.maxPetEnergy,
         currentAction: null,
-        buff: null
+        buff: null,
+        mainLog: log
       });
       return;
     }
@@ -468,6 +498,10 @@ class Game extends React.Component {
       xp -= levelInfo[level];
       level++;
       let message = "You are now level " + level;
+      if (this.state.sound) {
+        let chimeAudio = new Audio('https://www.ashlynnpai.com/assets/Electronic_Chime-KevanGC-495939803.mp3');
+        chimeAudio.play();
+      }
       log.unshift(message);
       let maxHealth = this.state.maxHealth;
       let maxMana = this.state.maxMana
@@ -651,6 +685,10 @@ class Game extends React.Component {
           this.processFindableItems(next_square);
           squares[current_square] = null;
           squares[next_square] = "P";
+          if (this.state.sound) {
+            let chimeAudio = new Audio('https://www.ashlynnpai.com/assets/Electronic_Chime-KevanGC-495939803.mp3');
+            chimeAudio.play();
+          }
         }
         else {
           return;
@@ -695,6 +733,10 @@ class Game extends React.Component {
             if (pet) {
               var energy = this.state.petEnergy;
               if (energy >= 3) {
+                if (this.state.sound) {
+                  let catAudio = new Audio('https://www.ashlynnpai.com/assets/Kitten%20Meow-SoundBible.com-1295572573.mp3');
+                  catAudio.play();
+                }
                 mobHealth -= (level * 2);
                 energy -= 3;
                 let action = "Scrappy bites for " + (level * 2) + ".";
@@ -711,6 +753,10 @@ class Game extends React.Component {
             if (mana >= 4) {
               health += 10;
               mana -= 4;
+              if (this.state.sound) {
+                let healAudio = new Audio('https://www.ashlynnpai.com/assets/blessing.ogg');
+                healAudio.play();
+              }
               let action = "You cast heal for 10 health.";
               log.unshift(action);
             }
@@ -722,29 +768,49 @@ class Game extends React.Component {
           else if (e.key =="4") {
             if (this.state.inventory[1].manaPotion > 0) {
               mana += 10;
+              if (this.state.sound) {
+                let healAudio = new Audio('https://www.ashlynnpai.com/assets/blessing2.ogg');
+                healAudio.play();
+              }
+              let action = "You consume mana potion.";
+              log.unshift(action);
               if (mana > this.state.maxMana) {
                 mana = this.state.maxMana;
               }
               this.state.inventory[1].manaPotion--;
             }
-            let action = "You consume mana potion.";
-            log.unshift(action);
           }
           else if (e.key =="5") {
             if (this.state.inventory[0].healthPotion > 0) {
               health += 10;
+              if (this.state.sound) {
+                let healAudio = new Audio('https://www.ashlynnpai.com/assets/blessing.ogg');
+                healAudio.play();
+              }
+              let action = "You consume health potion.";
+              log.unshift(action);
               if (health > this.state.maxHealth) {
                 health = this.state.maxHealth;
               }
               this.state.inventory[0].healthPotion--;
             }
-            let action = "You consume health potion.";
-            log.unshift(action);
           }
           else if (e.key == "6" || e.key == "7" || e.key == "8" || e.key == "9" || e.key == "0") {
+            let sounds = [
+              {6: 'https://www.ashlynnpai.com/assets/water.ogg'},
+              {7: 'https://www.ashlynnpai.com/assets/flamethrower.ogg'},
+              {8: 'https://www.ashlynnpai.com/assets/blessing.ogg'},
+              {9: 'https://www.ashlynnpai.com/assets/Electronic_Chime-KevanGC-495939803.mp3'},
+              {0: 'https://www.ashlynnpai.com/assets/Electronic_Chime-KevanGC-495939803.mp3'}
+            ]
+
             let skill = skillKeys[e.key];
             this.state.playerSpecial = skill;
             let action = "You use " + skill;
+            if (this.state.sound) {
+              let audio = new Audio(sounds[e.key]);
+              audio.play();
+            }
             var buff = this.state.buff;
             buff = skill;
             log.unshift(action);
@@ -889,6 +955,20 @@ class Game extends React.Component {
       <div onKeyPress={(e) => this.onKeyPressed(e)}>
       <div className = "main">
       <div className = "ui">
+        <div>
+          {this.state.sound ? (
+            <div>
+              <img onClick={() => this.toggleSound()} width="40" src="https://www.ashlynnpai.com/assets/if_speaker_40842.png" />
+            </div>
+          ) : (
+            <div>
+              <img onClick={() => this.toggleSound()} width="40" src="https://www.ashlynnpai.com/assets/if_speaker_mute_40843.png" />
+            </div>
+          )}
+          <div>
+            <img width="40" src="https://www.ashlynnpai.com/assets/if_help_black_40796.png" />
+          </div>
+        </div>
         <div>
           {pet ? (
             <div className="avatar" id="petAvatar">
