@@ -159,7 +159,8 @@ class Game extends React.Component {
       mainLog: [],
       combatLog: [],
       message: "",
-      sound: true
+      sound: true,
+      overlay: true
       };
   }
 
@@ -180,6 +181,19 @@ class Game extends React.Component {
     else {
       this.setState({
         sound: true
+      })
+    }
+  }
+
+  toggleOverlay() {
+    if (this.state.overlay) {
+      this.setState({
+        overlay: false
+      })
+    }
+    else {
+      this.setState({
+        overlay: true
       })
     }
   }
@@ -954,6 +968,20 @@ class Game extends React.Component {
     return (
       <div onKeyPress={(e) => this.onKeyPressed(e)}>
       <div className = "main">
+        {this.state.overlay ? (
+        <div className="overlay">
+          <div>
+            <h1>Dungeon</h1>
+            <button onClick={() => this.toggleOverlay()} className="overlayButton">
+              <img width="50" src="https://www.ashlynnpai.com/assets/greatsword.png" />
+            </button>
+            <div>Click to close</div>
+          </div>
+        </div>
+          ) : (
+        <div>
+        </div>
+        )}
       <div className = "ui">
         <div>
           {this.state.sound ? (
@@ -966,7 +994,7 @@ class Game extends React.Component {
             </div>
           )}
           <div>
-            <img width="40" src="https://www.ashlynnpai.com/assets/if_help_black_40796.png" />
+            <img onClick={() => this.toggleOverlay()} width="40" src="https://www.ashlynnpai.com/assets/if_help_black_40796.png" />
           </div>
         </div>
         <div>
@@ -1193,8 +1221,6 @@ class Game extends React.Component {
     );
   }
 }
-
-
 
 ReactDOM.render(
   <Game />,

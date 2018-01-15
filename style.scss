@@ -54,6 +54,8 @@ body {
 .main {
   width: $boardWidth;
   margin: 0 auto;
+  position: relative;
+  z-index: 0;
 }
 
 .flex-container {
@@ -131,7 +133,7 @@ body {
 .squareInfo {
   display: none;
   position: absolute;
-  z-index: 1;
+  z-index: 5;
   width: 100px;
   height: 80px;
   bottom: 100%;
@@ -423,7 +425,7 @@ body {
 .toolbarTip {
   display: none;
   position: absolute;
-  z-index: 1;
+  z-index: 5;
   width: 300px;
   height: 200px;
   bottom: 100%;
@@ -628,4 +630,24 @@ body {
   background-position: center, center;
   background-size: 70px, cover;
   position: relative;
+}
+
+.overlay {
+    position:absolute;
+    margin-left: auto;
+    margin-right: auto;
+    left: 0;
+    right: 0;
+    width: 800px;
+    height: 800px;
+    background-color:rgba(0, 0, 0, 0.85);
+    z-index:9;
+    color:white;
+}
+
+.overlayButton {
+    background-color: $black;
+    border: solid 3px red;
+    border-radius: 5px;
+    margin-top: 20px;
 }
