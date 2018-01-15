@@ -30,15 +30,16 @@ class Game extends React.Component {
   this.findableItems = [{index: 9, item: "Rune"}, {index: 11, item: "Meatchopper"}, {index: 59, item: "Brooch"},
 {index: 110, item: "Necklace"}, {index: 114, item: "Slicer"},
 {index: 119, item: "Book"}, {index: 152, item: "Iceblade"}, {index: 190, item: "Orb"}];
-    this.questItemsInfo = [{name: "Rune", longName: "Rune of Narheru", description:
+    this.questItemsInfo = [{name: "Rune", longName: "Rune of Shielding", description:
     "This rune was created by the elves for protection.", url: "https://www.ashlynnpai.com/assets/Ruin%20Stone_01.png"},
     {name: "Brooch", longName: "Brooch of Wisdom", description:
-    "Grants enlightenment.", url: "https://www.ashlynnpai.com/assets/Ornament_03.png"},
+    "This brooch fills the wearer with courage.", url: "https://www.ashlynnpai.com/assets/Ornament_03.png"},
     {name: "Necklace", longName: "Necklace of Flight", description:
-    "You feel lighter than air.", url: "https://www.ashlynnpai.com/assets/Necklace_03.png"},
+    "Wearing this necklace makes your load feel lighter.", url: "https://www.ashlynnpai.com/assets/Necklace_03.png"},
     {name: "Book", longName: "Book of the Art of Combat", description:
-    "You have learned the secrets of swordplay.", url: ""}, {name: "Orb", longName: "Orb of Seeing", description:
-    "You see into your enemys mind.", url: ""}];
+    "You learn the secrets of swordplay.", url: "https://www.ashlynnpai.com/assets/Book_00.png"},
+    {name: "Orb", longName: "Orb of Seeing", description:
+    "You see into your enemys mind.", url: "https://www.ashlynnpai.com/assets/Crystal%20Ball_03.png"}];
     this.dropsHash = {1: ["Boots", "healthPotion", "manaPotion", "healthPotion", "Bracers"],
       2: ["Helm", "healthPotion", "manaPotion", "healthPotion", "Belt"],
       3: ["Gloves", "healthPotion", "manaPotion", "manaPotion", "Breastplate"]
@@ -141,15 +142,15 @@ class Game extends React.Component {
       equipment: [],
       questItems: [],
       quests: [
-       {name: "Find the Orb", description: "Find the Orb.",
+       {name: "Mirror", description: "A wizard ventured into the hall and has never been seen since. Could he have left something behind?",
         item: "Orb", completed: false, xp: 30},
-       {name: "Find the Book", description: "Find the Book.",
+       {name: "Master of Swords", description: "A great tome of swordplay is thought to reside in the library of the dwarven hall.",
        item: "Book", completed: false, xp: 20},
-       {name: "Find the Necklace", description: "Find the Necklace.",
+       {name: "Lost Necklace", description: "Lady Lowena believes her necklace was stolen by a goblin scavenger.",
        item: "Necklace", completed: false, xp: 20},
-       {name: "Find the Brooch", description: "Find the brooch.",
+       {name: "Legend of the Jewel", description: "There are rumors of a fabled jewel in these halls.",
        item: "Brooch", completed: false, xp: 10},
-       {name: "A Small Clue", description: "This hall was built by the dwarves. Find some clue about what happened here.",
+       {name: "A Small Clue", description: "This was once a great hall. Find some clue about what happened here.",
        item: "Rune", completed: false, xp: 10}
       ],
       current_mob: "",
