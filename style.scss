@@ -267,10 +267,25 @@ body {
     height: 40px;
 }
 
-#petBar, #petNameplate {
+.petNameplate {
+  width: 150px;
+  height: 13px;
+  color: #fff;
+  background: $black;
+  padding: 2px;
+  border-radius: 3px;
+  box-shadow: 0 1px 5px $black inset, 0 1px 0 #444;
+}
+
+#petBar {
    width: 150px;
    margin-right: 20px;
    font-size: 14px;
+}
+
+.blankPet {
+  width: 150px;
+  height: 50px;
 }
 
 
@@ -650,6 +665,7 @@ body {
     border: solid 3px red;
     border-radius: 5px;
     margin-top: 20px;
+    color: #fff;
 }
 
 .tips {
@@ -663,4 +679,17 @@ body {
     border-radius: 5px;
     margin: 10px;
     padding: 5px;
+}
+
+.rezOverlay {
+    position:absolute;
+    margin-left: auto;
+    margin-right: auto;
+    left: 0;
+    right: 0;
+    width: 500px;
+    height: 500px;
+    background-color:rgba(0, 0, 0, 0.85);
+    z-index:999;
+    color:white;
 }

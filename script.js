@@ -199,6 +199,18 @@ class Game extends React.Component {
     }
   }
 
+  toggleRez() {
+    let action = "Scrappy has revived you. Press R to rest."
+    let log = this.state.mainLog;
+    log.unshift(action);
+    this.setState({
+      living: true,
+      message: "",
+      mainLog: log,
+      health: this.state.maxHealth
+    })
+  }
+
   checkVisible() {
     let squares = this.state.squares;
     let p = this.state.player_index;
@@ -448,8 +460,8 @@ class Game extends React.Component {
         health: 0,
         living: false,
         combatLog: log,
-        message: action
-        //death scene
+        message: action,
+        currentAction: null
       });
       return;
     }
@@ -626,7 +638,6 @@ class Game extends React.Component {
     weapons.unshift(filteredWeapons[0]);
     let attack = filteredWeapons[0].attack;
     let action = "You equip " + filteredWeapons[0].name + " for attack " + attack + ". " + filteredWeapons[0].description;
-    console.log("equip " + weapons);
     mainLog.unshift(action);
       this.setState({
         weapons: weapons,
@@ -973,7 +984,6 @@ class Game extends React.Component {
         <div className="overlay">
           <div>
             <Tips />
-
             <button onClick={() => this.toggleOverlay()} className="overlayButton">
               <img width="50" src="https://www.ashlynnpai.com/assets/greatsword.png" />
             </button>
@@ -984,6 +994,20 @@ class Game extends React.Component {
         <div>
         </div>
         )}
+        {!this.state.living ? (
+        <div className="rezOverlay">
+          <div>
+            <Rez />
+            <button onClick={() => this.toggleRez()} className="overlayButton">
+              <h1>YES</h1>
+            </button>
+          </div>
+        </div>
+          ) : (
+        <div>
+        </div>
+        )}
+
       <div className = "ui">
         <div>
           {this.state.sound ? (
@@ -1012,7 +1036,7 @@ class Game extends React.Component {
         <div>
           {pet ? (
              <div>
-               <div className="nameplate" id="petNameplate">
+               <div className="petNameplate">
                 <div>Scrappy</div>
                </div>
                <div className={"orange progress-bar"} id="petBar">
@@ -1020,7 +1044,7 @@ class Game extends React.Component {
                </div>
              </div>
             ) : (
-              <div className = "blankMob">
+              <div className="blankPet">
               </div>
             )}
        </div>
@@ -1053,10 +1077,7 @@ class Game extends React.Component {
                 <div>{mob.displayName}</div>
               </div>
               <div className = {mobHealthColor + " progress-bar"}>
-                <span style={mobHealthBar}>{mobHealth}/{mobMaxHealth}</span>
-              </div>
-              <div className = {mobHealthColor + " progress-bar"}>
-                <span style={mobHealthBar}>{mobHealth}/{mobMaxHealth}</span>
+                <span style={mobHealthBar}>{mobHealth}/{mobMaxHealth}   </span>
               </div>
             </div>
             ) : (
@@ -1224,8 +1245,16 @@ class Game extends React.Component {
   }
 }
 
-const Tips = () => {
+const Rez = () => {
+  return (
+    <div>
+      <h2>Want Rez?</h2>
+      <p>Scrappy would like to revive you.</p>
+      <div><img width="90" src="https://www.ashlynnpai.com/assets/yoppy.jpg" /></div>
+    </div>
+)};
 
+const Tips = () => {
   return (
   <div className="tips">
     <h1>Silverhearth</h1>
