@@ -142,9 +142,9 @@ class Game extends React.Component {
       equipment: [],
       questItems: [],
       quests: [
-       {name: "Mirror", description: "A wizard ventured into the hall and has never been seen since. Could he have left something behind?",
+       {name: "Mirror", description: "A wizard ventured into Silverhearth and has never been seen since. Could he have left something behind?",
         item: "Orb", completed: false, xp: 30},
-       {name: "Master of Swords", description: "A great tome of swordplay is thought to reside in the library of the dwarven hall.",
+       {name: "Master of Swords", description: "A great tome of swordplay is thought to reside in the library of Silverhearth.",
        item: "Book", completed: false, xp: 20},
        {name: "Lost Necklace", description: "Lady Lowena believes her necklace was stolen by a goblin scavenger.",
        item: "Necklace", completed: false, xp: 20},
@@ -1228,8 +1228,8 @@ const Tips = () => {
 
   return (
   <div className="tips">
-    <h1>Dungeon</h1>
-    <p>The dwarven halls of  have been overrun by goblins. Discover
+    <h1>Silverhearth</h1>
+    <p>The dwarven halls of Silverhearth have been overrun by goblins. Discover
       what leads them and destroy it.</p>
     <h3>Movement</h3>
     <span className="shortcutKey">W</span>
