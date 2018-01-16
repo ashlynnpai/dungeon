@@ -11,15 +11,12 @@ class Game extends React.Component {
     {name: "orc1", displayName: "Orc Captain", attack: 3, health: 50, level: 3,
     url: "https://www.ashlynnpai.com/assets/Jinn_orc.png"}
     ];
-
-
     this.weaponsInfo = [
     {name: "Hands", attack: 1, description: "These are deadly weapons.", url: "https://www.ashlynnpai.com/assets/Power%20of%20blessing.png"},
     {name: "Meatchopper", attack: 2, description: "A rusty knife from someone's kitchen.", url: "https://www.ashlynnpai.com/assets/dagger.png"},
     {name: "Slicer", attack: 3, description: "This blade belonged to a goblin.", url: "https://www.ashlynnpai.com/assets/shortsword.png"},
     {name: "Iceblade", attack: 5, description: "A legendary sword forged by the dwarves.", url: "https://www.ashlynnpai.com/assets/greatsword.png"}
   ];
-
     this.itemsInfo = [{name: "Boots", bonus: ["dodgeChance", .03], url: "https://www.ashlynnpai.com/assets/Light%20Boot_1.png", description: "Dodge +.03"},
     {name: "Bracers", bonus: ["hitChance", .03], url: "https://www.ashlynnpai.com/assets/Leather%20Bracelet_1.PNG", description: "Hit +.03"},
     {name: "Helm", bonus: ["hitChance", .04], url: "https://www.ashlynnpai.com/assets/Light%20Helm_1.PNG", description: "Hit +.04"},
@@ -27,7 +24,7 @@ class Game extends React.Component {
     {name: "Gloves", bonus: ["attack", 1], url: "https://www.ashlynnpai.com/assets/Leather%20Glove_1.png", description: "Attack +1"},
     {name: "Breastplate", bonus: ["hitChance", .05], url: "https://www.ashlynnpai.com/assets/Light%20Armor_1.png", description: "Hit +.05"}
   ];
-  this.findableItems = [{index: 9, item: "Rune"}, {index: 11, item: "Meatchopper"}, {index: 59, item: "Brooch"},
+    this.findableItems = [{index: 9, item: "Rune"}, {index: 11, item: "Meatchopper"}, {index: 59, item: "Brooch"},
 {index: 110, item: "Necklace"}, {index: 114, item: "Slicer"},
 {index: 119, item: "Book"}, {index: 152, item: "Iceblade"}, {index: 190, item: "Orb"}];
     this.questItemsInfo = [{name: "Rune", longName: "Rune of Shielding", description:
@@ -62,7 +59,6 @@ class Game extends React.Component {
     let level2 = []
     level2.push.apply(level2, room3.concat(room4).concat(room5).concat(miniboss));
 
-
     let room6 = [135, 134, 133, 132, 131, 130, 145, 144, 143, 142, 141, 140];
     let room7 = [150, 151, 152, 160, 161, 162, 170, 171, 172, 180, 181, 190, 191];
     let room8 = [163, 164, 165, 166, 167, 168, 169, 173, 174, 175, 176, 177, 178, 179];
@@ -88,7 +84,6 @@ class Game extends React.Component {
     spacesCopy.splice(petIndex, 1);
 
     // seed the findable items (quest items and weapons)
-
     for (let i=0; i<this.findableItems.length; i++) {
       let itemIndex = this.findableItems[i].index;
       squares[itemIndex] = "I";
@@ -121,7 +116,7 @@ class Game extends React.Component {
     this.state = {
       squares: squares,
       hidden: [],
-      player_index: startPoint,
+      playerIndex: startPoint,
       yCoord: 0,
       health: 20,
       maxHealth: 20, //has to increase on level
@@ -154,7 +149,7 @@ class Game extends React.Component {
        item: "Rune", completed: false, xp: 10}
       ],
       current_mob: "",
-      mob_hp: 0,
+      mobHp: 0,
       targetIndex: null,
       currentAction: null,
       mainLog: [],
@@ -213,11 +208,16 @@ class Game extends React.Component {
 
   checkVisible() {
     let squares = this.state.squares;
-    let p = this.state.player_index;
+    let p = this.state.playerIndex;
     let r = Math.floor(p/10);
     let n = 10;
     let visible = [];
-    const aura = [p, p-2, p-1, p+1, p+2, p-n-2, p-n-1, p-n, p-n+1, p-n+2, p+n-2, p+n-1, p+n, p+n+1, p+n+2, p+3, p-3, p-n-3, p-n+3, p+n-3, p+n+3, p-n*2, p+n*2, p-n*2-1, p-n*2+1, p+n*2+1, p+n*2-1, p+4, p-n+4,p+n+4];
+    const aura = [p, p-2, p-1, p+1, p+2,
+      p-n-2, p-n-1, p-n, p-n+1, p-n+2,
+      p+n-2, p+n-1, p+n, p+n+1, p+n+2,
+      p+3, p-3, p-n-3, p-n+3, p+n-3, p+n+3,
+      p-n*2, p+n*2, p-n*2-1, p-n*2+1, p+n*2+1, p+n*2-1,
+      p+4, p-n+4,p+n+4];
     for (let i=0; i<aura.length; i++) {
       if (Math.abs(aura[i]%10-p%10)<4 && aura[i]>=0 && aura[i]<=squares.length) {
         visible.push(aura[i]);
@@ -241,7 +241,6 @@ class Game extends React.Component {
        document.getElementById("square" + visible[i]).classList.add(squares[visible[i]] + "color");
       }
      }
-
     this.setState({
       squares: squares
     })
@@ -295,7 +294,7 @@ class Game extends React.Component {
     this.state.combatLog.unshift(action);
     this.setState({
       current_mob: mobHash,
-      mob_hp: mobHash.health,
+      mobHp: mobHash.health,
       combatLog: this.state.combatLog,
       message: action,
       buff: buff
@@ -304,13 +303,13 @@ class Game extends React.Component {
   }
 
   combatSequence(mobSpecial) {
-    //update the mob health on this.state.mob_hp not in the {}
+    //update the mob health on this.state.mobHp not in the {}
     //this.state.playerSpecial gets updated in the keypress listener
     let log = this.state.combatLog;
     let mainLog = this.state.mainLog;
     let mob = this.state.current_mob;
     let playerHealth = this.state.health;
-    let mobHealth = this.state.mob_hp;
+    let mobHealth = this.state.mobHp;
     if (mob.level > this.state.level) {
       var levelDiff =  mob.level - this.state.level;
     }
@@ -375,7 +374,7 @@ class Game extends React.Component {
     }
 
     this.setState({
-      mob_hp: mobHealth,
+      mobHp: mobHealth,
       combatLog: log
     });
 
@@ -398,17 +397,17 @@ class Game extends React.Component {
       let tip = "Press R to rest and regain health."
       mainLog.unshift(tip);
       squares[mobIndex] = null;
-      squares[this.state.player_index] = null;
+      squares[this.state.playerIndex] = null;
       squares[mobIndex] = "P";
       this.setState({
-        mob_hp: 0,
+        mobHp: 0,
         xp: xp,
         combatLog: log,
         mainLog: mainLog,
         playerSpecial: null,
         current_mob: null,
         currentAction: null,
-        player_index: mobIndex,
+        playerIndex: mobIndex,
         squares: squares
       });
       this.checkLevel();
@@ -434,7 +433,7 @@ class Game extends React.Component {
     }
     this.setState({
       health: playerHealth,
-      mob_hp: mobHealth,
+      mobHp: mobHealth,
       combatLog: log
     });
 
@@ -632,7 +631,7 @@ class Game extends React.Component {
   equipWeapon(newWeapon) {
     let squares = this.state.squares;
     let weapons = this.state.weapons;
-    let currentSquare = this.state.player_index;
+    let currentSquare = this.state.playerIndex;
     let mainLog = this.state.mainLog;
     let filteredWeapons = this.weaponsInfo.filter(weaponInfo => weaponInfo.name == newWeapon);
     weapons.unshift(filteredWeapons[0]);
@@ -648,7 +647,7 @@ class Game extends React.Component {
   }
 
   onKeyPressed(e) {
-    let current_square = this.state.player_index;
+    let current_square = this.state.playerIndex;
     let squares = this.state.squares;
     let boardDiv = document.getElementById("board");
     if (this.state.living) {
@@ -701,7 +700,6 @@ class Game extends React.Component {
           squares[next_square] = "P";
         }
         else if(this.mobLookup(squares[next_square])) {
-          //this.state.current_mob = squares[next_square];
           this.state.targetIndex = next_square;
           this.state.currentAction = "fighting";
           this.fightMob(squares[next_square]);
@@ -720,7 +718,7 @@ class Game extends React.Component {
           return;
         }
         this.setState({
-          player_index: next_square,
+          playerIndex: next_square,
           squares: squares
          });
         this.checkVisible();
@@ -733,7 +731,7 @@ class Game extends React.Component {
         6: "water", 7: "fire", 8: "light", 9: "cloak", 0: "nimble"};
         let health = this.state.health;
         let mana = this.state.mana;
-        let mobHealth = this.state.mob_hp;
+        let mobHealth = this.state.mobHp;
         let level = this.state.level;
         let attack = this.state.attack;
 
@@ -846,7 +844,7 @@ class Game extends React.Component {
           }
           this.setState({
             health: health,
-            mob_hp: mobHealth,
+            mobHp: mobHealth,
             mana: mana,
             combatLog: log,
           })
@@ -897,7 +895,7 @@ class Game extends React.Component {
     let mob = this.state.current_mob;
       if (mob) {
         var mobUrl = mob.url;
-        var mobHealth = this.state.mob_hp;
+        var mobHealth = this.state.mobHp;
         var mobMaxHealth = mob.health;
         var mobHealthPercent = Math.round((mobHealth/mobMaxHealth)*100);
         if (mobHealthPercent > 70) {
@@ -1241,9 +1239,8 @@ class Game extends React.Component {
     </div>
   </div>
 </div>
-    );
-  }
-}
+);
+}}
 
 const Rez = () => {
   return (
