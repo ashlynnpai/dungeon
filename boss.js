@@ -66,19 +66,6 @@ class Game extends React.Component {
     }
   }
 
-  toggleOverlay() {
-    if (this.state.overlay) {
-      this.setState({
-        overlay: false
-      })
-    }
-    else {
-      this.setState({
-        overlay: true
-      })
-    }
-  }
-
 
   fightMob(mob) {
     for (let i=0; i<this.mobsInfo.length; i++) {
@@ -753,10 +740,6 @@ class Game extends React.Component {
 </div>
 );
 }}
-
-
-
-
 
 ReactDOM.render(
   <Game />,
