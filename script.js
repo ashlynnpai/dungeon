@@ -17,12 +17,12 @@ class Game extends React.Component {
     {name: "Slicer", attack: 3, description: "This blade belonged to a goblin.", url: "https://www.ashlynnpai.com/assets/shortsword.png"},
     {name: "Iceblade", attack: 5, description: "A legendary sword forged by the dwarves.", url: "https://www.ashlynnpai.com/assets/greatsword.png"}
   ];
-    this.itemsInfo = [{name: "Boots", bonus: ["dodgeChance", .03], url: "https://www.ashlynnpai.com/assets/Light%20Boot_1.png", description: "Dodge +.03"},
-    {name: "Bracers", bonus: ["hitChance", .03], url: "https://www.ashlynnpai.com/assets/Leather%20Bracelet_1.PNG", description: "Hit +.03"},
-    {name: "Helm", bonus: ["hitChance", .04], url: "https://www.ashlynnpai.com/assets/Light%20Helm_1.PNG", description: "Hit +.04"},
-    {name: "Belt", bonus: ["dodgeChance", .04], url: "https://www.ashlynnpai.com/assets/Light%20Belt_1.png", description: "Dodge +.04"},
+    this.itemsInfo = [{name: "Boots", bonus: ["dodgeChance", .02], url: "https://www.ashlynnpai.com/assets/Light%20Boot_1.png", description: "Dodge +.03"},
+    {name: "Bracers", bonus: ["hitChance", .02], url: "https://www.ashlynnpai.com/assets/Leather%20Bracelet_1.PNG", description: "Hit +.03"},
+    {name: "Helm", bonus: ["hitChance", .02], url: "https://www.ashlynnpai.com/assets/Light%20Helm_1.PNG", description: "Hit +.04"},
+    {name: "Belt", bonus: ["dodgeChance", .02], url: "https://www.ashlynnpai.com/assets/Light%20Belt_1.png", description: "Dodge +.04"},
     {name: "Gloves", bonus: ["attack", 1], url: "https://www.ashlynnpai.com/assets/Leather%20Glove_1.png", description: "Attack +1"},
-    {name: "Breastplate", bonus: ["hitChance", .05], url: "https://www.ashlynnpai.com/assets/Light%20Armor_1.png", description: "Hit +.05"}
+    {name: "Breastplate", bonus: ["hitChance", .03], url: "https://www.ashlynnpai.com/assets/Light%20Armor_1.png", description: "Hit +.05"}
   ];
     this.findableItems = [{index: 9, item: "Rune"}, {index: 11, item: "Meatchopper"}, {index: 59, item: "Brooch"},
 {index: 110, item: "Necklace"}, {index: 114, item: "Slicer"},
