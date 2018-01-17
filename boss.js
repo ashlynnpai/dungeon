@@ -73,10 +73,45 @@ class Game extends React.Component {
     this.state.dodgeChance += count * .01;
   }
 
-  fightBoss() {
-    this.computeBonus;
+  startBossFight() {
+    this.computeBonus();
+    this.mainBossFight();
   }
 
+  mainBossFight() {
+    let log = this.state.combatLog;
+    let mainLog = this.state.mainLog;
+    let mob = this.state.current_mob;
+    let playerHealth = this.state.health;
+    let mobHealth = this.state.mobHp;
+    if (mob.level > this.state.level) {
+      var levelDiff =  mob.level - this.state.level;
+    }
+    else {
+      var levelDiff = 0;
+    }
+    let playerHitChance = this.state.hitChance - .1 * levelDiff;
+    let mobHitChance = .7 + .1 * levelDiff;
+    if (this.state.playerSpecial == "cloak") {
+      playerHitChance -= .2;
+      mobHitChance -= .2;
+    }
+    if (this.state.playerSpecial == "nimble") {
+      playerHitChance += .2;
+      mobHitChance += .2;
+    }
+    mobHitChance -= this.state.dodgeChance;
+    let attack = this.state.attack;
+    if (levelDiff >= this.state.level) {
+      var modifiedPlayerAttack = attack;
+    }
+    else {
+      let randomHit = Math.round(Math.random() * this.state.level);
+      var modifiedPlayerAttack = attack + randomHit;
+    }
+    var modifiedMobAttack = mob.attack + (Math.round(Math.random()) * mob.level);
+    setTimeout(this.mainBossFight.bind(this), 5000);
+  }
 
   fightMob(mob) {
     for (let i=0; i<this.mobsInfo.length; i++) {
@@ -140,6 +175,7 @@ class Game extends React.Component {
       var modifiedPlayerAttack = attack + randomHit;
     }
     var modifiedMobAttack = mob.attack + (Math.round(Math.random()) * mob.level);
+
     let playerRoll = Math.random();
 
     if (playerRoll <= playerHitChance) {
@@ -658,7 +694,7 @@ class Game extends React.Component {
           )}
         </div>
      </div>
-
+     <button onClick={() => this.startBossFight()}>Start Fight</button>
      <div className="topInfo">
        <div className="fastStats">
           <p>Level {this.state.level}</p>
@@ -751,6 +787,10 @@ class Game extends React.Component {
 </div>
 );
 }}
+
+
+
+
 
 ReactDOM.render(
   <Game />,
