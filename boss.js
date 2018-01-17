@@ -75,10 +75,10 @@ class Game extends React.Component {
 
   startBossFight() {
     this.computeBonus();
-    this.mainBossFight();
+    this.mainBossFight(0);
   }
 
-  mainBossFight() {
+  mainBossFight(round) {
     let log = this.state.combatLog;
     let mainLog = this.state.mainLog;
     let mob = this.state.current_mob;
@@ -110,7 +110,25 @@ class Game extends React.Component {
       var modifiedPlayerAttack = attack + randomHit;
     }
     var modifiedMobAttack = mob.attack + (Math.round(Math.random()) * mob.level);
-    setTimeout(this.mainBossFight.bind(this), 5000);
+
+
+    switch (round) {
+      case 0:
+      console.log(round);
+      break;
+      case 1:
+      console.log(round);
+      break;
+      case 2:
+      console.log(round);
+      return
+    }
+
+    //base case mob dies or player dies
+    //autoattacks
+    round++;
+
+    setTimeout(this.mainBossFight.bind(this), 5000, round);
   }
 
   fightMob(mob) {
