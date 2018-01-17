@@ -307,58 +307,7 @@ class Game extends React.Component {
     setTimeout(this.combatSequence.bind(this), 2000, mobSpecial);
   }
 
-  regenerateHealth() {
-    let health = this.state.health;
-    let mana = this.state.mana;
-    let maxHealth = this.state.maxHealth;
-    let maxMana = this.state.maxMana;
-    let energy = this.state.petEnergy;
-
-    if (health >= maxHealth && mana >= maxMana && energy >= this.maxPetEnergy) {
-      if (this.state.sound) {
-        let chimeAudio = new Audio('https://www.ashlynnpai.com/assets/Electronic_Chime-KevanGC-495939803.mp3');
-        chimeAudio.play();
-      }
-      let action = "You are done resting."
-      let log = this.state.mainLog
-      log.unshift(action);
-      this.setState({
-        health: maxHealth,
-        mana: maxMana,
-        petEnergy: this.maxPetEnergy,
-        currentAction: null,
-        buff: null,
-        mainLog: log
-      });
-      return;
-    }
-
-    health += this.state.level * 2;
-    mana += this.state.level * 2;
-    energy += this.state.level * 2;
-    if (health >= maxHealth) {
-     health = maxHealth;
-    }
-    if (mana >= maxMana) {
-      mana = maxMana;
-    }
-    if (energy >= this.maxPetEnergy) {
-      energy = this.maxPetEnergy;
-    }
-
-    this.setState({
-      health: health,
-      mana: mana,
-      petEnergy: energy,
-      buff: "rest"
-    });
-    setTimeout(this.regenerateHealth.bind(this), 1000);
-  }
-
-
-
-
-  onKeyPressed(e) {
+ onKeyPressed(e) {
       if (this.state.currentAction) {
         //set a special state and in combat check if state is true
         //only one state can be active at a time
