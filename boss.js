@@ -66,6 +66,17 @@ class Game extends React.Component {
     }
   }
 
+  computeBonus() {
+    //this is the length of this.state.questItems
+    let count = 5;
+    this.state.hitChance += count * .01;
+    this.state.dodgeChance += count * .01;
+  }
+
+  fightBoss() {
+    this.computeBonus;
+  }
+
 
   fightMob(mob) {
     for (let i=0; i<this.mobsInfo.length; i++) {
