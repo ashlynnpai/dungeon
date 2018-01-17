@@ -713,8 +713,8 @@ class Game extends React.Component {
           <p>Attack {this.state.attack}</p>
        </div>
        <div className="fastStats">
-          <p>Hit {this.state.hitChance} </p>
-          <p>Dodge {this.state.dodgeChance} </p>
+          <p>Hit {this.state.hitChance.toFixed(2)} </p>
+          <p>Dodge {this.state.dodgeChance.toFixed(2)} </p>
         </div>
         <div className="messageDisplay">{this.state.message}</div>
      </div>
