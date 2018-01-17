@@ -74,6 +74,7 @@ class Game extends React.Component {
   }
 
   startBossFight() {
+    this.state.currentAction = "combat";
     this.computeBonus();
     this.mainBossFight(0);
   }
@@ -168,6 +169,22 @@ class Game extends React.Component {
       mobHp: mobHealth,
       combatLog: log
     });
+
+    if (mobHealth <= 0) {
+      let action1 = mob.displayName + " dies. You have reclaimed Silverhearth.";
+      log.unshift(action1);
+      mainLog.unshift(action1);
+      this.setState({
+        mobHp: 0,
+        combatLog: log,
+        mainLog: mainLog,
+        buff: null,
+        playerSpecial: null,
+        current_mob: null,
+        currentAction: null,
+      });
+      return;
+    }
 
 
     round++;
