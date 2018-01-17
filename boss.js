@@ -112,6 +112,7 @@ class Game extends React.Component {
     }
     var modifiedMobAttack = mob.attack + (Math.round(Math.random()) * mob.level);
 
+   // cast mob special attacks
 
     switch (round) {
       case 0:
@@ -186,6 +187,20 @@ class Game extends React.Component {
       return;
     }
 
+    //mob autoattack and damage from special attacks
+
+    if (playerHealth <= 0) {
+      let action = "You die."
+      log.unshift(action);
+      this.setState({
+        health: 0,
+        living: false,
+        combatLog: log,
+        message: action,
+        currentAction: null
+      });
+      return;
+    }
 
     round++;
 
