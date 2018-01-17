@@ -125,7 +125,51 @@ class Game extends React.Component {
     }
 
     //base case mob dies or player dies
-    //autoattacks
+
+    //player and pet autoattack
+    let playerRoll = Math.random();
+
+    if (playerRoll <= playerHitChance) {
+      if (this.state.sound) {
+        let fightAudio = new Audio('https://www.ashlynnpai.com/assets/Swords_Collide-Sound_Explorer-2015600826.mp3');
+        fightAudio.play();
+      }
+      mobHealth -= modifiedPlayerAttack;
+      let action = "Player hits " + mob.displayName + " for " + modifiedPlayerAttack;
+      if (mobHealth < 0) {
+        mobHealth = 0;
+      }
+      log.unshift(action);
+    }
+    else {
+      let action = "Player misses.";
+      log.unshift(action);
+    }
+
+    let pet = this.state.pet;
+    if (pet) {
+      let petRoll = Math.random();
+      if (petRoll <= .8) {
+        let petDamage = this.state.level;
+        mobHealth -= petDamage;
+        let action = "Scrappy hits " + mob.displayName + " for " + petDamage;
+        if (mobHealth < 0) {
+          mobHealth = 0;
+        }
+        log.unshift(action);
+      }
+      else {
+        let action = "Scrappy misses.";
+        log.unshift(action);
+      }
+    }
+
+    this.setState({
+      mobHp: mobHealth,
+      combatLog: log
+    });
+
+
     round++;
 
     setTimeout(this.mainBossFight.bind(this), 5000, round);
