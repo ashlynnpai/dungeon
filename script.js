@@ -9,7 +9,9 @@ class Game extends React.Component {
     {name: "goblin2", displayName: "Goblin Lieutenant", attack: 2, health: 30, level: 2,
     url: "https://www.ashlynnpai.com/assets/Jinn_goblin.png"},
     {name: "orc1", displayName: "Orc Captain", attack: 3, health: 50, level: 3,
-    url: "https://www.ashlynnpai.com/assets/Jinn_orc.png"}
+    url: "https://www.ashlynnpai.com/assets/Jinn_orc.png"},
+    {name: "balrog", displayName: "Balrog", attack: 5, health: 100, level: 3,
+    url: "https://www.ashlynnpai.com/assets/balrog11.jpg"}
     ];
     this.weaponsInfo = [
     {name: "Hands", attack: 1, description: "These are deadly weapons.", url: "https://www.ashlynnpai.com/assets/Power%20of%20blessing.png"},
@@ -82,6 +84,10 @@ class Game extends React.Component {
     squares[petStartPoint] = "pet";
     let petIndex = spacesCopy.indexOf(petStartPoint);
     spacesCopy.splice(petIndex, 1);
+    let bossStartPoint = 198;
+    squares[bossStartPoint] = "balrog";
+    let bossIndex = spacesCopy.indexOf(bossStartPoint);
+    spacesCopy.splice(bossIndex, 1);
 
     // seed the findable items (quest items and weapons)
     for (let i=0; i<this.findableItems.length; i++) {
