@@ -743,9 +743,9 @@ class Game extends React.Component {
 
         if (e.key in skillKeys) {
           if (e.key =="1") {
-            if (mana >= 3) {
-              let furyDamage = level * 2 + attack + Math.round(Math.random() * attack);
-              mana -= 3;
+            if (mana >= 5) {
+              let furyDamage = level + attack + Math.round(Math.random() * attack);
+              mana -= 5;
               mobHealth -= furyDamage;
               if (mobHealth < 0) {
                 mobHealth = 0;
