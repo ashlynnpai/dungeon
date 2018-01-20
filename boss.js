@@ -3,7 +3,7 @@ class Game extends React.Component {
     super(props);
 
     this.maxPetEnergy = 10;
-    this.mobsInfo = [{name: "balrog", displayName: "Balrog", attack: 5, health: 100, level: 3,
+    this.mobsInfo = [{name: "balrog", displayName: "Balrog", attack: 5, health: 200, level: 3,
     url: "https://www.ashlynnpai.com/assets/balrog11.jpg"}
     ];
     this.weaponsInfo = [
@@ -32,9 +32,9 @@ class Game extends React.Component {
       equipment: [],
       questItems:
       [1, 2, 3, 4, 5],
-      current_mob: {name: "balrog", displayName: "Balrog", attack: 5, health: 100, level: 3,
+      current_mob: {name: "balrog", displayName: "Balrog", attack: 5, health: 200, level: 3,
     url: "https://www.ashlynnpai.com/assets/balrog11.jpg"},
-      mobHp: 100,
+      mobHp: 200,
       targetIndex: null,
       currentAction: null,
       mainLog: [],
@@ -465,7 +465,7 @@ class Game extends React.Component {
         if (e.key in skillKeys) {
           if (e.key =="1") {
             if (mana >= 5) {
-              let furyDamage = level + attack + Math.round(Math.random() * attack);
+              let furyDamage = level * 2 + Math.round(Math.random() * attack);
               mana -= 5;
               mobHealth -= furyDamage;
               if (mobHealth < 0) {
