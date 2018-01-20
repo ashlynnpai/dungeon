@@ -3,6 +3,7 @@ class Game extends React.Component {
     super(props);
 
     this.maxPetEnergy = 10;
+    this.maxBossHealth = 200;
     this.mobsInfo = [{name: "balrog", displayName: "Balrog", attack: 5, health: 200, level: 3,
     url: "https://www.ashlynnpai.com/assets/balrog11.jpg"}
     ];
@@ -86,7 +87,6 @@ class Game extends React.Component {
     let mob = this.state.current_mob;
     let playerHealth = this.state.health;
     let mobHealth = this.state.mobHp;
-    let bossMaxHealth = 200;
     if (mob.level > this.state.level) {
       var levelDiff =  mob.level - this.state.level;
     }
@@ -117,7 +117,7 @@ class Game extends React.Component {
    // cast mob special attacks
 
     switch (round) {
-      case 0:
+      case 0: {
         var mobSpecial = {name: "Shadow", action: "casts", counter: "light"};
         let action = "Balrog " + mobSpecial.action + " " + mobSpecial.name;
           if (this.state.sound) {
@@ -131,13 +131,34 @@ class Game extends React.Component {
           message: action
         });
         break;
-      case 1:
-      console.log(round);
+      }
+      case 1: {
+        mobHealth += 20;
+        if (this.maxBossHealth < mobHealth) {
+          mobHealth = this.maxBossHealth;
+        }
+        if (this.state.sound) {
+          let healAudio = new Audio('https://www.ashlynnpai.com/assets/blessing.ogg');
+          healAudio.play();
+        }
+        let action = "Balrog's flames heal him for 20.";
+        log.unshift(action);
+      this.setState ({
+        combatLog: log,
+        mobHp: mobHealth
+      })
+      this.state.combatLog.unshift(action);
       break;
+      }
       case 2:
-      console.log(round);
-      case "n":
-        //set round = 0
+      //cast ice
+      case 3:
+      //heal
+      case 4:
+      //cast fire
+      case 5:
+      //heal
+        round = 0
     }
 
     //player and pet autoattack
