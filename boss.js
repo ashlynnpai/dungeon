@@ -505,7 +505,7 @@ class Game extends React.Component {
               let action = "You use Fury for " + furyDamage + ".";
               log.unshift(action);
             }
-            else {
+            else if (mana < 5){
               let action = "Out of mana.";
               log.unshift(action);
             }
