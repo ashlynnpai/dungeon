@@ -41,7 +41,8 @@ class Game extends React.Component {
       combatLog: [],
       message: "",
       sound: true,
-      overlay: true
+      overlay: true,
+      furyCooldown: false
      };
   }
 
@@ -135,7 +136,8 @@ class Game extends React.Component {
       break;
       case 2:
       console.log(round);
-      return
+      case "n":
+        //set round = 0
     }
 
     //player and pet autoattack
@@ -238,7 +240,7 @@ class Game extends React.Component {
     });
 
     if (playerHealth <= 0) {
-      let action = "You die."
+      let action = "You die.";
       log.unshift(action);
       this.setState({
         health: 0,
@@ -449,6 +451,11 @@ class Game extends React.Component {
     setTimeout(this.combatSequence.bind(this), 2000, mobSpecial);
   }
 
+  endFuryCooldown() {
+    this.state.furyCooldown = false;
+    document.getElementById("toolbar1").style.border = "3px solid #161616";
+  }
+
  onKeyPressed(e) {
       if (this.state.currentAction) {
         //set a special state and in combat check if state is true
@@ -464,8 +471,11 @@ class Game extends React.Component {
 
         if (e.key in skillKeys) {
           if (e.key =="1") {
-            if (mana >= 5) {
-              let furyDamage = level * 2 + Math.round(Math.random() * attack);
+            if (mana >= 5 && !this.state.furyCooldown) {
+               document.getElementById("toolbar1").style.border = "3px solid red";
+               this.state.furyCooldown = true;
+               setTimeout(this.endFuryCooldown.bind(this), 5000);
+              let furyDamage = level * 2 + attack + Math.round(Math.random() * attack);
               mana -= 5;
               mobHealth -= furyDamage;
               if (mobHealth < 0) {
@@ -806,7 +816,7 @@ class Game extends React.Component {
           <span id="toolbar1" className="toolbarItem">1
             <div className="toolbarTip">
               <p id="offensive">FURY</p>
-              <p id="skillCost">Costs 2 mana.</p>
+              <p id="skillCost">Costs 2 mana. Cooldown 5 seconds.</p>
               <div id="skillDescription">You become enraged and land a forceful hit on your enemy.</div>
             </div>
           </span>
