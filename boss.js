@@ -68,6 +68,34 @@ class Game extends React.Component {
     }
   }
 
+  processMobSpecial(mobSpecial, modifiedMobAttack, modifiedPlayerAttack) {
+    let playerHealth = this.state.health;
+    let mobHealth = this.state.mobHp;
+    let log = this.state.combatLog;
+    let mob = this.state.current_mob;
+    if (this.state.playerSpecial != mobSpecial.counter) {
+      playerHealth -= modifiedMobAttack;
+      let action = mob.displayName + " " + mobSpecial.action + " " + mobSpecial.name
+      + " for " + modifiedMobAttack;
+      log.unshift(action);
+    }
+    else if (this.state.playerSpecial == mobSpecial.counter) {
+      mobHealth -= modifiedPlayerAttack;
+      let action = "You counter " + mobSpecial.name + " with " + mobSpecial.counter + " for " + modifiedPlayerAttack;
+      if (mobHealth < 0) {
+        mobHealth = 0;
+      }
+      log.unshift(action);
+      mobSpecial = null;
+    }
+    this.setState({
+      health: playerHealth,
+      mobHp: mobHealth,
+      combatLog: log
+    });
+    return mobSpecial;
+  }
+
   computeBonus() {
     //this is the length of this.state.questItems
     let count = 5;
@@ -112,7 +140,7 @@ class Game extends React.Component {
       let randomHit = Math.round(Math.random() * this.state.level);
       var modifiedPlayerAttack = attack + randomHit;
     }
-    var modifiedMobAttack = mob.attack + (Math.round(Math.random()) * mob.level);
+    let modifiedMobAttack = mob.attack + (Math.round(Math.random()) * mob.level);
 
    // cast mob special attacks
 
@@ -221,29 +249,9 @@ class Game extends React.Component {
     }
 
     //mob autoattack and damage from special attacks
-
     if (mobSpecial) {
-      if (this.state.playerSpecial != mobSpecial.counter) {
-        playerHealth -= modifiedMobAttack;
-        let action = mob.displayName + " " + mobSpecial.action + " " + mobSpecial.name
-        + " for " + modifiedMobAttack;
-        log.unshift(action);
-      }
-      else if (this.state.playerSpecial == mobSpecial.counter) {
-        mobHealth -= modifiedPlayerAttack;
-        let action = "You counter " + mobSpecial.name + " with " + mobSpecial.counter + " for " + modifiedPlayerAttack;
-        if (mobHealth < 0) {
-          mobHealth = 0;
-        }
-        log.unshift(action);
-        mobSpecial = null;
-      }
+      mobSpecial = this.processMobSpecial(mobSpecial, modifiedMobAttack, modifiedPlayerAttack);
     }
-    this.setState({
-      health: playerHealth,
-      mobHp: mobHealth,
-      combatLog: log
-    });
 
     let mobRoll = Math.random();
     if (mobRoll <= mobHitChance) {
@@ -420,27 +428,8 @@ class Game extends React.Component {
     }
 
     if (mobSpecial) {
-      if (this.state.playerSpecial != mobSpecial.counter) {
-        playerHealth -= modifiedMobAttack;
-        let action = mob.displayName + " " + mobSpecial.action + " " + mobSpecial.name
-        + " for " + modifiedMobAttack;
-        log.unshift(action);
-      }
-      else if (this.state.playerSpecial == mobSpecial.counter) {
-        mobHealth -= modifiedPlayerAttack;
-        let action = "You counter " + mobSpecial.name + " with " + mobSpecial.counter + " for " + modifiedPlayerAttack;
-        if (mobHealth < 0) {
-          mobHealth = 0;
-        }
-        log.unshift(action);
-        mobSpecial = null;
-      }
+      mobSpecial = this.processMobSpecial(mobSpecial, modifiedMobAttack, modifiedPlayerAttack);
     }
-    this.setState({
-      health: playerHealth,
-      mobHp: mobHealth,
-      combatLog: log
-    });
 
     let mobRoll = Math.random();
     if (mobRoll <= mobHitChance) {
