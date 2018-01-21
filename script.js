@@ -509,13 +509,19 @@ class Game extends React.Component {
 
     if (playerHealth <= 0) {
       let action = "You die."
+      let inventory = this.state.inventory;
+      if (mob.name == "balrog") {
+        inventory[0].healthPotion = 6;
+        inventory[1].manaPotion = 4;
+      }
       log.unshift(action);
       this.setState({
         health: 0,
         living: false,
         combatLog: log,
         message: action,
-        currentAction: null
+        currentAction: null,
+        inventory: inventory
       });
       return;
     }
