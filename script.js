@@ -305,10 +305,10 @@ class Game extends React.Component {
       message: action,
       buff: buff
     });
-    this.combatSequence(mobSpecial);
+    this.combatSequence(0, mobSpecial);
   }
 
-  combatSequence(mobSpecial) {
+  combatSequence(round, mobSpecial) {
     //update the mob health on this.state.mobHp not in the {}
     //this.state.playerSpecial gets updated in the keypress listener
     let log = this.state.combatLog;
@@ -342,6 +342,55 @@ class Game extends React.Component {
       var modifiedPlayerAttack = attack + randomHit;
     }
     var modifiedMobAttack = mob.attack + (Math.round(Math.random()) * mob.level);
+
+    if (mob.name == "balrog") {
+      switch (round) {
+      case 1: {
+        var mobSpecial = this.mobSkills[2];
+        this.announceMobSpecial(mobSpecial, "Balrog");
+        break;
+      }
+      case 2: {
+        this.bossHeal();
+        break;
+      }
+      case 3: {
+        if (mobSpecial) {
+          this.bossSecondAttack();
+        }
+        break;
+      }
+      case 5: {
+      //cast ice
+        var mobSpecial = this.mobSkills[1];
+        this.announceMobSpecial(mobSpecial, "Balrog");
+        break;
+      }
+      case 6: {
+        this.bossHeal();
+        break;
+      }
+      case 7: {
+        if (mobSpecial) {
+          this.bossSecondAttack();
+        }
+        break;
+      }
+      case 9: {
+        var mobSpecial = this.mobSkills[0];
+        this.announceMobSpecial(mobSpecial, "Balrog");
+        break;
+      }
+      case 10: {
+        this.bossHeal();
+        round = 0;
+        break;
+      }
+      default:
+        break;
+      }
+    }
+
     let playerRoll = Math.random();
 
     if (playerRoll <= playerHitChance) {
@@ -470,7 +519,40 @@ class Game extends React.Component {
       });
       return;
     }
-    setTimeout(this.combatSequence.bind(this), 2000, mobSpecial);
+    setTimeout(this.combatSequence.bind(this), 2000, round, mobSpecial);
+  }
+
+  //boss fight functions
+
+  bossHeal() {
+    let mobHealth = this.state.mobHp;
+    let log = this.state.combatLog;
+    mobHealth += 30;
+    if (this.maxBossHealth < mobHealth) {
+      mobHealth = this.maxBossHealth;
+    }
+    if (this.state.sound) {
+      let healAudio = new Audio('https://www.ashlynnpai.com/assets/blessing.ogg');
+      healAudio.play();
+    }
+    let action = "Balrog's flames heal him for 30.";
+    log.unshift(action);
+    this.setState ({
+      combatLog: log,
+      mobHp: mobHealth
+    })
+  }
+
+  bossSecondAttack() {
+    let playerHealth = this.state.health;
+    let log = this.state.combatLog;
+    playerHealth -= 10;
+    let action = "Balrog's curse weakens you for 10."
+    log.unshift(action);
+    this.setState({
+      health: playerHealth,
+      combatLog: log
+    });
   }
 
   regenerateHealth() {
