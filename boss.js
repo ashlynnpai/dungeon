@@ -4,7 +4,7 @@ class Game extends React.Component {
 
     this.maxPetEnergy = 10;
     this.maxBossHealth = 200;
-    this.mobsInfo = [{name: "balrog", displayName: "Balrog", attack: 5, health: 200, level: 3,
+    this.mobsInfo = [{name: "balrog", displayName: "Balrog", attack: 10, health: 200, level: 3,
     url: "https://www.ashlynnpai.com/assets/balrog11.jpg"}
     ];
     this.weaponsInfo = [
@@ -33,7 +33,7 @@ class Game extends React.Component {
       equipment: [],
       questItems:
       [1, 2, 3, 4, 5],
-      current_mob: {name: "balrog", displayName: "Balrog", attack: 5, health: 200, level: 3,
+      current_mob: {name: "balrog", displayName: "Balrog", attack: 10, health: 200, level: 3,
     url: "https://www.ashlynnpai.com/assets/balrog11.jpg"},
       mobHp: 200,
       targetIndex: null,
@@ -155,7 +155,7 @@ class Game extends React.Component {
       var levelDiff = 0;
     }
     let playerHitChance = this.state.hitChance - .1 * levelDiff;
-    let mobHitChance = .7 + .1 * levelDiff;
+    let mobHitChance = .9 + .1 * levelDiff;
     if (this.state.playerSpecial == "cloak") {
       playerHitChance -= .2;
       mobHitChance -= .2;
@@ -178,27 +178,36 @@ class Game extends React.Component {
    // cast mob special attacks
 
     switch (round) {
-      case 0: {
-        var mobSpecial = {name: "Shadow", action: "casts", counter: "light"};
+      case 1: {
+        var mobSpecial = this.mobSkills[2];
         this.announceMobSpecial(mobSpecial, "Balrog");
         break;
       }
-      case 1: {
+      case 2: {
         this.bossHeal();
         break;
       }
-      case 2:
+      case 4: {
       //cast ice
+        var mobSpecial = this.mobSkills[1];
+        this.announceMobSpecial(mobSpecial, "Balrog");
         break;
-      case 3:
+      }
+      case 5: {
         this.bossHeal();
         break;
-      case 4:
-      //cast fire
+      }
+      case 7: {
+        var mobSpecial = this.mobSkills[0];
+        this.announceMobSpecial(mobSpecial, "Balrog");
         break;
-      case 5:
+      }
+      case 8: {
         this.bossHeal();
         round = 0;
+        break;
+      }
+      default:
         break;
     }
 
