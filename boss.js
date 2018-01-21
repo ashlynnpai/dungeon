@@ -175,17 +175,20 @@ class Game extends React.Component {
         combatLog: log,
         mobHp: mobHealth
       })
-      this.state.combatLog.unshift(action);
       break;
       }
       case 2:
       //cast ice
+        break;
       case 3:
       //heal
+        break;
       case 4:
       //cast fire
+        break;
       case 5:
       //heal
+        break;
         round = 0
     }
 
