@@ -529,6 +529,12 @@ body {
   margin-left: 20px;
 }
 
+.questLogName img {
+  margin-right: 10px;
+  width: 30px;
+  border-radius: 5px;
+}
+
 .questLogEntry:hover .questLogDescription {
   display: block;
 }
