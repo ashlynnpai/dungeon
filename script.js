@@ -1336,7 +1336,7 @@ class Game extends React.Component {
         {questsCompleted.map((complete) =>
           <div className="questLogEntry">
             <div className="questLogName">
-              <img width="20" src="https://www.ashlynnpai.com/assets/check.png" />
+              <img width="20" src="https://www.ashlynnpai.com/assets/Coin_03.png" />
               {complete.name}
             </div>
             <div className="questLogDescription">{complete.description}</div>
