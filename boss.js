@@ -110,6 +110,25 @@ class Game extends React.Component {
     return mobSpecial;
   }
 
+  bossHeal() {
+    let mobHealth = this.state.mobHp;
+    let log = this.state.combatLog;
+    mobHealth += 20;
+    if (this.maxBossHealth < mobHealth) {
+      mobHealth = this.maxBossHealth;
+    }
+    if (this.state.sound) {
+      let healAudio = new Audio('https://www.ashlynnpai.com/assets/blessing.ogg');
+      healAudio.play();
+    }
+    let action = "Balrog's flames heal him for 20.";
+    log.unshift(action);
+    this.setState ({
+      combatLog: log,
+      mobHp: mobHealth
+    })
+  }
+
   computeBonus() {
     //this is the length of this.state.questItems
     let count = 5;
@@ -165,33 +184,20 @@ class Game extends React.Component {
         break;
       }
       case 1: {
-        mobHealth += 20;
-        if (this.maxBossHealth < mobHealth) {
-          mobHealth = this.maxBossHealth;
-        }
-        if (this.state.sound) {
-          let healAudio = new Audio('https://www.ashlynnpai.com/assets/blessing.ogg');
-          healAudio.play();
-        }
-        let action = "Balrog's flames heal him for 20.";
-        log.unshift(action);
-      this.setState ({
-        combatLog: log,
-        mobHp: mobHealth
-      })
-      break;
+        this.bossHeal();
+        break;
       }
       case 2:
       //cast ice
         break;
       case 3:
-      //heal
+        this.bossHeal();
         break;
       case 4:
       //cast fire
         break;
       case 5:
-      //heal
+        this.bossHeal();
         break;
         round = 0
     }
