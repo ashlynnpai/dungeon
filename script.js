@@ -136,6 +136,7 @@ class Game extends React.Component {
       buff: null,
       pet: false,
       petEnergy: 10,
+      furyCooldown: false,
       living: true,
       weapons: [{name: "Hands", attack: 1, description: "These are deadly weapons.", url: "https://www.ashlynnpai.com/assets/Power%20of%20blessing.png"}],
       attack: 1,
@@ -757,6 +758,11 @@ class Game extends React.Component {
       });
   }
 
+  endFuryCooldown() {
+    this.state.furyCooldown = false;
+    document.getElementById("toolbar1").style.border = "3px solid #161616";
+  }
+
   onKeyPressed(e) {
     let current_square = this.state.playerIndex;
     let squares = this.state.squares;
@@ -851,9 +857,12 @@ class Game extends React.Component {
 
         if (e.key in skillKeys) {
           if (e.key =="1") {
-            if (mana >= 5) {
-              let furyDamage = level + attack + Math.round(Math.random() * attack);
-              mana -= 5;
+            if (mana >= 5 && !this.state.furyCooldown) {
+              document.getElementById("toolbar1").style.border = "3px solid red";
+              this.state.furyCooldown = true;
+              setTimeout(this.endFuryCooldown.bind(this), 5000);
+              let furyDamage = level * 2 + attack + Math.round(Math.random() * attack);
+              mana -= 3;
               mobHealth -= furyDamage;
               if (mobHealth < 0) {
                 mobHealth = 0;
@@ -1247,7 +1256,7 @@ class Game extends React.Component {
           <span id="toolbar1" className="toolbarItem">1
             <div className="toolbarTip">
               <p id="offensive">FURY</p>
-              <p id="skillCost">Costs 2 mana.</p>
+              <p id="skillCost">Costs 3 mana. Cooldown 5 seconds.</p>
               <div id="skillDescription">You become enraged and land a forceful hit on your enemy.</div>
             </div>
           </span>
