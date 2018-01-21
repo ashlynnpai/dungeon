@@ -68,6 +68,20 @@ class Game extends React.Component {
     }
   }
 
+  announceMobSpecial(mobSpecial, mobName) {
+    let action = mobName + " " + mobSpecial.action + " " + mobSpecial.name;
+    if (this.state.sound) {
+      let alertAudio = new Audio('https://www.ashlynnpai.com/assets/sms-alert-5-daniel_simon.mp3');
+      alertAudio.play();
+    }
+    this.state.combatLog.unshift(action);
+    this.setState({
+      combatLog: this.state.combatLog,
+      message: action,
+      buff: mobSpecial.name
+    });
+  }
+
   processMobSpecial(mobSpecial, modifiedMobAttack, modifiedPlayerAttack) {
     let playerHealth = this.state.health;
     let mobHealth = this.state.mobHp;
@@ -147,17 +161,7 @@ class Game extends React.Component {
     switch (round) {
       case 0: {
         var mobSpecial = {name: "Shadow", action: "casts", counter: "light"};
-        let action = "Balrog " + mobSpecial.action + " " + mobSpecial.name;
-          if (this.state.sound) {
-            let alertAudio = new Audio('https://www.ashlynnpai.com/assets/sms-alert-5-daniel_simon.mp3');
-            alertAudio.play();
-          }
-        this.state.buff = mobSpecial.name;
-        this.state.combatLog.unshift(action);
-        this.setState({
-          combatLog: this.state.combatLog,
-          message: action
-        });
+        this.announceMobSpecial(mobSpecial, "Balrog");
         break;
       }
       case 1: {
@@ -299,20 +303,10 @@ class Game extends React.Component {
     //choose mob's special skill
     let mobSpecialIndex = Math.floor(Math.random() * this.mobSkills.length);
     let mobSpecial = this.mobSkills[mobSpecialIndex];
-    let action = mobHash.displayName + " " + mobSpecial.action + " " + mobSpecial.name;
-    if (this.state.sound) {
-      let alertAudio = new Audio('https://www.ashlynnpai.com/assets/sms-alert-5-daniel_simon.mp3');
-      alertAudio.play();
-    }
-    let buff = this.state.buff;
-    buff = mobSpecial.name;
-    this.state.combatLog.unshift(action);
+    this.announceMobSpecial(mobSpecial, mobName);
     this.setState({
       current_mob: mobHash,
-      mobHp: mobHash.health,
-      combatLog: this.state.combatLog,
-      message: action,
-      buff: buff
+      mobHp: mobHash.health
     });
     this.combatSequence(mobSpecial);
   }
