@@ -857,12 +857,13 @@ class Game extends React.Component {
 
         if (e.key in skillKeys) {
           if (e.key =="1") {
-            if (mana >= 5 && !this.state.furyCooldown) {
+            let furyCost = 3;
+            if (mana >= furyCost && !this.state.furyCooldown) {
               document.getElementById("toolbar1").style.border = "3px solid red";
               this.state.furyCooldown = true;
               setTimeout(this.endFuryCooldown.bind(this), 5000);
               let furyDamage = level * 2 + attack + Math.round(Math.random() * attack);
-              mana -= 3;
+              mana -= furyCost;
               mobHealth -= furyDamage;
               if (mobHealth < 0) {
                 mobHealth = 0;
@@ -870,7 +871,7 @@ class Game extends React.Component {
               let action = "You use Fury for " + furyDamage + ".";
               log.unshift(action);
             }
-            else {
+            else if (mana < furyCost) {
               let action = "Out of mana.";
               log.unshift(action);
             }
