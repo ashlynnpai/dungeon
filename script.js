@@ -334,6 +334,7 @@ class Game extends React.Component {
     var modifiedMobAttack = mob.attack + (Math.round(Math.random()) * mob.level);
 
     if (mob.name == "balrog") {
+      //mutates mobSpecial and round for boss fight
       switch (round) {
       case 1: {
         var mobSpecial = this.mobSkills[2];
@@ -400,28 +401,7 @@ class Game extends React.Component {
       log.unshift(action);
     }
 
-    let pet = this.state.pet;
-    if (pet) {
-      let petRoll = Math.random();
-      if (petRoll <= .8) {
-        let petDamage = this.state.level;
-        mobHealth -= petDamage;
-        let action = "Scrappy hits " + mob.displayName + " for " + petDamage;
-        if (mobHealth < 0) {
-          mobHealth = 0;
-        }
-        log.unshift(action);
-      }
-      else {
-        let action = "Scrappy misses.";
-        log.unshift(action);
-      }
-    }
-
-    this.setState({
-      mobHp: mobHealth,
-      combatLog: log
-    });
+    mobHealth = this.petAutoAttack(mobHealth);
 
     if (mobHealth <= 0) {
       let action1 = mob.displayName + " dies.";
@@ -541,6 +521,33 @@ class Game extends React.Component {
       combatLog: log
     });
     return mobSpecial;
+  }
+
+  petAutoAttack(mobHealth) {
+    let pet = this.state.pet;
+    let mob = this.state.current_mob;
+    let log = this.state.combatLog;
+    if (pet) {
+      let petRoll = Math.random();
+      if (petRoll <= .8) {
+        let petDamage = this.state.level * 2;
+        mobHealth -= petDamage;
+        let action = "Scrappy hits " + mob.displayName + " for " + petDamage;
+        if (mobHealth < 0) {
+          mobHealth = 0;
+        }
+        log.unshift(action);
+      }
+      else {
+        let action = "Scrappy misses.";
+        log.unshift(action);
+      }
+    }
+    this.setState({
+      mobHp: mobHealth,
+      combatLog: log
+    });
+    return mobHealth;
   }
 
   //boss fight functions
