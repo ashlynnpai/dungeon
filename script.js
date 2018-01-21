@@ -287,27 +287,16 @@ class Game extends React.Component {
         var mobHash = this.mobsInfo[i];
       }
     }
-
     //choose mob's special skill
     let mobSpecialIndex = Math.floor(Math.random() * this.mobSkills.length);
     let mobSpecial = this.mobSkills[mobSpecialIndex];
-    let action = mobHash.displayName + " " + mobSpecial.action + " " + mobSpecial.name;
-    if (this.state.sound) {
-      let alertAudio = new Audio('https://www.ashlynnpai.com/assets/sms-alert-5-daniel_simon.mp3');
-      alertAudio.play();
-    }
-    let buff = this.state.buff;
-    buff = mobSpecial.name;
-    this.state.combatLog.unshift(action);
+    this.announceMobSpecial(mobSpecial, mobHash.displayName);
     this.setState({
       current_mob: mobHash,
-      mobHp: mobHash.health,
-      combatLog: this.state.combatLog,
-      message: action,
-      buff: buff
+      mobHp: mobHash.health
     });
     this.combatSequence(0, mobSpecial);
-  }
+}
 
   combatSequence(round, mobSpecial) {
     //update the mob health on this.state.mobHp not in the {}
@@ -471,27 +460,8 @@ class Game extends React.Component {
     }
 
     if (mobSpecial) {
-      if (this.state.playerSpecial != mobSpecial.counter) {
-        playerHealth -= modifiedMobAttack;
-        let action = mob.displayName + " " + mobSpecial.action + " " + mobSpecial.name
-        + " for " + modifiedMobAttack;
-        log.unshift(action);
-      }
-      else if (this.state.playerSpecial == mobSpecial.counter) {
-        mobHealth -= modifiedPlayerAttack;
-        let action = "You counter " + mobSpecial.name + " with " + mobSpecial.counter + " for " + modifiedPlayerAttack;
-        if (mobHealth < 0) {
-          mobHealth = 0;
-        }
-        log.unshift(action);
-        mobSpecial = null;
-      }
+      mobSpecial = this.processMobSpecial(mobSpecial, modifiedMobAttack, modifiedPlayerAttack);
     }
-    this.setState({
-      health: playerHealth,
-      mobHp: mobHealth,
-      combatLog: log
-    });
 
     let mobRoll = Math.random();
     if (mobRoll <= mobHitChance) {
@@ -527,6 +497,50 @@ class Game extends React.Component {
       return;
     }
     setTimeout(this.combatSequence.bind(this), 2000, round, mobSpecial);
+  }
+
+  //main combat helper functions
+
+  announceMobSpecial(mobSpecial, mobName) {
+    let action = mobName + " " + mobSpecial.action + " " + mobSpecial.name;
+    if (this.state.sound) {
+      let alertAudio = new Audio('https://www.ashlynnpai.com/assets/sms-alert-5-daniel_simon.mp3');
+      alertAudio.play();
+    }
+    this.state.combatLog.unshift(action);
+    this.setState({
+      combatLog: this.state.combatLog,
+      message: action,
+      buff: mobSpecial.name
+    });
+  }
+
+  processMobSpecial(mobSpecial, modifiedMobAttack, modifiedPlayerAttack) {
+    let playerHealth = this.state.health;
+    let mobHealth = this.state.mobHp;
+    let log = this.state.combatLog;
+    let mob = this.state.current_mob;
+    if (this.state.playerSpecial != mobSpecial.counter) {
+      playerHealth -= modifiedMobAttack;
+      let action = mob.displayName + " " + mobSpecial.action + " " + mobSpecial.name
+      + " for " + modifiedMobAttack;
+      log.unshift(action);
+    }
+    else if (this.state.playerSpecial == mobSpecial.counter) {
+      mobHealth -= modifiedPlayerAttack;
+      let action = "You counter " + mobSpecial.name + " with " + mobSpecial.counter + " for " + modifiedPlayerAttack;
+      if (mobHealth < 0) {
+        mobHealth = 0;
+      }
+      log.unshift(action);
+      mobSpecial = null;
+    }
+    this.setState({
+      health: playerHealth,
+      mobHp: mobHealth,
+      combatLog: log
+    });
+    return mobSpecial;
   }
 
   //boss fight functions
