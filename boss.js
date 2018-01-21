@@ -198,8 +198,8 @@ class Game extends React.Component {
         break;
       case 5:
         this.bossHeal();
+        round = 0;
         break;
-        round = 0
     }
 
     //player and pet autoattack
