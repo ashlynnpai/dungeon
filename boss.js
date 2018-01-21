@@ -118,7 +118,7 @@ class Game extends React.Component {
       mobHealth = this.maxBossHealth;
     }
     if (this.state.sound) {
-      let healAudio = new Audio('https://www.ashlynnpai.com/assets/blessing.ogg');
+      let healAudio = new Audio('https://www.ashlynnpai.com/assets/Dinosaur%20Roar-SoundBible.com-605392672.mp3');
       healAudio.play();
     }
     let action = "Balrog's flames heal him for 30.";
