@@ -33,7 +33,7 @@ class Game extends React.Component {
       equipment: [],
       questItems:
       [1, 2, 3, 4, 5],
-      current_mob: {name: "balrog", displayName: "Balrog", attack: 10, health: 200, level: 3,
+      current_mob: {name: "balrog", displayName: "Balrog", attack: 10, health: 200, level: 4,
     url: "https://www.ashlynnpai.com/assets/balrog11.jpg"},
       mobHp: 200,
       targetIndex: null,
@@ -113,7 +113,7 @@ class Game extends React.Component {
   bossHeal() {
     let mobHealth = this.state.mobHp;
     let log = this.state.combatLog;
-    mobHealth += 20;
+    mobHealth += 30;
     if (this.maxBossHealth < mobHealth) {
       mobHealth = this.maxBossHealth;
     }
@@ -121,12 +121,24 @@ class Game extends React.Component {
       let healAudio = new Audio('https://www.ashlynnpai.com/assets/blessing.ogg');
       healAudio.play();
     }
-    let action = "Balrog's flames heal him for 20.";
+    let action = "Balrog's flames heal him for 30.";
     log.unshift(action);
     this.setState ({
       combatLog: log,
       mobHp: mobHealth
     })
+  }
+
+  bossSecondAttack() {
+    let playerHealth = this.state.health;
+    let log = this.state.combatLog;
+    playerHealth -= 10;
+    let action = "Balrog's curse weakens you for 10."
+    log.unshift(action);
+    this.setState({
+      health: playerHealth,
+      combatLog: log
+    });
   }
 
   computeBonus() {
@@ -187,6 +199,12 @@ class Game extends React.Component {
         this.bossHeal();
         break;
       }
+      case 3: {
+        if (mobSpecial) {
+          this.bossSecondAttack();
+        }
+        break;
+      }
       case 4: {
       //cast ice
         var mobSpecial = this.mobSkills[1];
@@ -195,6 +213,12 @@ class Game extends React.Component {
       }
       case 5: {
         this.bossHeal();
+        break;
+      }
+      case 6: {
+        if (mobSpecial) {
+          this.bossSecondAttack();
+        }
         break;
       }
       case 7: {
