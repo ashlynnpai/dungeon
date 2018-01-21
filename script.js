@@ -524,6 +524,23 @@ class Game extends React.Component {
 
   //boss fight functions
 
+  startBossFight() {
+    let boss = {name: "balrog", displayName: "Balrog", attack: 10, health: 200, level: 4,
+      url: "https://www.ashlynnpai.com/assets/balrog11.jpg"};
+    this.computeBonus();
+    setState({
+      current_mob: boss,
+      currentAction: "combat"
+    })
+    this.mainBossFight(0, null);
+  }
+
+  computeBonus() {
+    let count = this.state.questItems.length;
+    this.state.hitChance += count * .01;
+    this.state.dodgeChance += count * .01;
+  }
+
   bossHeal() {
     let mobHealth = this.state.mobHp;
     let log = this.state.combatLog;
@@ -786,6 +803,9 @@ class Game extends React.Component {
           this.state.mainLog.unshift(action);
           squares[current_square] = null;
           squares[next_square] = "P";
+        }
+        else if(squares[next_square] == "balrog") {
+          this.startBossFight();
         }
         else if(this.mobLookup(squares[next_square])) {
           this.state.targetIndex = next_square;
