@@ -583,11 +583,11 @@ class Game extends React.Component {
     let boss = {name: "balrog", displayName: "Balrog", attack: 10, health: 200, level: 4,
       url: "https://www.ashlynnpai.com/assets/balrog11.jpg"};
     this.computeBonus();
-    setState({
+    this.setState({
       currentMob: boss,
       currentAction: "combat"
     })
-    this.mainBossFight(0, null);
+    this.combatSequence(0, null);
   }
 
   computeBonus() {
