@@ -28,8 +28,19 @@ function seedFixtures(squares) {
   return squares;
 }
 
+//seed reserve spots
+squares = seedReserves(squares);
+function seedReserves(squares) {
+  let reserves = [[1, 2, 58], [1, 2, 58], [1, 2]];
+  reserves.forEach(function(level, i) {
+    level.forEach(function(item, j) {
+      squares[i][item] = "R";
+    });
+  });
+  return squares;
+}
+
 //stairs "down" "up"
-//switch level in keypress
 
 squares = seedStairs(squares);
 
@@ -44,8 +55,34 @@ function seedStairs(squares) {
 }
 
 //random seed mobs, items
+squares = seedMobs(squares, 0, 0);
 
+function seedMobs(squares, count, index) {
+  let mobSeeds = ["goblin1", "goblin2", "orc1"];
+  let seeded = false;
+  if (index == 3) {
+    return squares;
+  }
+  while (!seeded) {
+    let randomIndex = Math.floor(Math.random() * 60);
+    if (squares[index][randomIndex] == null) {
+      squares[index][randomIndex] = mobSeeds[index];
+      seeded = true;
+      count++;
+    }
+  }
+  if (count == 4) {
+    index++;
+    count = 0;
+  }
+  return seedMobs(squares, count, index);
+}
 
+console.log(squares);
 
+//switch level in keypress
+//set image of square in render hash
+let squareImages = [{name: "P", url: ""}];
+//if square == "goblin", img == imgurl
 //define each level for where char is at
 //render each level separately
