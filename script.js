@@ -1313,6 +1313,8 @@ class Game extends React.Component {
                case "goblin1": return "Goblin Footsoldier Level 1";
                case "goblin2": return "Goblin Lieutenant Level 2";
                case "orc1": return "Orc Captain Level 3";
+               case "balrog": return "Balrog Firelord Boss";
+               case "pet": return "Sleeping Cat";
              }
            })()}
          </div>
