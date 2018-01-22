@@ -136,6 +136,7 @@ class Game extends React.Component {
       buff: null,
       pet: false,
       petEnergy: 10,
+      furyCooldown: false,
       living: true,
       weapons: [{name: "Hands", attack: 1, description: "These are deadly weapons.", url: "https://www.ashlynnpai.com/assets/Power%20of%20blessing.png"}],
       attack: 1,
@@ -154,7 +155,7 @@ class Game extends React.Component {
        {name: "A Small Clue", description: "This was once a great hall. Find some clue about what happened here.",
        item: "Rune", completed: false, xp: 10}
       ],
-      current_mob: "",
+      currentMob: "",
       mobHp: 0,
       targetIndex: null,
       currentAction: null,
@@ -174,6 +175,8 @@ class Game extends React.Component {
     document.removeEventListener("keypress", this.onKeyPressed.bind(this));
   }
 
+  // sound
+
   toggleSound() {
     if (this.state.sound) {
       this.setState({
@@ -186,6 +189,15 @@ class Game extends React.Component {
       })
     }
   }
+
+  playSound(audioFile) {
+    if (this.state.sound) {
+      let newAudio = new Audio(audioFile);
+      newAudio.play();
+    }
+  }
+
+  //control overlays for tips and prompt to revive character
 
   toggleOverlay() {
     if (this.state.overlay) {
@@ -211,6 +223,8 @@ class Game extends React.Component {
       health: this.state.maxHealth
     })
   }
+
+//determine which squares are visible
 
   checkVisible() {
     let squares = this.state.squares;
@@ -262,6 +276,8 @@ class Game extends React.Component {
     })
   }
 
+  //query if item is contained in existing objects
+
   mobLookup(mob) {
     if (this.mobsInfo.filter(mobInfo => mobInfo.name == mob).length > 0) {
       return true;
@@ -280,40 +296,31 @@ class Game extends React.Component {
     }
   }
 
+  // main combat functions
+
   fightMob(mob) {
     for (let i=0; i<this.mobsInfo.length; i++) {
       if (this.mobsInfo[i].name == mob) {
         var mobHash = this.mobsInfo[i];
       }
     }
-
     //choose mob's special skill
     let mobSpecialIndex = Math.floor(Math.random() * this.mobSkills.length);
     let mobSpecial = this.mobSkills[mobSpecialIndex];
-    let action = mobHash.displayName + " " + mobSpecial.action + " " + mobSpecial.name;
-    if (this.state.sound) {
-      let alertAudio = new Audio('https://www.ashlynnpai.com/assets/sms-alert-5-daniel_simon.mp3');
-      alertAudio.play();
-    }
-    let buff = this.state.buff;
-    buff = mobSpecial.name;
-    this.state.combatLog.unshift(action);
+    this.announceMobSpecial(mobSpecial, mobHash.displayName);
     this.setState({
-      current_mob: mobHash,
-      mobHp: mobHash.health,
-      combatLog: this.state.combatLog,
-      message: action,
-      buff: buff
+      currentMob: mobHash,
+      mobHp: mobHash.health
     });
-    this.combatSequence(mobSpecial);
-  }
+    this.combatSequence(0, mobSpecial);
+}
 
-  combatSequence(mobSpecial) {
+  combatSequence(round, mobSpecial) {
     //update the mob health on this.state.mobHp not in the {}
     //this.state.playerSpecial gets updated in the keypress listener
     let log = this.state.combatLog;
     let mainLog = this.state.mainLog;
-    let mob = this.state.current_mob;
+    let mob = this.state.currentMob;
     let playerHealth = this.state.health;
     let mobHealth = this.state.mobHp;
     if (mob.level > this.state.level) {
@@ -342,13 +349,60 @@ class Game extends React.Component {
       var modifiedPlayerAttack = attack + randomHit;
     }
     var modifiedMobAttack = mob.attack + (Math.round(Math.random()) * mob.level);
+
+    if (mob.name == "balrog") {
+      //mutates mobSpecial and round for boss fight
+      switch (round) {
+      case 1: {
+        var mobSpecial = this.mobSkills[2];
+        this.announceMobSpecial(mobSpecial, "Balrog");
+        break;
+      }
+      case 2: {
+        this.bossHeal();
+        break;
+      }
+      case 3: {
+        if (mobSpecial) {
+          this.bossSecondAttack();
+        }
+        break;
+      }
+      case 5: {
+      //cast ice
+        var mobSpecial = this.mobSkills[1];
+        this.announceMobSpecial(mobSpecial, "Balrog");
+        break;
+      }
+      case 6: {
+        this.bossHeal();
+        break;
+      }
+      case 7: {
+        if (mobSpecial) {
+          this.bossSecondAttack();
+        }
+        break;
+      }
+      case 9: {
+        var mobSpecial = this.mobSkills[0];
+        this.announceMobSpecial(mobSpecial, "Balrog");
+        break;
+      }
+      case 10: {
+        this.bossHeal();
+        round = 0;
+        break;
+      }
+      default:
+        break;
+      }
+    }
+
     let playerRoll = Math.random();
 
     if (playerRoll <= playerHitChance) {
-      if (this.state.sound) {
-        let fightAudio = new Audio('https://www.ashlynnpai.com/assets/Swords_Collide-Sound_Explorer-2015600826.mp3');
-        fightAudio.play();
-      }
+      this.playSound('https://www.ashlynnpai.com/assets/Swords_Collide-Sound_Explorer-2015600826.mp3');
       mobHealth -= modifiedPlayerAttack;
       let action = "Player hits " + mob.displayName + " for " + modifiedPlayerAttack;
       if (mobHealth < 0) {
@@ -361,87 +415,19 @@ class Game extends React.Component {
       log.unshift(action);
     }
 
-    let pet = this.state.pet;
-    if (pet) {
-      let petRoll = Math.random();
-      if (petRoll <= .8) {
-        let petDamage = this.state.level;
-        mobHealth -= petDamage;
-        let action = "Scrappy hits " + mob.displayName + " for " + petDamage;
-        if (mobHealth < 0) {
-          mobHealth = 0;
-        }
-        log.unshift(action);
-      }
-      else {
-        let action = "Scrappy misses.";
-        log.unshift(action);
-      }
-    }
-
-    this.setState({
-      mobHp: mobHealth,
-      combatLog: log
-    });
+    mobHealth = this.petAutoAttack(mobHealth);
 
     if (mobHealth <= 0) {
-      let action1 = mob.displayName + " dies.";
-      this.state.buff = null;
-      log.unshift(action1);
-      mainLog.unshift(action1);
-      let random = Math.floor(Math.random() * this.dropsHash[mob.level].length);
-      let loot = this.dropsHash[mob.level][random];
-      this.dropsHash[mob.level].splice(random, 1);
-      this.processItem(loot);
-      let killXp = 10 * mob.level;
-      let xp = this.state.xp
-      xp += killXp;
-      let action2 = "You receive " + killXp + " xp.";
-      mainLog.unshift(action2);
-      let mobIndex = this.state.targetIndex;
-      let squares = this.state.squares;
-      let tip = "Press R to rest and regain health."
-      mainLog.unshift(tip);
-      squares[mobIndex] = null;
-      squares[this.state.playerIndex] = null;
-      squares[mobIndex] = "P";
-      this.setState({
-        mobHp: 0,
-        xp: xp,
-        combatLog: log,
-        mainLog: mainLog,
-        playerSpecial: null,
-        current_mob: null,
-        currentAction: null,
-        playerIndex: mobIndex,
-        squares: squares
-      });
-      this.checkLevel();
+      if (mob.name == "balrog") {
+        this.bossDies(mob);
+      }
+      this.mobDies(mob);
       return;
     }
 
     if (mobSpecial) {
-      if (this.state.playerSpecial != mobSpecial.counter) {
-        playerHealth -= modifiedMobAttack;
-        let action = mob.displayName + " " + mobSpecial.action + " " + mobSpecial.name
-        + " for " + modifiedMobAttack;
-        log.unshift(action);
-      }
-      else if (this.state.playerSpecial == mobSpecial.counter) {
-        mobHealth -= modifiedPlayerAttack;
-        let action = "You counter " + mobSpecial.name + " with " + mobSpecial.counter + " for " + modifiedPlayerAttack;
-        if (mobHealth < 0) {
-          mobHealth = 0;
-        }
-        log.unshift(action);
-        mobSpecial = null;
-      }
+      mobSpecial = this.processMobSpecial(mobSpecial, modifiedMobAttack, modifiedPlayerAttack);
     }
-    this.setState({
-      health: playerHealth,
-      mobHp: mobHealth,
-      combatLog: log
-    });
 
     let mobRoll = Math.random();
     if (mobRoll <= mobHitChance) {
@@ -459,19 +445,205 @@ class Game extends React.Component {
     });
 
     if (playerHealth <= 0) {
-      let action = "You die."
-      log.unshift(action);
-      this.setState({
-        health: 0,
-        living: false,
-        combatLog: log,
-        message: action,
-        currentAction: null
-      });
-      return;
+      this.playerDies(mob);
     }
-    setTimeout(this.combatSequence.bind(this), 2000, mobSpecial);
+    setTimeout(this.combatSequence.bind(this), 2000, round, mobSpecial);
   }
+
+  //main combat helper functions
+
+  announceMobSpecial(mobSpecial, mobName) {
+    let action = mobName + " " + mobSpecial.action + " " + mobSpecial.name;
+    this.playSound('https://www.ashlynnpai.com/assets/sms-alert-5-daniel_simon.mp3');
+    this.state.combatLog.unshift(action);
+    this.setState({
+      combatLog: this.state.combatLog,
+      message: action,
+      buff: mobSpecial.name
+    });
+  }
+
+  processMobSpecial(mobSpecial, modifiedMobAttack, modifiedPlayerAttack) {
+    let playerHealth = this.state.health;
+    let mobHealth = this.state.mobHp;
+    let log = this.state.combatLog;
+    let mob = this.state.currentMob;
+    if (this.state.playerSpecial != mobSpecial.counter) {
+      playerHealth -= modifiedMobAttack;
+      let action = mob.displayName + " " + mobSpecial.action + " " + mobSpecial.name
+      + " for " + modifiedMobAttack;
+      log.unshift(action);
+    }
+    else if (this.state.playerSpecial == mobSpecial.counter) {
+      mobHealth -= modifiedPlayerAttack;
+      let action = "You counter " + mobSpecial.name + " with " + mobSpecial.counter + " for " + modifiedPlayerAttack;
+      if (mobHealth < 0) {
+        mobHealth = 0;
+      }
+      log.unshift(action);
+      mobSpecial = null;
+    }
+    this.setState({
+      health: playerHealth,
+      mobHp: mobHealth,
+      combatLog: log
+    });
+    return mobSpecial;
+  }
+
+  petAutoAttack(mobHealth) {
+    let pet = this.state.pet;
+    let mob = this.state.currentMob;
+    let log = this.state.combatLog;
+    if (pet) {
+      let petRoll = Math.random();
+      if (petRoll <= .8) {
+        let petDamage = this.state.level * 2;
+        mobHealth -= petDamage;
+        let action = "Scrappy hits " + mob.displayName + " for " + petDamage;
+        if (mobHealth < 0) {
+          mobHealth = 0;
+        }
+        log.unshift(action);
+      }
+      else {
+        let action = "Scrappy misses.";
+        log.unshift(action);
+      }
+    }
+    this.setState({
+      mobHp: mobHealth,
+      combatLog: log
+    });
+    return mobHealth;
+  }
+
+  mobDies(mob) {
+    let log = this.state.combatLog;
+    let mainLog = this.state.mainLog;
+    let action1 = mob.displayName + " dies.";
+    this.state.buff = null;
+    log.unshift(action1);
+    mainLog.unshift(action1);
+    let random = Math.floor(Math.random() * this.dropsHash[mob.level].length);
+    let loot = this.dropsHash[mob.level][random];
+    this.dropsHash[mob.level].splice(random, 1);
+    this.processItem(loot);
+    let killXp = 10 * mob.level;
+    let xp = this.state.xp
+    xp += killXp;
+    let action2 = "You receive " + killXp + " xp.";
+    mainLog.unshift(action2);
+    let mobIndex = this.state.targetIndex;
+    let squares = this.state.squares;
+    let tip = "Press R to rest and regain health."
+    mainLog.unshift(tip);
+    squares[mobIndex] = null;
+    squares[this.state.playerIndex] = null;
+    squares[mobIndex] = "P";
+    this.setState({
+      mobHp: 0,
+      xp: xp,
+      combatLog: log,
+      mainLog: mainLog,
+      message: null,
+      playerSpecial: null,
+      currentMob: null,
+      currentAction: null,
+      playerIndex: mobIndex,
+      squares: squares
+    });
+    this.checkLevel();
+    return;
+  }
+
+  playerDies(mob) {
+    let action = "You die."
+    let inventory = this.state.inventory;
+    let log = this.state.combatLog;
+    if (mob.name == "balrog") {
+      inventory[0].healthPotion = 6;
+      inventory[1].manaPotion = 4;
+    }
+    log.unshift(action);
+    this.setState({
+      health: 0,
+      living: false,
+      combatLog: log,
+      message: action,
+      currentAction: null,
+      inventory: inventory
+    });
+    return;
+  }
+
+  //boss fight functions and helper functions used by main combat function
+
+  startBossFight() {
+    let boss = {name: "balrog", displayName: "Balrog", attack: 10, health: 200, level: 4,
+      url: "https://www.ashlynnpai.com/assets/balrog11.jpg"};
+    this.computeBonus();
+    this.setState({
+      currentMob: boss,
+      currentAction: "combat"
+    })
+    this.combatSequence(0, null);
+  }
+
+  computeBonus() {
+    let count = this.state.questItems.length;
+    this.state.hitChance += count * .01;
+    this.state.dodgeChance += count * .01;
+  }
+
+  bossHeal() {
+    let mobHealth = this.state.mobHp;
+    let log = this.state.combatLog;
+    mobHealth += 30;
+    if (this.maxBossHealth < mobHealth) {
+      mobHealth = this.maxBossHealth;
+    }
+    this.playSound('https://www.ashlynnpai.com/assets/blessing.ogg');
+    let action = "Balrog's flames heal him for 30.";
+    log.unshift(action);
+    this.setState ({
+      combatLog: log,
+      mobHp: mobHealth
+    })
+  }
+
+  bossSecondAttack() {
+    let playerHealth = this.state.health;
+    let log = this.state.combatLog;
+    playerHealth -= 10;
+    let action = "Balrog's curse weakens you for 10."
+    log.unshift(action);
+    this.setState({
+      health: playerHealth,
+      combatLog: log
+    });
+  }
+
+  bossDies(mob) {
+    let log = this.state.combatLog;
+    let mainLog = this.state.mainLog;
+    let action = mob.displayName + " dies. You have reclaimed Silverhearth.";
+    log.unshift(action);
+    mainLog.unshift(action);
+    this.setState({
+      mobHp: 0,
+      combatLog: log,
+      mainLog: mainLog,
+      message: "You reclaim Silverhearth",
+      buff: null,
+      playerSpecial: null,
+      currentMob: null,
+      currentAction: null,
+    });
+    return;
+  }
+
+  // after combat
 
   regenerateHealth() {
     let health = this.state.health;
@@ -481,10 +653,7 @@ class Game extends React.Component {
     let energy = this.state.petEnergy;
 
     if (health >= maxHealth && mana >= maxMana && energy >= this.maxPetEnergy) {
-      if (this.state.sound) {
-        let chimeAudio = new Audio('https://www.ashlynnpai.com/assets/Electronic_Chime-KevanGC-495939803.mp3');
-        chimeAudio.play();
-      }
+      this.playSound('https://www.ashlynnpai.com/assets/Electronic_Chime-KevanGC-495939803.mp3');
       let action = "You are done resting."
       let log = this.state.mainLog
       log.unshift(action);
@@ -530,10 +699,7 @@ class Game extends React.Component {
       xp -= levelInfo[level];
       level++;
       let message = "You are now level " + level;
-      if (this.state.sound) {
-        let chimeAudio = new Audio('https://www.ashlynnpai.com/assets/Electronic_Chime-KevanGC-495939803.mp3');
-        chimeAudio.play();
-      }
+      this.playSound('https://www.ashlynnpai.com/assets/Electronic_Chime-KevanGC-495939803.mp3');
       log.unshift(message);
       let maxHealth = this.state.maxHealth;
       let maxMana = this.state.maxMana
@@ -599,6 +765,8 @@ class Game extends React.Component {
     })
   }
 
+  // items found on grid
+
   processFindableItems(nextIndex) {
     let retrievedItem = this.findableItems.filter(findableItem => findableItem.index == nextIndex);
     let itemName = retrievedItem[0].item;
@@ -652,6 +820,13 @@ class Game extends React.Component {
       });
   }
 
+// event handlers and helpers
+
+  endFuryCooldown() {
+    this.state.furyCooldown = false;
+    document.getElementById("toolbar1").style.border = "3px solid #161616";
+  }
+
   onKeyPressed(e) {
     let current_square = this.state.playerIndex;
     let squares = this.state.squares;
@@ -699,11 +874,15 @@ class Game extends React.Component {
           squares[next_square] = "P";
         }
         else if(squares[next_square] == "pet") {
+          this.playSound('https://www.ashlynnpai.com/assets/Kitten%20Meow-SoundBible.com-1295572573.mp3');
           this.state.pet = true;
           let action = "Scrappy would like to join you on your adventure. You have gained a skill BITE."
           this.state.mainLog.unshift(action);
           squares[current_square] = null;
           squares[next_square] = "P";
+        }
+        else if(squares[next_square] == "balrog") {
+          this.startBossFight();
         }
         else if(this.mobLookup(squares[next_square])) {
           this.state.targetIndex = next_square;
@@ -715,10 +894,7 @@ class Game extends React.Component {
           this.processFindableItems(next_square);
           squares[current_square] = null;
           squares[next_square] = "P";
-          if (this.state.sound) {
-            let chimeAudio = new Audio('https://www.ashlynnpai.com/assets/Electronic_Chime-KevanGC-495939803.mp3');
-            chimeAudio.play();
-          }
+          this.playSound('https://www.ashlynnpai.com/assets/Electronic_Chime-KevanGC-495939803.mp3');
         }
         else {
           return;
@@ -743,9 +919,13 @@ class Game extends React.Component {
 
         if (e.key in skillKeys) {
           if (e.key =="1") {
-            if (mana >= 5) {
-              let furyDamage = level + attack + Math.round(Math.random() * attack);
-              mana -= 5;
+            let furyCost = 3;
+            if (mana >= furyCost && !this.state.furyCooldown) {
+              document.getElementById("toolbar1").style.border = "3px solid red";
+              this.state.furyCooldown = true;
+              setTimeout(this.endFuryCooldown.bind(this), 5000);
+              let furyDamage = level * 2 + attack + Math.round(Math.random() * attack);
+              mana -= furyCost;
               mobHealth -= furyDamage;
               if (mobHealth < 0) {
                 mobHealth = 0;
@@ -753,7 +933,7 @@ class Game extends React.Component {
               let action = "You use Fury for " + furyDamage + ".";
               log.unshift(action);
             }
-            else {
+            else if (mana < furyCost) {
               let action = "Out of mana.";
               log.unshift(action);
             }
@@ -763,10 +943,7 @@ class Game extends React.Component {
             if (pet) {
               var energy = this.state.petEnergy;
               if (energy >= 3) {
-                if (this.state.sound) {
-                  let catAudio = new Audio('https://www.ashlynnpai.com/assets/Kitten%20Meow-SoundBible.com-1295572573.mp3');
-                  catAudio.play();
-                }
+                this.playSound('https://www.ashlynnpai.com/assets/Kitten%20Meow-SoundBible.com-1295572573.mp3');
                 mobHealth -= (level * 2);
                 energy -= 3;
                 let action = "Scrappy bites for " + (level * 2) + ".";
@@ -782,11 +959,11 @@ class Game extends React.Component {
           else if (e.key =="3") {
             if (mana >= 4) {
               health += 10;
-              mana -= 4;
-              if (this.state.sound) {
-                let healAudio = new Audio('https://www.ashlynnpai.com/assets/blessing.ogg');
-                healAudio.play();
+              if (health > this.state.maxHealth) {
+                health = this.state.maxHealth;
               }
+              mana -= 4;
+              this.playSound('https://www.ashlynnpai.com/assets/blessing.ogg');
               let action = "You cast heal for 10 health.";
               log.unshift(action);
             }
@@ -798,30 +975,24 @@ class Game extends React.Component {
           else if (e.key =="4") {
             if (this.state.inventory[1].manaPotion > 0) {
               mana += 10;
-              if (this.state.sound) {
-                let healAudio = new Audio('https://www.ashlynnpai.com/assets/blessing2.ogg');
-                healAudio.play();
-              }
-              let action = "You consume mana potion.";
-              log.unshift(action);
               if (mana > this.state.maxMana) {
                 mana = this.state.maxMana;
               }
+              this.playSound('https://www.ashlynnpai.com/assets/blessing2.ogg');
+              let action = "You consume mana potion.";
+              log.unshift(action);
               this.state.inventory[1].manaPotion--;
             }
           }
           else if (e.key =="5") {
             if (this.state.inventory[0].healthPotion > 0) {
               health += 10;
-              if (this.state.sound) {
-                let healAudio = new Audio('https://www.ashlynnpai.com/assets/blessing.ogg');
-                healAudio.play();
-              }
-              let action = "You consume health potion.";
-              log.unshift(action);
               if (health > this.state.maxHealth) {
                 health = this.state.maxHealth;
               }
+              this.playSound('https://www.ashlynnpai.com/assets/blessing.ogg');
+              let action = "You consume health potion.";
+              log.unshift(action);
               this.state.inventory[0].healthPotion--;
             }
           }
@@ -837,10 +1008,7 @@ class Game extends React.Component {
             let skill = skillKeys[e.key];
             this.state.playerSpecial = skill;
             let action = "You use " + skill;
-            if (this.state.sound) {
-              let audio = new Audio(sounds[e.key]);
-              audio.play();
-            }
+            this.playSound(sounds[e.key]);
             var buff = this.state.buff;
             buff = skill;
             log.unshift(action);
@@ -898,7 +1066,7 @@ class Game extends React.Component {
       };
     }
 
-    let mob = this.state.current_mob;
+    let mob = this.state.currentMob;
       if (mob) {
         var mobUrl = mob.url;
         var mobHealth = this.state.mobHp;
@@ -1110,8 +1278,8 @@ class Game extends React.Component {
           <p>Attack {this.state.attack}</p>
        </div>
        <div className="fastStats">
-          <p>Hit {this.state.hitChance} </p>
-          <p>Dodge {this.state.dodgeChance} </p>
+         <p>Hit {this.state.hitChance.toFixed(2)} </p>
+         <p>Dodge {this.state.dodgeChance.toFixed(2)} </p>
         </div>
         <div className="messageDisplay">{this.state.message}</div>
      </div>
@@ -1125,6 +1293,8 @@ class Game extends React.Component {
                case "goblin1": return "Goblin Footsoldier Level 1";
                case "goblin2": return "Goblin Lieutenant Level 2";
                case "orc1": return "Orc Captain Level 3";
+               case "balrog": return "Balrog Firelord Boss";
+               case "pet": return "Sleeping Cat";
              }
            })()}
          </div>
@@ -1139,7 +1309,7 @@ class Game extends React.Component {
           <span id="toolbar1" className="toolbarItem">1
             <div className="toolbarTip">
               <p id="offensive">FURY</p>
-              <p id="skillCost">Costs 2 mana.</p>
+              <p id="skillCost">Costs 3 mana. Cooldown 5 seconds.</p>
               <div id="skillDescription">You become enraged and land a forceful hit on your enemy.</div>
             </div>
           </span>
@@ -1219,7 +1389,7 @@ class Game extends React.Component {
         {questsCompleted.map((complete) =>
           <div className="questLogEntry">
             <div className="questLogName">
-              <img width="20" src="https://www.ashlynnpai.com/assets/check.png" />
+              <img margin-right="5" src="https://www.ashlynnpai.com/assets/Coin_03.png" />
               {complete.name}
             </div>
             <div className="questLogDescription">{complete.description}</div>
