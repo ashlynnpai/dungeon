@@ -188,6 +188,8 @@ class Game extends React.Component {
     }
   }
 
+  //control overlays for tips and prompt to revive character
+
   toggleOverlay() {
     if (this.state.overlay) {
       this.setState({
@@ -212,6 +214,8 @@ class Game extends React.Component {
       health: this.state.maxHealth
     })
   }
+
+//determine which squares are visible
 
   checkVisible() {
     let squares = this.state.squares;
@@ -263,6 +267,8 @@ class Game extends React.Component {
     })
   }
 
+  //query if item is contained in existing objects
+
   mobLookup(mob) {
     if (this.mobsInfo.filter(mobInfo => mobInfo.name == mob).length > 0) {
       return true;
@@ -280,6 +286,8 @@ class Game extends React.Component {
       return true;
     }
   }
+
+  // main combat functions
 
   fightMob(mob) {
     for (let i=0; i<this.mobsInfo.length; i++) {
@@ -566,7 +574,7 @@ class Game extends React.Component {
     return;
   }
 
-  //boss fight functions
+  //boss fight functions and helper functions used by main combat function
 
   startBossFight() {
     let boss = {name: "balrog", displayName: "Balrog", attack: 10, health: 200, level: 4,
@@ -634,6 +642,8 @@ class Game extends React.Component {
     });
     return;
   }
+
+  // after combat
 
   regenerateHealth() {
     let health = this.state.health;
@@ -761,6 +771,8 @@ class Game extends React.Component {
     })
   }
 
+  // items found on grid
+
   processFindableItems(nextIndex) {
     let retrievedItem = this.findableItems.filter(findableItem => findableItem.index == nextIndex);
     let itemName = retrievedItem[0].item;
@@ -813,6 +825,8 @@ class Game extends React.Component {
         squares: squares
       });
   }
+
+// event handlers and helpers
 
   endFuryCooldown() {
     this.state.furyCooldown = false;
