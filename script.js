@@ -404,38 +404,10 @@ class Game extends React.Component {
     mobHealth = this.petAutoAttack(mobHealth);
 
     if (mobHealth <= 0) {
-      let action1 = mob.displayName + " dies.";
-      this.state.buff = null;
-      log.unshift(action1);
-      mainLog.unshift(action1);
-      let random = Math.floor(Math.random() * this.dropsHash[mob.level].length);
-      let loot = this.dropsHash[mob.level][random];
-      this.dropsHash[mob.level].splice(random, 1);
-      this.processItem(loot);
-      let killXp = 10 * mob.level;
-      let xp = this.state.xp
-      xp += killXp;
-      let action2 = "You receive " + killXp + " xp.";
-      mainLog.unshift(action2);
-      let mobIndex = this.state.targetIndex;
-      let squares = this.state.squares;
-      let tip = "Press R to rest and regain health."
-      mainLog.unshift(tip);
-      squares[mobIndex] = null;
-      squares[this.state.playerIndex] = null;
-      squares[mobIndex] = "P";
-      this.setState({
-        mobHp: 0,
-        xp: xp,
-        combatLog: log,
-        mainLog: mainLog,
-        playerSpecial: null,
-        currentMob: null,
-        currentAction: null,
-        playerIndex: mobIndex,
-        squares: squares
-      });
-      this.checkLevel();
+      if (mob.name == "balrog") {
+        this.bossDies(mob);
+      }
+      this.mobDies(mob);
       return;
     }
 
@@ -535,6 +507,44 @@ class Game extends React.Component {
     return mobHealth;
   }
 
+  mobDies(mob) {
+    let log = this.state.combatLog;
+    let mainLog = this.state.mainLog;
+    let action1 = mob.displayName + " dies.";
+    this.state.buff = null;
+    log.unshift(action1);
+    mainLog.unshift(action1);
+    let random = Math.floor(Math.random() * this.dropsHash[mob.level].length);
+    let loot = this.dropsHash[mob.level][random];
+    this.dropsHash[mob.level].splice(random, 1);
+    this.processItem(loot);
+    let killXp = 10 * mob.level;
+    let xp = this.state.xp
+    xp += killXp;
+    let action2 = "You receive " + killXp + " xp.";
+    mainLog.unshift(action2);
+    let mobIndex = this.state.targetIndex;
+    let squares = this.state.squares;
+    let tip = "Press R to rest and regain health."
+    mainLog.unshift(tip);
+    squares[mobIndex] = null;
+    squares[this.state.playerIndex] = null;
+    squares[mobIndex] = "P";
+    this.setState({
+      mobHp: 0,
+      xp: xp,
+      combatLog: log,
+      mainLog: mainLog,
+      playerSpecial: null,
+      currentMob: null,
+      currentAction: null,
+      playerIndex: mobIndex,
+      squares: squares
+    });
+    this.checkLevel();
+    return;
+  }
+
   playerDies(mob) {
     let action = "You die."
     let inventory = this.state.inventory;
@@ -603,6 +613,24 @@ class Game extends React.Component {
       health: playerHealth,
       combatLog: log
     });
+  }
+
+  bossDies(mob) {
+    let log = this.state.combatLog;
+    let mainLog = this.state.mainLog;
+    let action = mob.displayName + " dies. You have reclaimed Silverhearth.";
+    log.unshift(action);
+    mainLog.unshift(action);
+    this.setState({
+      mobHp: 0,
+      combatLog: log,
+      mainLog: mainLog,
+      buff: null,
+      playerSpecial: null,
+      currentMob: null,
+      currentAction: null,
+    });
+    return;
   }
 
   regenerateHealth() {
