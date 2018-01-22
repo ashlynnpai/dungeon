@@ -155,7 +155,7 @@ class Game extends React.Component {
        {name: "A Small Clue", description: "This was once a great hall. Find some clue about what happened here.",
        item: "Rune", completed: false, xp: 10}
       ],
-      current_mob: "",
+      currentMob: "",
       mobHp: 0,
       targetIndex: null,
       currentAction: null,
@@ -292,7 +292,7 @@ class Game extends React.Component {
     let mobSpecial = this.mobSkills[mobSpecialIndex];
     this.announceMobSpecial(mobSpecial, mobHash.displayName);
     this.setState({
-      current_mob: mobHash,
+      currentMob: mobHash,
       mobHp: mobHash.health
     });
     this.combatSequence(0, mobSpecial);
@@ -303,7 +303,7 @@ class Game extends React.Component {
     //this.state.playerSpecial gets updated in the keypress listener
     let log = this.state.combatLog;
     let mainLog = this.state.mainLog;
-    let mob = this.state.current_mob;
+    let mob = this.state.currentMob;
     let playerHealth = this.state.health;
     let mobHealth = this.state.mobHp;
     if (mob.level > this.state.level) {
@@ -430,7 +430,7 @@ class Game extends React.Component {
         combatLog: log,
         mainLog: mainLog,
         playerSpecial: null,
-        current_mob: null,
+        currentMob: null,
         currentAction: null,
         playerIndex: mobIndex,
         squares: squares
@@ -499,7 +499,7 @@ class Game extends React.Component {
     let playerHealth = this.state.health;
     let mobHealth = this.state.mobHp;
     let log = this.state.combatLog;
-    let mob = this.state.current_mob;
+    let mob = this.state.currentMob;
     if (this.state.playerSpecial != mobSpecial.counter) {
       playerHealth -= modifiedMobAttack;
       let action = mob.displayName + " " + mobSpecial.action + " " + mobSpecial.name
@@ -525,7 +525,7 @@ class Game extends React.Component {
 
   petAutoAttack(mobHealth) {
     let pet = this.state.pet;
-    let mob = this.state.current_mob;
+    let mob = this.state.currentMob;
     let log = this.state.combatLog;
     if (pet) {
       let petRoll = Math.random();
@@ -557,7 +557,7 @@ class Game extends React.Component {
       url: "https://www.ashlynnpai.com/assets/balrog11.jpg"};
     this.computeBonus();
     setState({
-      current_mob: boss,
+      currentMob: boss,
       currentAction: "combat"
     })
     this.mainBossFight(0, null);
@@ -1037,7 +1037,7 @@ class Game extends React.Component {
       };
     }
 
-    let mob = this.state.current_mob;
+    let mob = this.state.currentMob;
       if (mob) {
         var mobUrl = mob.url;
         var mobHealth = this.state.mobHp;
