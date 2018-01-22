@@ -459,22 +459,7 @@ class Game extends React.Component {
     });
 
     if (playerHealth <= 0) {
-      let action = "You die."
-      let inventory = this.state.inventory;
-      if (mob.name == "balrog") {
-        inventory[0].healthPotion = 6;
-        inventory[1].manaPotion = 4;
-      }
-      log.unshift(action);
-      this.setState({
-        health: 0,
-        living: false,
-        combatLog: log,
-        message: action,
-        currentAction: null,
-        inventory: inventory
-      });
-      return;
+      this.playerDies(mob);
     }
     setTimeout(this.combatSequence.bind(this), 2000, round, mobSpecial);
   }
@@ -548,6 +533,26 @@ class Game extends React.Component {
       combatLog: log
     });
     return mobHealth;
+  }
+
+  playerDies(mob) {
+    let action = "You die."
+    let inventory = this.state.inventory;
+    let log = this.state.combatLog;
+    if (mob.name == "balrog") {
+      inventory[0].healthPotion = 6;
+      inventory[1].manaPotion = 4;
+    }
+    log.unshift(action);
+    this.setState({
+      health: 0,
+      living: false,
+      combatLog: log,
+      message: action,
+      currentAction: null,
+      inventory: inventory
+    });
+    return;
   }
 
   //boss fight functions
