@@ -625,6 +625,7 @@ class Game extends React.Component {
 
   playerDies(mob) {
     let action = "You die."
+    this.playSound("https://www.ashlynnpai.com/assets/Sad_Trombone-Joe_Lamb-665429450.mp3");
     let inventory = this.state.inventory;
     let log = this.state.combatLog;
     if (mob.name == "balrog") {
@@ -898,32 +899,56 @@ class Game extends React.Component {
     let boardDiv = document.getElementById("board");
     if (this.state.living) {
       if(!this.state.currentAction){
-        if(e.key == 'd' && currentSquare % this.rowSize != this.rowSize - 1){
-          var nextSquare = currentSquare + 1;
-        }
-        else if(e.key =='a' && currentSquare % this.rowSize != 0) {
-          var nextSquare = currentSquare - 1;
-        }
-        else if(e.key =='w' && currentSquare > this.rowSize - 1) {
-          var nextSquare = currentSquare - this.rowSize;
-          if(squares[mapLevel][nextSquare] == null) {
-            let yCoord = this.state.yCoord;
-            yCoord -= this.tileSize;
-            this.setState({
-              yCoord: yCoord
-            })
-            boardDiv.scrollTo(0, yCoord);
+        if(e.key == 'd') {
+          if (currentSquare % this.rowSize != this.rowSize - 1) {
+            var nextSquare = currentSquare + 1;
+          }
+          else {
+           this.playSound("https://www.ashlynnpai.com/assets/Smashing-Yuri_Santana-1233262689.mp3");
+            return;
           }
         }
-        else if(e.key =='s' && currentSquare < this.rowSize * (this.rowNums - 1)) {
-          var nextSquare = currentSquare + this.rowSize;
-          if(squares[mapLevel][nextSquare] == null) {
-            let yCoord = this.state.yCoord;
-            yCoord += this.tileSize;
-            this.setState({
-              yCoord: yCoord
-            })
-            boardDiv.scrollTo(0, yCoord);
+        else if(e.key =='a') {
+          if (currentSquare % this.rowSize != 0) {
+            var nextSquare = currentSquare - 1;
+          }
+          else {
+            this.playSound("https://www.ashlynnpai.com/assets/Smashing-Yuri_Santana-1233262689.mp3");
+            return;
+          }
+        }
+        else if(e.key =='w') {
+          if (currentSquare > this.rowSize - 1) {
+            var nextSquare = currentSquare - this.rowSize;
+            if(squares[mapLevel][nextSquare] == null) {
+              let yCoord = this.state.yCoord;
+              yCoord -= this.tileSize;
+              this.setState({
+                yCoord: yCoord
+              })
+              boardDiv.scrollTo(0, yCoord);
+            }
+          }
+          else {
+            this.playSound("https://www.ashlynnpai.com/assets/Smashing-Yuri_Santana-1233262689.mp3");
+            return;
+          }
+        }
+        else if(e.key =='s') {
+          if (currentSquare < this.rowSize * (this.rowNums - 1)) {
+            var nextSquare = currentSquare + this.rowSize;
+            if(squares[mapLevel][nextSquare] == null) {
+              let yCoord = this.state.yCoord;
+              yCoord += this.tileSize;
+              this.setState({
+                yCoord: yCoord
+              })
+              boardDiv.scrollTo(0, yCoord);
+            }
+          }
+          else {
+            this.playSound("https://www.ashlynnpai.com/assets/Smashing-Yuri_Santana-1233262689.mp3");
+            return;
           }
         }
         else if(e.key == 'r') {
