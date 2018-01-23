@@ -78,8 +78,33 @@ function seedMobs(squares, count, index) {
   return seedMobs(squares, count, index);
 }
 
-console.log(squares);
+squares = seedItems(squares, 0);
 
+function seedItems(squares, i) {
+  let findableItems = [{level: 0, item: "Rune"}, {level: 0, item: "Meatchopper"}, {level: 1, item: "Brooch"},
+  {level: 1, item: "Necklace"}, {level: 1, item: "Slicer"},
+  {level: 2, item: "Book"}, {level: 2, item: "Iceblade"}, {level: 2, item: "Orb"}];
+  let seeded = false;
+
+  if (i == findableItems.length) {
+    return squares;
+  }
+  //change to this.findableItems
+  else {
+    while (!seeded) {
+      let randomIndex = Math.floor(Math.random() * 60);
+      if (squares[findableItems[i].level][randomIndex] == null) {
+        squares[findableItems[i].level][randomIndex] = findableItems[i].item;
+        seeded = true;
+        i++;
+      }
+    }
+    return seedItems(squares, i);
+  }
+}
+
+//rewrite processFindableItems(nextIndex), not using "I"
+//add toggle darkness
 //switch level in keypress
 //set image of square in render hash
 let squareImages = [{name: "P", url: ""}];
