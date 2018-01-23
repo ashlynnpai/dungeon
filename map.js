@@ -104,6 +104,30 @@ function seedItems(squares, i) {
 }
 
 //rewrite processFindableItems(nextIndex), not using "I"
+
+processFoundItems(itemName) {
+   if (this.weaponLookup(itemName)) {
+     this.equipWeapon(itemName);
+   }
+   else if (this.questItemLookup(itemName)) {
+     this.processQuestItem(itemName);
+   }
+ }
+
+ foundItemLookup(squares[next_square]) {
+   if (this.findableItems.filter(findableItem => findableItem.item == squares[next_square]).length > 0) {
+      return true;
+    };
+ }
+
+//keypress rewrite
+ else if(this.foundItemLookup(squares[next_square])) {
+   this.processFoundItems(squares[next_square]);
+   squares[current_square] = null;
+   squares[next_square] = "P";
+   this.playSound('https://www.ashlynnpai.com/assets/Electronic_Chime-KevanGC-495939803.mp3');
+ }
+
 //add toggle darkness
 //switch level in keypress
 //set image of square in render hash
