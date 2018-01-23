@@ -161,7 +161,8 @@ body {
   display: block;
 }
 
-.Icolor {
+.Runecolor, .Meatchoppercolor, .Broochcolor, .Necklacecolor, .Slicercolor, .Bookcolor,
+.Icebladecolor, .Orbcolor {
   background-image: url("https://www.ashlynnpai.com/assets/greybox.png"), $tile-image;
   background-repeat: no-repeat, no-repeat;
   background-position: center, center;
@@ -169,11 +170,11 @@ body {
   position: relative;
 }
 
-.Icolor:hover {
-  background-image: url("https://www.ashlynnpai.com/assets/greybox.png"), $tile-image;
+.downcolor, .upcolor {
+  background-image: url("https://www.ashlynnpai.com/assets/stairs.png"), $tile-image;
   background-repeat: no-repeat, no-repeat;
   background-position: center, center;
-  background-size: $icon-height-hover, cover;
+  background-size: $icon-height, cover;
   position: relative;
 }
 
@@ -476,6 +477,11 @@ text-align: left;
   text-align: left;
   background: $black;
   color: #fff;
+}
+
+::-webkit-scrollbar {
+  width: 0px;
+  background: transparent; /* make scrollbar transparent */
 }
 
 #logLine {

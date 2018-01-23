@@ -1469,6 +1469,7 @@ const Tips = () => {
     <span className="shortcutKey">S</span>
     <span className="shortcutKey">D</span>
     <p>Move into an occupied square to fight monsters or open chests.</p>
+    <p>Stairs between levels are located at the ends of each hall.</p>
     <h3>Combat</h3>
     <span className="shortcutKey">1</span> -
     <span className="shortcutKey">0</span>
