@@ -130,6 +130,5 @@ processFoundItems(itemName) {
 
 
 //add toggle darkness
-//add extra levels
 //switch maplevel in keypress when char hits stairs
 //rewrite fixtures to put name of fixture and set background in css
