@@ -282,7 +282,6 @@ class Game extends React.Component {
 
   setVisible(visible) {
       let squares = this.state.squares;
-      console.log(visible);
       for (let i=0; i<visible.length; i++) {
         if (visible[i] >= 0) {
           document.getElementById("square" + visible[i]).classList.remove("hidden");
@@ -309,6 +308,12 @@ class Game extends React.Component {
     if (this.mobsInfo.filter(mobInfo => mobInfo.name == mob).length > 0) {
       return true;
     };
+  }
+
+  foundItemLookup(itemName) {
+    if (this.findableItems.filter(findableItem => findableItem.item == itemName).length > 0) {
+       return true;
+     };
   }
 
   weaponLookup(weapon) {
@@ -794,16 +799,14 @@ class Game extends React.Component {
 
   // items found on grid
 
-  processFindableItems(nextIndex) {
-    let retrievedItem = this.findableItems.filter(findableItem => findableItem.index == nextIndex);
-    let itemName = retrievedItem[0].item;
-    if (this.weaponLookup(itemName)) {
-      this.equipWeapon(itemName);
-    }
-    else if (this.questItemLookup(itemName)) {
-      this.processQuestItem(itemName);
-    }
-  }
+  processFoundItems(itemName) {
+     if (this.weaponLookup(itemName)) {
+       this.equipWeapon(itemName);
+     }
+     else if (this.questItemLookup(itemName)) {
+       this.processQuestItem(itemName);
+     }
+   }
 
   processQuestItem(item) {
     let log = this.state.mainLog;
@@ -885,7 +888,6 @@ class Game extends React.Component {
         {
           squares[mapLevel][currentSquare] = null;
           squares[mapLevel][nextSquare] = "P";
-          console.log(squares[mapLevel][nextSquare]);
         }
         else if(squares[mapLevel][nextSquare] == "pet") {
  this.playSound('https://www.ashlynnpai.com/assets/Kitten%20Meow-SoundBible.com-1295572573.mp3');
@@ -904,17 +906,15 @@ class Game extends React.Component {
           this.fightMob(squares[mapLevel][nextSquare]);
           return;
         }
-        else if(squares[mapLevel][nextSquare] == "I") {
-          this.processFindableItems(squares[mapLevel][nextSquare]);
+        else if(this.foundItemLookup(squares[mapLevel][nextSquare])) {
+          this.processFoundItems(squares[mapLevel][nextSquare]);
           squares[mapLevel][currentSquare] = null;
           squares[mapLevel][nextSquare] = "P";
           this.playSound('https://www.ashlynnpai.com/assets/Electronic_Chime-KevanGC-495939803.mp3');
         }
         else {
-          console.log("hi");
           return;
         }
-        console.log(squares);
         this.setState({
           playerIndex: nextSquare,
           squares: squares
