@@ -2,7 +2,9 @@ class Game extends React.Component {
   constructor(props) {
     super(props);
     this.size = 200;
+    this.tileSize = 50;
     this.rowSize = 20;
+    this.rowNums = 7;
     this.maxPetEnergy = 10;
     this.mobsInfo = [{name: "goblin1", displayName: "Goblin Footsoldier", attack: 1, health: 20, level: 1,
     url: "https://www.ashlynnpai.com/assets/Jinn_goblin.png"},
@@ -51,7 +53,8 @@ class Game extends React.Component {
     //seed player, pet, fixtures
     squares[0][0] = "P";
     squares[0][5] = "pet";
-    squares[2][57] = "balrog";
+    let finalSquare = squares[0].length - 1
+    squares[2][finalSquare - 2] = "balrog";
 
     squares = this.seedFixtures(squares);
     squares = this.seedReserves(squares);
@@ -63,6 +66,7 @@ class Game extends React.Component {
       squares: squares,
       mapLevel: 0,
       hidden: [],
+      yCoord: 0, // will be used to scroll the board div
       playerIndex: startPoint,
       health: 20,
       maxHealth: 20, //has to increase on level
@@ -122,7 +126,7 @@ class Game extends React.Component {
       return arr;
     }
     else {
-     let level = Array.from(Array(60).fill(null));
+     let level = Array.from(Array(this.rowSize * this.rowNums).fill(null));
      arr.push(level);
      return this.createSquares(n + 1, arr);
     }
@@ -139,7 +143,8 @@ class Game extends React.Component {
   }
 
   seedReserves(squares) {
-    let reserves = [[1, 2, 58], [1, 2, 58], [1, 2]];
+    let finalSquare = squares[0].length - 1;
+    let reserves = [[1, 2, finalSquare - 1], [1, 2, finalSquare - 1], [1, 2]];
     reserves.forEach(function(level, i) {
       level.forEach(function(item, j) {
         squares[i][item] = "R";
@@ -149,8 +154,9 @@ class Game extends React.Component {
   }
 
   seedStairs(squares) {
-    let stairs = [{level:0, index:59, direction:"down"}, {level:1, index:0, direction:"up"},
-    {level:1, index:59, direction:"down"}, {level:2, index:0, direction:"up"}];
+    let finalSquare = squares[0].length - 1;
+    let stairs = [{level:0, index:finalSquare, direction:"down"}, {level:1, index:0, direction:"up"},
+    {level:1, index:finalSquare, direction:"down"}, {level:2, index:0, direction:"up"}];
 
     stairs.forEach(function(item) {
       squares[item.level][item.index] = item.direction;
@@ -165,7 +171,7 @@ class Game extends React.Component {
       return squares;
     }
     while (!seeded) {
-      let randomIndex = Math.floor(Math.random() * 60);
+      let randomIndex = Math.floor(Math.random() * squares[0].length);
       if (squares[index][randomIndex] == null) {
         squares[index][randomIndex] = mobSeeds[index];
         seeded = true;
@@ -190,7 +196,7 @@ class Game extends React.Component {
     }
     else {
       while (!seeded) {
-        let randomIndex = Math.floor(Math.random() * 60);
+        let randomIndex = Math.floor(Math.random() * squares[0].length);
         if (squares[this.findableItems[i].level][randomIndex] == null) {
           squares[this.findableItems[i].level][randomIndex] = this.findableItems[i].item;
           seeded = true;
@@ -259,9 +265,10 @@ class Game extends React.Component {
     let n = 20;
     let visible = [];
     const aura = [p, p-2, p-1, p+1, p+2, p+3, p-3,
-      p-n, p-n-2, p-n-1, p-n+1, p-n+2, p-n+3, p-n-3,
-      p+n, p+n-2, p+n-1, p+n+1, p+n+2, p+n+3, p+n-3,
-      p-n*2, p-n*2-1, p-n*2+1, p+n*2, p+n*2-1, p+n*2+1,
+      p-n, p-n-2, p-n-1, p-n+1, p-n+2,
+      p+n, p+n-2, p+n-1, p+n+1, p+n+2,
+      p-n*2, p-n*2-1, p-n*2+1,
+      p+n*2, p+n*2-1, p+n*2+1,
       p-4, p+4];
 
     //only set visible what is on grid and eliminate overflow to other rows
@@ -858,9 +865,10 @@ class Game extends React.Component {
   }
 
   onKeyPressed(e) {
+    let squares = this.state.squares;
     let currentSquare = this.state.playerIndex;
     let mapLevel = this.state.mapLevel;
-    let squares = this.state.squares;
+    let boardDiv = document.getElementById("board");
     if (this.state.living) {
       if(!this.state.currentAction){
         if(e.key == 'd' && currentSquare % this.rowSize != this.rowSize - 1){
@@ -871,9 +879,27 @@ class Game extends React.Component {
         }
         else if(e.key =='w' && currentSquare > this.rowSize - 1) {
           var nextSquare = currentSquare - this.rowSize;
+          if(squares[mapLevel][nextSquare] == null) {
+            let yCoord = this.state.yCoord;
+            console.log(yCoord);
+            yCoord -= this.tileSize;
+            this.setState({
+              yCoord: yCoord
+            })
+            boardDiv.scrollTo(0, yCoord);
+          }
         }
-        else if(e.key =='s' && currentSquare < this.rowSize * 2 - 1) {
+        else if(e.key =='s' && currentSquare < this.rowSize * (this.rowNums - 1)) {
           var nextSquare = currentSquare + this.rowSize;
+          if(squares[mapLevel][nextSquare] == null) {
+            let yCoord = this.state.yCoord;
+            yCoord += this.tileSize;
+            console.log(yCoord);
+            this.setState({
+              yCoord: yCoord
+            })
+            boardDiv.scrollTo(0, yCoord);
+          }
         }
         else if(e.key == 'r') {
           this.state.currentAction = "resting";
@@ -1305,7 +1331,7 @@ class Game extends React.Component {
         <div className="messageDisplay">{this.state.message}</div>
      </div>
     <div className="boardBackground">
-      <div className="board">
+      <div id="board" className="board">
         {renderedSquares.map((square,index) =>
          <div className={square + "color"}  id={"square" + index} key={index}>{index} {square}
            <div className='squareInfo'>

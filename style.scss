@@ -21,9 +21,6 @@
 //http://www.iconarchive.com/show/brand-camp-icons-by-thegirltyler/Tent-Sleep-icon.html
 //sound and help icons  Webdesigner Depot   License: Free for commercial use (Do not redistribute)
 //https://www.iconfinder.com/iconsets/Primo_Icons
-//flash off, on Google CC BY-SA 3.0
-//https://www.iconfinder.com/icons/352368/flash_off_icon#size=256
-//https://www.iconfinder.com/icons/352369/flash_on_icon#size=256
 
 //p0ss CC by SA 3.0, GPL 3.0, GPL 2.0
 //https://opengameart.org/content/spell-sounds-starter-pack
@@ -40,6 +37,8 @@
 
 $font-stack: Roboto;
 $boardWidth: 1020px;
+//limit board height to (tile size * (number of rows + 1)) - 40
+$maxBoardHeight: 360px;
 $icon-height: 40px;
 $icon-height-hover: 45px;
 $board-color: #4b535c;
@@ -62,17 +61,17 @@ body {
 }
 
 .board {
-  //overflow-y: scroll;
+  overflow-y: scroll;
   display: flex;
   justify-content: center;
   flex-direction: row;
   flex-wrap: wrap;
-  height: 155px;
+  height: $maxBoardHeight;
   background: url("https://www.ashlynnpai.com/assets/tile4.png");
 }
 
 .boardBackground {
-  height: 350px;
+  height: 450px;
   background: url("https://www.ashlynnpai.com/assets/tile4.png");
   margin-bottom: 2px;
   display: flex;
@@ -81,6 +80,7 @@ body {
 }
 
 .board > div {
+  //tileSize
   width: 50px;
   height: 50px;
   text-align: center;
@@ -233,7 +233,7 @@ body {
 }
 
 .hidden {
-  background: #303030;
+  background: $black;
 }
 
 /*https://catalin.red/stylish-css3-progress-bars/*/
@@ -695,18 +695,27 @@ text-align: left;
 
 @media screen and (min-height:805px) and (max-height:1100px) {
   .boardBackground {
-     height: 300px;
+     height: 400px;
+  }
+  .board {
+     height: $maxBoardHeight;
   }
 }
 
 @media screen and (min-height:605px) and (max-height:805px) {
   .boardBackground {
-     height: 200px;
+     height: 360px;
+  }
+  .board {
+     height: 340px;
   }
 }
 
 @media screen and (max-height:605px) {
   .boardBackground {
-     height: 160px;
+     height: 210px;
+  }
+  .board {
+     height: 190px;
   }
 }
