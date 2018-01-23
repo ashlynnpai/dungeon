@@ -50,7 +50,7 @@ class Game extends React.Component {
     let squares = this.createSquares(0, []);
     //seed player, pet, fixtures
     squares[0][0] = "P";
-    squares[0][19] = "pet";
+    squares[0][5] = "pet";
     squares[2][57] = "balrog";
 
     squares = this.seedFixtures(squares);
