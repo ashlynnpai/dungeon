@@ -670,7 +670,7 @@ class Game extends React.Component {
     if (this.maxBossHealth < mobHealth) {
       mobHealth = this.maxBossHealth;
     }
-    this.playSound('https://www.ashlynnpai.com/assets/blessing.ogg');
+    this.playSound('https://www.ashlynnpai.com/assets/Demon_Your_Soul_is_mine-BlueMann-1903732045.mp3');
     let action = "Balrog's flames heal him for 30.";
     log.unshift(action);
     this.setState ({
