@@ -26,9 +26,9 @@ class Game extends React.Component {
     {name: "Gloves", bonus: ["attack", 1], url: "https://www.ashlynnpai.com/assets/Leather%20Glove_1.png", description: "Attack +1"},
     {name: "Breastplate", bonus: ["hitChance", .03], url: "https://www.ashlynnpai.com/assets/Light%20Armor_1.png", description: "Hit +.05"}
   ];
-    this.findableItems = [{index: 9, item: "Rune"}, {index: 11, item: "Meatchopper"}, {index: 59, item: "Brooch"},
-{index: 110, item: "Necklace"}, {index: 114, item: "Slicer"},
-{index: 119, item: "Book"}, {index: 152, item: "Iceblade"}, {index: 190, item: "Orb"}];
+    this.findableItems = [{level: 0, item: "Rune"}, {level: 0, item: "Meatchopper"}, {level: 1, item: "Brooch"},
+  {level: 1, item: "Necklace"}, {level: 1, item: "Slicer"},
+  {level: 2, item: "Book"}, {level: 2, item: "Iceblade"}, {level: 2, item: "Orb"}];
     this.questItemsInfo = [{name: "Rune", longName: "Rune of Shielding", description:
     "This rune was created by the elves for protection.", url: "https://www.ashlynnpai.com/assets/Ruin%20Stone_01.png"},
     {name: "Brooch", longName: "Brooch of Wisdom", description:
@@ -47,80 +47,21 @@ class Game extends React.Component {
     {name: "Shadow", action: "casts", counter: "light"}];
     const startPoint = 0;
 
-    let squares = Array(this.size).fill("S");
-    let level1 = Array.from(Array(10).keys())
-    let room1 = [3, 4, 12, 13, 14, 20, 21, 22, 23, 24, 25, 30];
-    let room2 = [16, 17, 18, 26, 27, 28, 29, 39, 38, 37, 36, 35, 49, 59, 58, 57];
-    let hall1 = [40, 41, 42, 43, 44, 45, 46, 50, 51, 52, 53, 54, 55, 56, 60, 61, 61, 62, 62, 63, 63, 64, 64, 65, 66];
-    level1.push.apply(level1, room1.concat(room2).concat(hall1));
+    let squares = this.createSquares(0, []);
+    //seed player, pet, fixtures
+    squares[0][0] = "P";
+    squares[0][19] = "pet";
+    squares[2][57] = "balrog";
 
-    let room3 = [75, 76, 77, 78, 79, 89, 88, 87, 86, 96, 97, 98, 99];
-    let room4 = [85, 84, 83, 82, 81, 80, 90, 91, 92, 93, 100, 101, 102, 103, 110, 111, 112];
-    let room5 = [104, 105, 106, 107, 108, 109, 119, 118, 117, 116, 115, 114, 113]
-    let miniboss = [126, 127, 128, 136, 137, 138, 139, 146, 147, 148];
-    let level2 = []
-    level2.push.apply(level2, room3.concat(room4).concat(room5).concat(miniboss));
-
-    let room6 = [135, 134, 133, 132, 131, 130, 145, 144, 143, 142, 141, 140];
-    let room7 = [150, 151, 152, 160, 161, 162, 170, 171, 172, 180, 181, 190, 191];
-    let room8 = [163, 164, 165, 166, 167, 168, 169, 173, 174, 175, 176, 177, 178, 179];
-    let boss = [185, 186, 187, 188, 189, 195, 196, 197, 198, 199]
-    let level3= [];
-    level3.push.apply(level3, room6.concat(room7).concat(room8).concat(boss));
-    let spaces = level1.concat(level2).concat(level3);
-
-    for (let i=0; i<squares.length; i++) {
-      if(spaces.includes(i)) {
-        squares[i] = null;
-      }
-    }
-    //make a copy of empty squares for modification
-    let spacesCopy = spaces.slice();
-    //seed the player and remove the square from empty squares
-    squares[startPoint] = "P";
-    spacesCopy.splice(startPoint, 2);
-    //seed the pet
-    let petStartPoint = 14;
-    squares[petStartPoint] = "pet";
-    let petIndex = spacesCopy.indexOf(petStartPoint);
-    spacesCopy.splice(petIndex, 1);
-    let bossStartPoint = 198;
-    squares[bossStartPoint] = "balrog";
-    let bossIndex = spacesCopy.indexOf(bossStartPoint);
-    spacesCopy.splice(bossIndex, 1);
-
-    // seed the findable items (quest items and weapons)
-    for (let i=0; i<this.findableItems.length; i++) {
-      let itemIndex = this.findableItems[i].index;
-      squares[itemIndex] = "I";
-      let indexOfSpacesCopy = spacesCopy.indexOf(itemIndex);
-      spacesCopy.splice(indexOfSpacesCopy, 1);
-     }
-
-    let seeds = [{room: room1, amount: 1, mob: "goblin1"}, {room: room2, amount: 2, mob: "goblin1"},
-  {room: hall1, amount: 2, mob: "goblin1"}, {room: room3, amount: 1, mob: "goblin2"}, {room: room4, amount: 2, mob: "goblin2"},
-  {room: room5, amount: 2, mob: "goblin2"}, {room: room6, amount: 1, mob: "orc1"}, {room: room7, amount: 2, mob: "orc1"},
-  {room: room8, amount: 2, mob: "orc1"}
-   ];
-
-    for (let i=0; i<seeds.length; i++) {
-      for (let j=0; j<seeds[i].amount; j++) {
-        let seededMob = false;
-        while (!seededMob) {
-          let mobIndex = Math.floor(Math.random() * seeds[i].room.length);
-          let squareChoice = seeds[i].room[mobIndex];
-          if (spacesCopy.includes(squareChoice)) {
-            squares[squareChoice] = seeds[i].mob;
-            let indexOfSpacesCopy = spacesCopy.indexOf(mobIndex);
-            spacesCopy.splice(indexOfSpacesCopy, 1);
-            seededMob = true;
-          }
-        }
-      }
-    }
+    squares = this.seedFixtures(squares);
+    squares = this.seedReserves(squares);
+    squares = this.seedStairs(squares);
+    squares = this.seedMobs(squares, 0, 0);
+    squares = this.seedItems(squares, 0);
 
     this.state = {
       squares: squares,
+      mapLevel: 0,
       hidden: [],
       playerIndex: startPoint,
       yCoord: 0,
@@ -174,6 +115,91 @@ class Game extends React.Component {
   componentWillUnmount() {
     document.removeEventListener("keypress", this.onKeyPressed.bind(this));
   }
+
+  // seed helper functions
+  createSquares(n, arr) {
+    if (n == 3) {
+      return arr;
+    }
+    else {
+     let level = Array.from(Array(60).fill(null));
+     arr.push(level);
+     return this.createSquares(n + 1, arr);
+    }
+  }
+
+  seedFixtures(squares) {
+    let fixtures = [[25, 30, 31, 32, 39], [20, 25, 30, 35], [25, 30, 32, 34, 53]];
+    fixtures.forEach(function(level, i) {
+      level.forEach(function(item, j) {
+        squares[i][item] = "F";
+      });
+    });
+    return squares;
+  }
+
+  seedReserves(squares) {
+    let reserves = [[1, 2, 58], [1, 2, 58], [1, 2]];
+    reserves.forEach(function(level, i) {
+      level.forEach(function(item, j) {
+        squares[i][item] = "R";
+      });
+    });
+    return squares;
+  }
+
+  seedStairs(squares) {
+    let stairs = [{level:0, index:59, direction:"down"}, {level:1, index:0, direction:"up"},
+    {level:1, index:59, direction:"down"}, {level:2, index:0, direction:"up"}];
+
+    stairs.forEach(function(item) {
+      squares[item.level][item.index] = item.direction;
+    });
+    return squares;
+  }
+
+  seedMobs(squares, count, index) {
+    let mobSeeds = ["goblin1", "goblin2", "orc1"];
+    let seeded = false;
+    if (index == 3) {
+      return squares;
+    }
+    while (!seeded) {
+      let randomIndex = Math.floor(Math.random() * 60);
+      if (squares[index][randomIndex] == null) {
+        squares[index][randomIndex] = mobSeeds[index];
+        seeded = true;
+        count++;
+      }
+    }
+    if (count == 4) {
+      index++;
+      count = 0;
+    }
+    return this.seedMobs(squares, count, index);
+  }
+
+  seedItems(squares, i) {
+    let findableItems = [{level: 0, item: "Rune"}, {level: 0, item: "Meatchopper"}, {level: 1, item: "Brooch"},
+    {level: 1, item: "Necklace"}, {level: 1, item: "Slicer"},
+    {level: 2, item: "Book"}, {level: 2, item: "Iceblade"}, {level: 2, item: "Orb"}];
+    let seeded = false;
+
+    if (i == findableItems.length) {
+      return squares;
+    }
+    else {
+      while (!seeded) {
+        let randomIndex = Math.floor(Math.random() * 60);
+        if (squares[this.findableItems[i].level][randomIndex] == null) {
+          squares[this.findableItems[i].level][randomIndex] = this.findableItems[i].item;
+          seeded = true;
+          i++;
+        }
+      }
+      return this.seedItems(squares, i);
+    }
+}
 
   // sound
 
@@ -1031,6 +1057,9 @@ class Game extends React.Component {
   }
 
   render() {
+    let mapLevel = this.state.mapLevel;
+    let renderedSquares = this.state.squares[mapLevel];
+
     let health = this.state.health;
     let healthPercent = Math.round((health/this.state.maxHealth)*100);
     if (healthPercent > 70) {
@@ -1283,22 +1312,23 @@ class Game extends React.Component {
         </div>
         <div className="messageDisplay">{this.state.message}</div>
      </div>
-
-    <div id="board" className="flex-container" >
-      {this.state.squares.map((square,index) =>
-       <div className={square + "color"}  id={"square" + index} key={index}>{index} {square}
-         <div className='squareInfo'>
-           {(() => {
-             switch (square) {
-               case "goblin1": return "Goblin Footsoldier Level 1";
-               case "goblin2": return "Goblin Lieutenant Level 2";
-               case "orc1": return "Orc Captain Level 3";
-               case "balrog": return "Balrog Firelord Boss";
-               case "pet": return "Sleeping Cat";
-             }
-           })()}
-         </div>
-       </div>)}
+    <div className="boardBackground">
+      <div className="board">
+        {renderedSquares.map((square,index) =>
+         <div className={square + "color"}  id={"square" + index} key={index}>{index} {square}
+           <div className='squareInfo'>
+             {(() => {
+               switch (square) {
+                 case "goblin1": return "Goblin Footsoldier Level 1";
+                 case "goblin2": return "Goblin Lieutenant Level 2";
+                 case "orc1": return "Orc Captain Level 3";
+                 case "balrog": return "Balrog Firelord Boss";
+                 case "pet": return "Sleeping Cat";
+               }
+             })()}
+           </div>
+         </div>)}
+      </div>
     </div>
     <div className='ui'>
       <div>
