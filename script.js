@@ -108,7 +108,7 @@ class Game extends React.Component {
       message: "",
       sound: true,
       overlay: true,
-      darkness: true
+      darkness: false
       };
   }
 
@@ -258,6 +258,21 @@ class Game extends React.Component {
 
 //determine which squares are visible
 
+  toggleDarkness() {
+    if (this.state.darkness) {
+      this.setAllVisible();
+      this.setState({
+        darkness: false
+      })
+    }
+    else {
+      this.checkVisible();
+      this.setState({
+        darkness: true
+      })
+    }
+  }
+
   checkVisible() {
     let squares = this.state.squares;
     let mapLevel = this.state.mapLevel;
@@ -285,6 +300,17 @@ class Game extends React.Component {
       }
     }
     this.setHidden(hidden);
+  }
+
+  setAllVisible() {
+    let squares = this.state.squares;
+    let renderedSquares = squares[this.state.mapLevel];
+    renderedSquares.forEach(function(value, index) {
+      if (document.getElementById("square" + index).classList.contains("hidden")) {
+        document.getElementById("square" + index).classList.remove("hidden");
+      }
+      document.getElementById("square" + index).classList.add(value + "color");
+    });
   }
 
   setVisible(visible) {
@@ -881,7 +907,6 @@ class Game extends React.Component {
           var nextSquare = currentSquare - this.rowSize;
           if(squares[mapLevel][nextSquare] == null) {
             let yCoord = this.state.yCoord;
-            console.log(yCoord);
             yCoord -= this.tileSize;
             this.setState({
               yCoord: yCoord
@@ -894,7 +919,6 @@ class Game extends React.Component {
           if(squares[mapLevel][nextSquare] == null) {
             let yCoord = this.state.yCoord;
             yCoord += this.tileSize;
-            console.log(yCoord);
             this.setState({
               yCoord: yCoord
             })
@@ -1302,9 +1326,9 @@ class Game extends React.Component {
             ) : (
             <div className = "blankMob">
             </div>
-            )}
-          </div>
-          <div>
+          )}
+        </div>
+        <div>
           {mob ? (
             <div>
               <div className = "avatar">
@@ -1312,8 +1336,19 @@ class Game extends React.Component {
               </div>
             </div>
           ) : (
-             <div className = "blankAvatar">
-             </div>
+            <div className = "blankAvatar">
+            </div>
+          )}
+        </div>
+        <div>
+          {this.state.darkness ? (
+            <div>
+              <img onClick={() => this.toggleDarkness()} width="40" src="https://www.ashlynnpai.com/assets/if_ic_flash_off_48px_352368.png" />
+            </div>
+          ) : (
+            <div>
+              <img onClick={() => this.toggleDarkness()} width="40" src="https://www.ashlynnpai.com/assets/if_ic_flash_on_48px_352369.png" />
+            </div>
           )}
         </div>
      </div>

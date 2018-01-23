@@ -21,9 +21,6 @@
 //http://www.iconarchive.com/show/brand-camp-icons-by-thegirltyler/Tent-Sleep-icon.html
 //sound and help icons  Webdesigner Depot   License: Free for commercial use (Do not redistribute)
 //https://www.iconfinder.com/iconsets/Primo_Icons
-//flash Google CC by SA 3.0
-//https://www.iconfinder.com/icons/352368/flash_off_icon#size=512
-//https://www.iconfinder.com/icons/352369/flash_on_icon#size=512
 
 //p0ss CC by SA 3.0, GPL 3.0, GPL 2.0
 //https://opengameart.org/content/spell-sounds-starter-pack
@@ -712,13 +709,46 @@ text-align: left;
   .board {
      height: 340px;
   }
+  .tips {
+    height: 550px;
+    font-size: 14px;
+  }
+  .overlay {
+     height: 600px;
+  }
+  .overlayButton {
+     margin-top: 10px;
+  }
 }
 
 @media screen and (max-height:605px) {
   .boardBackground {
-     height: 210px;
+     height: 220px;
   }
   .board {
-     height: 190px;
+     height: 210px;
+  }
+  .tips {
+    height: 450px;
+    font-size: 14px;
+  }
+  .shortcutKey {
+    font-size: 14px;
+  }
+  .overlay {
+    height: 550px;
+  }
+  .overlayButton {
+    margin-top: 10px;
+  }
+  .topInfo {
+    height: 30px;
+  }
+  .fastStats {
+    font-size: 8px;
+    line-height: .4;
+  }
+  .messageDisplay {
+    font-size: 20px;
   }
 }
