@@ -254,6 +254,7 @@ class Game extends React.Component {
 
   checkVisible() {
     let squares = this.state.squares;
+    let mapLevel = this.state.mapLevel;
     let p = this.state.playerIndex;
     let n = 20;
     let visible = [];
@@ -265,13 +266,13 @@ class Game extends React.Component {
 
     //only set visible what is on grid and eliminate overflow to other rows
     for (let i=0; i<aura.length; i++) {
-      if (Math.abs(aura[i] % n - p % n) < 4 && aura[i] >= 0 && aura[i] <= squares.length) {
+      if (Math.abs(aura[i] % n - p % n) < 4 && aura[i] >= 0 && aura[i] <= squares[mapLevel].length) {
         visible.push(aura[i]);
       }
     }
     this.setVisible(visible);
     let hidden = [];
-    for (let i=0; i<squares.length; i++) {
+    for (let i=0; i<squares[mapLevel].length; i++) {
       if (!visible.includes(i)) {
          hidden.push(i);
       }
@@ -281,10 +282,11 @@ class Game extends React.Component {
 
   setVisible(visible) {
       let squares = this.state.squares;
+      console.log(visible);
       for (let i=0; i<visible.length; i++) {
       if (visible[i] >= 0) {
        document.getElementById("square" + visible[i]).classList.remove("hidden");
-       document.getElementById("square" + visible[i]).classList.add(squares[visible[i]] + "color");
+       document.getElementById("square" + visible[i]).classList.add(squares[this.state.mapLevel][visible[i]] + "color");
       }
      }
     this.setState({
