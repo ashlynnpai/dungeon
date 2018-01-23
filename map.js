@@ -130,12 +130,5 @@ processFoundItems(itemName) {
 
 //add toggle darkness
 //rewrite darknesss functions for new map
-//switch level in keypress
-//set image of square in render hash
-let squareImages = [{name: "P", url: ""}];
-//if square == "goblin", img == imgurl, or if square == findableItem
-//define each level in state for where char is at mapLevel
-//render each level separately
-
-let mapLevel = this.state.mapLevel;
-let renderedSquares = this.state.squares[mapLevel];
+//switch maplevel in keypress when char hits stairs
+//rewrite fixtures to put name of fixture and set background in css
