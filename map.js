@@ -128,6 +128,7 @@ processFoundItems(itemName) {
    this.playSound('https://www.ashlynnpai.com/assets/Electronic_Chime-KevanGC-495939803.mp3');
  }
 
+//rewrite keypress found items
 //add toggle darkness
 //rewrite darknesss functions for new map
 //switch maplevel in keypress when char hits stairs

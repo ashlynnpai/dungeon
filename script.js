@@ -2,7 +2,7 @@ class Game extends React.Component {
   constructor(props) {
     super(props);
     this.size = 200;
-    this.rowSize = 10;
+    this.rowSize = 20;
     this.maxPetEnergy = 10;
     this.mobsInfo = [{name: "goblin1", displayName: "Goblin Footsoldier", attack: 1, health: 20, level: 1,
     url: "https://www.ashlynnpai.com/assets/Jinn_goblin.png"},
@@ -64,7 +64,6 @@ class Game extends React.Component {
       mapLevel: 0,
       hidden: [],
       playerIndex: startPoint,
-      yCoord: 0,
       health: 20,
       maxHealth: 20, //has to increase on level
       mana: 10,
@@ -104,7 +103,8 @@ class Game extends React.Component {
       combatLog: [],
       message: "",
       sound: true,
-      overlay: true
+      overlay: true,
+      darkness: true
       };
   }
 
@@ -255,17 +255,17 @@ class Game extends React.Component {
   checkVisible() {
     let squares = this.state.squares;
     let p = this.state.playerIndex;
-    let r = Math.floor(p/10);
-    let n = 10;
+    let n = 20;
     let visible = [];
-    const aura = [p, p-2, p-1, p+1, p+2,
-      p-n-2, p-n-1, p-n, p-n+1, p-n+2,
-      p+n-2, p+n-1, p+n, p+n+1, p+n+2,
-      p+3, p-3, p-n-3, p-n+3, p+n-3, p+n+3,
-      p-n*2, p+n*2, p-n*2-1, p-n*2+1, p+n*2+1, p+n*2-1,
-      p+4, p-n+4,p+n+4];
+    const aura = [p, p-2, p-1, p+1, p+2, p+3, p-3,
+      p-n, p-n-2, p-n-1, p-n+1, p-n+2, p-n+3, p-n-3,
+      p+n, p+n-2, p+n-1, p+n+1, p+n+2, p+n+3, p+n-3,
+      p-n*2, p-n*2-1, p-n*2+1, p+n*2, p+n*2-1, p+n*2+1,
+      p-4, p+4];
+
+    //only set visible what is on grid and eliminate overflow to other rows
     for (let i=0; i<aura.length; i++) {
-      if (Math.abs(aura[i]%10-p%10)<4 && aura[i]>=0 && aura[i]<=squares.length) {
+      if (Math.abs(aura[i] % n - p % n) < 4 && aura[i] >= 0 && aura[i] <= squares.length) {
         visible.push(aura[i]);
       }
     }
@@ -296,9 +296,8 @@ class Game extends React.Component {
     for (let i=0; i<hidden.length; i++) {
       document.getElementById("square" + hidden[i]).className = "hidden";
     }
-    let squares = this.state.squares;
     this.setState({
-      squares: squares
+      squares: this.state.squares
     })
   }
 
@@ -854,83 +853,74 @@ class Game extends React.Component {
   }
 
   onKeyPressed(e) {
-    let current_square = this.state.playerIndex;
+    let currentSquare = this.state.playerIndex;
+    let mapLevel = this.state.mapLevel;
     let squares = this.state.squares;
-    let boardDiv = document.getElementById("board");
     if (this.state.living) {
       if(!this.state.currentAction){
-        if(e.key == 'd' && current_square % 10 != 9){
-          var next_square = current_square + 1;
+        if(e.key == 'd' && currentSquare % this.rowSize != this.rowSize - 1){
+          var nextSquare = currentSquare + 1;
         }
-        else if(e.key =='a' && current_square % 10 != 0) {
-          var next_square = current_square - 1;
+        else if(e.key =='a' && currentSquare % this.rowSize != 0) {
+          var nextSquare = currentSquare - 1;
         }
-        else if(e.key =='w' && current_square > 9) {
-          var next_square = current_square - this.rowSize;
-           if(squares[next_square] == null) {
-            let yCoord = this.state.yCoord;
-            yCoord -= 75
-            this.setState({
-              yCoord: yCoord
-            })
-            boardDiv.scrollTo(0, yCoord);
-          }
+        else if(e.key =='w' && currentSquare > this.rowSize - 1) {
+          var nextSquare = currentSquare - this.rowSize;
         }
-        else if(e.key =='s' && current_square < 190) {
-          var next_square = current_square + this.rowSize;
-          if(squares[next_square] == null) {
-            let yCoord = this.state.yCoord;
-            yCoord += 75
-            this.setState({
-              yCoord: yCoord
-            })
-            boardDiv.scrollTo(0, yCoord);
-          }
+        else if(e.key =='s' && currentSquare < this.rowSize * 2 - 1) {
+          var nextSquare = currentSquare + this.rowSize;
         }
         else if(e.key == 'r') {
           this.state.currentAction = "resting";
-          var next_square = current_square;
+          var nextSquare = currentSquare;
           this.regenerateHealth();
         }
         else {
           return;
         }
-        if(squares[next_square] == null) {
-          squares[current_square] = null;
-          squares[next_square] = "P";
+        if(squares[mapLevel][nextSquare] == null
+          || squares[mapLevel][nextSquare] == "R")
+        {
+          squares[mapLevel][currentSquare] = null;
+          squares[mapLevel][nextSquare] = "P";
+          console.log(squares[mapLevel][nextSquare]);
         }
-        else if(squares[next_square] == "pet") {
-          this.playSound('https://www.ashlynnpai.com/assets/Kitten%20Meow-SoundBible.com-1295572573.mp3');
+        else if(squares[mapLevel][nextSquare] == "pet") {
+ this.playSound('https://www.ashlynnpai.com/assets/Kitten%20Meow-SoundBible.com-1295572573.mp3');
           this.state.pet = true;
           let action = "Scrappy would like to join you on your adventure. You have gained a skill BITE."
           this.state.mainLog.unshift(action);
-          squares[current_square] = null;
-          squares[next_square] = "P";
+          squares[mapLevel][currentSquare] = null;
+          squares[mapLevel][nextSquare] = "P";
         }
-        else if(squares[next_square] == "balrog") {
+        else if(squares[mapLevel][nextSquare] == "balrog") {
           this.startBossFight();
         }
-        else if(this.mobLookup(squares[next_square])) {
-          this.state.targetIndex = next_square;
+        else if(this.mobLookup(squares[mapLevel][nextSquare])) {
+          this.state.targetIndex = nextSquare;
           this.state.currentAction = "fighting";
-          this.fightMob(squares[next_square]);
+          this.fightMob(squares[mapLevel][nextSquare]);
           return;
         }
-        else if(squares[next_square] == "I") {
-          this.processFindableItems(next_square);
-          squares[current_square] = null;
-          squares[next_square] = "P";
+        else if(squares[mapLevel][nextSquare] == "I") {
+          this.processFindableItems(squares[mapLevel][nextSquare]);
+          squares[mapLevel][currentSquare] = null;
+          squares[mapLevel][nextSquare] = "P";
           this.playSound('https://www.ashlynnpai.com/assets/Electronic_Chime-KevanGC-495939803.mp3');
         }
         else {
+          console.log("hi");
           return;
         }
+        console.log(squares);
         this.setState({
-          playerIndex: next_square,
+          playerIndex: nextSquare,
           squares: squares
          });
-        this.checkVisible();
+        if (this.state.darkness) {
+          this.checkVisible();
         }
+      }
       if (this.state.currentAction) {
         //set a special state and in combat check if state is true
         //only one state can be active at a time
