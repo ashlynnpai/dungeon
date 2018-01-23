@@ -292,7 +292,6 @@ class Game extends React.Component {
         visible.push(aura[i]);
       }
     }
-    this.setVisible(visible);
     let hidden = [];
     for (let i=0; i<squares[mapLevel].length; i++) {
       if (!visible.includes(i)) {
@@ -300,6 +299,7 @@ class Game extends React.Component {
       }
     }
     this.setHidden(hidden);
+    this.setVisible(visible);
   }
 
   setAllVisible() {
@@ -327,11 +327,12 @@ class Game extends React.Component {
   }
 
   setHidden(hidden) {
+    let squares = this.state.squares;
     for (let i=0; i<hidden.length; i++) {
       document.getElementById("square" + hidden[i]).className = "hidden";
     }
     this.setState({
-      squares: this.state.squares
+      squares: squares
     })
   }
 
@@ -1252,7 +1253,16 @@ class Game extends React.Component {
         )}
 
       <div className = "ui">
-        <div>
+         <div>
+          {this.state.darkness ? (
+            <div>
+              <img onClick={() => this.toggleDarkness()} width="50" src="https://www.ashlynnpai.com/assets/if_ic_flash_off_48px_352368.png" />
+            </div>
+          ) : (
+            <div>
+              <img onClick={() => this.toggleDarkness()} width="50" src="https://www.ashlynnpai.com/assets/if_ic_flash_on_48px_352369.png" />
+            </div>
+          )}
           {this.state.sound ? (
             <div>
               <img onClick={() => this.toggleSound()} width="40" src="https://www.ashlynnpai.com/assets/if_speaker_40842.png" />
@@ -1337,17 +1347,6 @@ class Game extends React.Component {
             </div>
           ) : (
             <div className = "blankAvatar">
-            </div>
-          )}
-        </div>
-        <div>
-          {this.state.darkness ? (
-            <div>
-              <img onClick={() => this.toggleDarkness()} width="40" src="https://www.ashlynnpai.com/assets/if_ic_flash_off_48px_352368.png" />
-            </div>
-          ) : (
-            <div>
-              <img onClick={() => this.toggleDarkness()} width="40" src="https://www.ashlynnpai.com/assets/if_ic_flash_on_48px_352369.png" />
             </div>
           )}
         </div>
