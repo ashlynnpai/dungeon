@@ -136,7 +136,9 @@ class Game extends React.Component {
     let fixtures = [
     [{name: "fountain1", locations: [42, 82, 57, 97]}, {name: "pool", locations: [67, 68, 69, 70, 71, 72, 7, 27, 12, 32]},
     {name: "statue1", locations: [79]}],
-    [], []];
+    [{name: "rune1", location: [44]}, {name: "rune2", location: [84]}, {name: "head1", location: [60]},
+    {name: "statue2", location: [79]}, {name: "stone", location: [7, 27, 47, 48, 49, 51, 52, 53, 33, 13]}],
+    []];
     fixtures.forEach(function(arr, i) {
       arr.forEach(function(hash) {
         hash.locations.forEach(function(index) {

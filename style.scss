@@ -164,6 +164,14 @@ body {
   display: block;
 }
 
+.balrog {
+  background-image: url("https://www.ashlynnpai.com/assets/balrog.png"), $tile-image;
+  background-repeat: no-repeat, no-repeat;
+  background-position: center, center;
+  background-size:$icon-height, cover;
+  position: relative;
+}
+
 .Runecolor, .Meatchoppercolor, .Broochcolor, .Necklacecolor, .Slicercolor, .Bookcolor,
 .Icebladecolor, .Orbcolor {
   background-image: url("https://www.ashlynnpai.com/assets/greybox.png"), $tile-image;
@@ -553,71 +561,10 @@ text-align: left;
 
 
 
-//
-// #square74 {
-//   background-color: $black;
-//   background-image: url(https://www.ashlynnpai.com/assets/head.png);
-//   background-size: 60px;
-//   background-repeat: no-repeat;
-//   background-position: center;
-// }
-//
-// #square94 {
-//   background-image: url(https://www.ashlynnpai.com/assets/runetile1.png);
-//   background-size: cover;
-//   background-repeat: no-repeat;
-//   background-position: center;
-// }
-//
-// #square95 {
-//   background-image: url(https://www.ashlynnpai.com/assets/rune2.png);
-//   background-size: cover;
-//   background-repeat: no-repeat;
-//   background-position: center;
-// }
-//
-// #square74 {
-//   background-color: $black;
-//   background-image: url(https://www.ashlynnpai.com/assets/head.png);
-//   background-size: 60px;
-//   background-repeat: no-repeat;
-//   background-position: center;
-// }
-//
-// #square125 {
-//   background-color: $black;
-//   background-image: url(https://www.ashlynnpai.com/assets/skulls.png);
-//   background-size: 60px;
-//   background-repeat: no-repeat;
-//   background-position: center;
-// }
-//
-// #square129, #square149 {
-//   background-color: $black;
-//   background-image: url(https://www.ashlynnpai.com/assets/redfountain.png);
-//   background-size: 60px;
-//   background-repeat: no-repeat;
-//   background-position: center;
-// }
-//
-// #square153, #square155, #square157, #square159 {
-//   background-color: $black;
-//   background-image: url(https://www.ashlynnpai.com/assets/firepit.png);
-//   background-size: 60px;
-//   background-repeat: no-repeat;
-//   background-position: center;
-// }
-//
-// #square198 {
-//   background-image: url("https://www.ashlynnpai.com/assets/balrog.png"), $tile-image;
-//   background-repeat: no-repeat, no-repeat;
-//   background-position: center, center;
-//   background-size: 70px, cover;
-//   position: relative;
-// }
+
 
 .poolcolor {
-  background-image:     url(https://www.ashlynnpai.com/assets/water.png);
+  background-image: url(https://www.ashlynnpai.com/assets/water.png);
 }
 
 .fountain1color {
@@ -635,6 +582,77 @@ text-align: left;
   background-repeat: no-repeat;
   background-position: center;
 }
+
+.rune1 {
+  background-image: url(https://www.ashlynnpai.com/assets/runetile1.png);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.rune2 {
+  background-image: url(https://www.ashlynnpai.com/assets/rune2.png);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.head1 {
+  background-color: $black;
+  background-image: url(https://www.ashlynnpai.com/assets/head.png);
+  background-size: $icon-height
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.statue2 {
+  background-color: $black;
+  background-image: url(https://www.ashlynnpai.com/assets/pedestal.png);
+  background-size: $icon-height;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.stone {
+  background-image: url(https://www.ashlynnpai.com/assets/wall.png);
+}
+
+.gate {
+  background-color: $black;
+  background-image: url(https://www.ashlynnpai.com/assets/gate.png);
+  background-size: $icon-height;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.lava {
+  background-image: url(https://www.ashlynnpai.com/assets/lava.png);
+}
+
+.skulls {
+  background-color: $black;
+  background-image: url(https://www.ashlynnpai.com/assets/skulls.png);
+  background-size: $icon-height;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.fountain2 {
+  background-color: $black;
+  background-image: url(https://www.ashlynnpai.com/assets/redfountain.png);
+  background-size: $icon-height;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.firepit {
+  background-color: $black;
+  background-image: url(https://www.ashlynnpai.com/assets/firepit.png);
+  background-size: $icon-height;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
 .overlay {
     position:absolute;
     margin-left: auto;
