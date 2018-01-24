@@ -54,7 +54,7 @@ class Game extends React.Component {
     squares[0][0] = "P";
     squares[0][5] = "pet";
     let finalSquare = squares[0].length - 1
-    squares[2][finalSquare - 2] = "balrog";
+    squares[2][finalSquare - 1] = "balrog";
 
     squares = this.seedFixtures(squares);
     squares = this.seedReserves(squares);
@@ -134,11 +134,15 @@ class Game extends React.Component {
 
   seedFixtures(squares) {
     let fixtures = [
-    [{name: "fountain1", locations: [42, 82, 57, 97]}, {name: "pool", locations: [67, 68, 69, 70, 71, 72, 7, 27, 12, 32]},
+    [{name: "fountain1", locations: [42, 82, 57, 97]}, {name: "pool", locations: [67, 68, 69, 70, 71, 72, 7, 27, 12, 32,
+    107, 127, 112, 132]},
     {name: "statue1", locations: [79]}],
-    [{name: "rune1", location: [44]}, {name: "rune2", location: [84]}, {name: "head1", location: [60]},
-    {name: "statue2", location: [79]}, {name: "stone", location: [7, 27, 47, 48, 49, 51, 52, 53, 33, 13]}],
-    []];
+    [{name: "rune1", locations: [44]}, {name: "rune2", locations: [84]}, {name: "head1", locations: [60]},
+    {name: "statue2", locations: [79]}, {name: "stone", locations: [7, 27, 47, 48, 49, 51, 52, 53, 33, 13]}],
+    [{name: "fountain2", locations: [42, 82]}, {name: "lava", locations: [67, 68, 69, 70, 71, 72]},
+    {name: "firepit", locations: [6, 46, 86, 126]}, {name: "stone", locations: [134, 114, 94, 95, 97, 98, 99]},
+    {name: "gate", locations: [96]}, name: "skulls", locations: [74]}]
+  ];
     fixtures.forEach(function(arr, i) {
       arr.forEach(function(hash) {
         hash.locations.forEach(function(index) {
@@ -151,7 +155,8 @@ class Game extends React.Component {
 
   seedReserves(squares) {
     let finalSquare = squares[0].length - 1;
-    let reserves = [[1, 2, finalSquare - 1], [1, 2, finalSquare - 1], [1, 2]];
+    let reserves = [[1, 2, finalSquare - 1], [1, 2, finalSquare - 1],
+    [1, 2, 75, 76, 115, 116, 117, 118, 119, 135, 136, 137, 139]];
     reserves.forEach(function(level, i) {
       level.forEach(function(item, j) {
         squares[i][item] = "R";

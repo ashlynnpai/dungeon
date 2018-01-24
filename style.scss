@@ -164,7 +164,7 @@ body {
   display: block;
 }
 
-.balrog {
+.balrogcolor {
   background-image: url("https://www.ashlynnpai.com/assets/balrog.png"), $tile-image;
   background-repeat: no-repeat, no-repeat;
   background-position: center, center;
@@ -583,29 +583,29 @@ text-align: left;
   background-position: center;
 }
 
-.rune1 {
+.rune1color {
   background-image: url(https://www.ashlynnpai.com/assets/runetile1.png);
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
 }
 
-.rune2 {
+.rune2color {
   background-image: url(https://www.ashlynnpai.com/assets/rune2.png);
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
 }
 
-.head1 {
+.head1color {
   background-color: $black;
   background-image: url(https://www.ashlynnpai.com/assets/head.png);
-  background-size: $icon-height
+  background-size: $icon-height;
   background-repeat: no-repeat;
   background-position: center;
 }
 
-.statue2 {
+.statue2color {
   background-color: $black;
   background-image: url(https://www.ashlynnpai.com/assets/pedestal.png);
   background-size: $icon-height;
@@ -613,11 +613,11 @@ text-align: left;
   background-position: center;
 }
 
-.stone {
+.stonecolor {
   background-image: url(https://www.ashlynnpai.com/assets/wall.png);
 }
 
-.gate {
+.gatecolor {
   background-color: $black;
   background-image: url(https://www.ashlynnpai.com/assets/gate.png);
   background-size: $icon-height;
@@ -625,11 +625,11 @@ text-align: left;
   background-position: center;
 }
 
-.lava {
+.lavacolor {
   background-image: url(https://www.ashlynnpai.com/assets/lava.png);
 }
 
-.skulls {
+.skullscolor {
   background-color: $black;
   background-image: url(https://www.ashlynnpai.com/assets/skulls.png);
   background-size: $icon-height;
@@ -637,7 +637,7 @@ text-align: left;
   background-position: center;
 }
 
-.fountain2 {
+.fountain2color {
   background-color: $black;
   background-image: url(https://www.ashlynnpai.com/assets/redfountain.png);
   background-size: $icon-height;
@@ -645,7 +645,7 @@ text-align: left;
   background-position: center;
 }
 
-.firepit {
+.firepitcolor {
   background-color: $black;
   background-image: url(https://www.ashlynnpai.com/assets/firepit.png);
   background-size: $icon-height;
