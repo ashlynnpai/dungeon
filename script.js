@@ -973,6 +973,29 @@ class Game extends React.Component {
           squares[mapLevel][currentSquare] = null;
           squares[mapLevel][nextSquare] = "P";
         }
+       else if(squares[mapLevel][nextSquare] == "down") {
+          squares[mapLevel][currentSquare] = null;
+          yCoord = 0;
+          boardDiv.scrollTo(0, yCoord);
+          this.state.mapLevel++;
+          var nextSquare = 1;
+          squares[this.state.mapLevel][nextSquare] = "P";
+          this.setState({
+            yCoord: yCoord
+          })
+        }
+        else if(squares[mapLevel][nextSquare] == "up") {
+          squares[mapLevel][currentSquare] = null;
+          yCoord = 300;
+          boardDiv.scrollTo(0, yCoord);
+          let lastSquare = squares[mapLevel].length - 1;
+          this.state.mapLevel--;
+          var nextSquare = lastSquare - 1;
+          squares[this.state.mapLevel][nextSquare] = "P";
+          this.setState({
+            yCoord: yCoord
+          })
+        }
         else if(squares[mapLevel][nextSquare] == "balrog") {
           this.startBossFight();
         }
@@ -1124,6 +1147,17 @@ class Game extends React.Component {
     }
   }
 
+  //render helpers
+
+  getHallName() {
+      switch (this.state.mapLevel) {
+        case 0: return "Hall of Water";
+        case 1: return "Hall of Stone";
+        case 2: return "Hall of Fire";
+      }
+  }
+
+
   render() {
     let mapLevel = this.state.mapLevel;
     let renderedSquares = this.state.squares[mapLevel];
@@ -1184,6 +1218,7 @@ class Game extends React.Component {
         };
     }
 
+    let hallLevel = this.getHallName();
     let levelInfo = {1:50, 2:100, 3:200, 4:1000};
     let level = this.state.level;
     var xpGoal = levelInfo[level];
@@ -1386,6 +1421,7 @@ class Game extends React.Component {
        <div className="fastStats">
          <p>Hit {this.state.hitChance.toFixed(2)} </p>
          <p>Dodge {this.state.dodgeChance.toFixed(2)} </p>
+         <p>{hallLevel}</p>
         </div>
         <div className="messageDisplay">{this.state.message}</div>
      </div>
