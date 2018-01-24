@@ -127,6 +127,3 @@ processFoundItems(itemName) {
    squares[next_square] = "P";
    this.playSound('https://www.ashlynnpai.com/assets/Electronic_Chime-KevanGC-495939803.mp3');
  }
-
-
-//rewrite fixtures to put name of fixture and set background in css

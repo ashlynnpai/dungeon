@@ -86,7 +86,7 @@ body {
   text-align: center;
 }
 
-.nullcolor, .Rcolor {
+.nullcolor, .Rcolor, .incolor, .outcolor {
   background-image: $tile-image;
   background-size: cover;
   background-repeat: no-repeat;
@@ -674,6 +674,11 @@ text-align: left;
     border-radius: 5px;
     margin-top: 20px;
     color: #fff;
+    width: 50px
+}
+
+.clickIcons {
+    width: 45px;
 }
 
 .tips {
@@ -733,10 +738,10 @@ text-align: left;
 
 @media screen and (max-height:605px) {
   .boardBackground {
-     height: 220px;
+     height: 230px;
   }
   .board {
-     height: 210px;
+     height: 228px;
   }
   .tips {
     height: 450px;
@@ -746,10 +751,14 @@ text-align: left;
     font-size: 14px;
   }
   .overlay {
-    height: 550px;
+    height: 580px;
   }
   .overlayButton {
     margin-top: 10px;
+    height: 30px;
+  }
+  .clickIcons {
+    width: 30px;
   }
   .topInfo {
     height: 30px;

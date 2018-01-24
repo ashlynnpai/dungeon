@@ -140,8 +140,9 @@ class Game extends React.Component {
     [{name: "rune1", locations: [44]}, {name: "rune2", locations: [84]}, {name: "head1", locations: [60]},
     {name: "statue2", locations: [79]}, {name: "stone", locations: [7, 27, 47, 48, 49, 51, 52, 53, 33, 13]}],
     [{name: "fountain2", locations: [42, 82]}, {name: "lava", locations: [67, 68, 69, 70, 71, 72]},
-    {name: "firepit", locations: [6, 46, 86, 126]}, {name: "stone", locations: [134, 114, 94, 95, 97, 98, 99]},
-    {name: "gate", locations: [96]}, name: "skulls", locations: [74]}]
+    {name: "firepit", locations: [6, 46, 86, 126]}, {name: "stone", locations: [134, 114, 94, 95, 96, 98, 99]},
+    {name: "gate", locations: [97]}, {name: "skulls", locations: [74]}, {name: "in", locations: [77]},
+    {name: "out", locations: [117]}]
   ];
     fixtures.forEach(function(arr, i) {
       arr.forEach(function(hash) {
@@ -156,7 +157,7 @@ class Game extends React.Component {
   seedReserves(squares) {
     let finalSquare = squares[0].length - 1;
     let reserves = [[1, 2, finalSquare - 1], [1, 2, finalSquare - 1],
-    [1, 2, 75, 76, 115, 116, 117, 118, 119, 135, 136, 137, 139]];
+    [1, 2, 75, 76, 78, 115, 116, 118, 119, 135, 136, 137, 139]];
     reserves.forEach(function(level, i) {
       level.forEach(function(item, j) {
         squares[i][item] = "R";
@@ -616,9 +617,8 @@ class Game extends React.Component {
     let squares = this.state.squares;
     let tip = "Press R to rest and regain health."
     mainLog.unshift(tip);
-    squares[mobIndex] = null;
-    squares[this.state.playerIndex] = null;
-    squares[mobIndex] = "P";
+    squares[this.state.mapLevel][this.state.playerIndex] = null;
+    squares[this.state.mapLevel][mobIndex] = "P";
     this.setState({
       mobHp: 0,
       xp: xp,
@@ -992,6 +992,7 @@ class Game extends React.Component {
           this.state.mapLevel++;
           var nextSquare = 1;
           squares[this.state.mapLevel][nextSquare] = "P";
+          this.playSound('https://www.ashlynnpai.com/assets/warp3.ogg');
           this.setState({
             yCoord: yCoord
           })
@@ -1004,9 +1005,22 @@ class Game extends React.Component {
           this.state.mapLevel--;
           var nextSquare = lastSquare - 1;
           squares[this.state.mapLevel][nextSquare] = "P";
+          this.playSound('https://www.ashlynnpai.com/assets/warp3.ogg');
           this.setState({
             yCoord: yCoord
           })
+        }
+        else if(squares[mapLevel][nextSquare] == "in") {
+          squares[mapLevel][currentSquare] = null;
+          var nextSquare = 116;
+          squares[this.state.mapLevel][nextSquare] = "P";
+          this.playSound('https://www.ashlynnpai.com/assets/warp3.ogg');
+        }
+        else if(squares[mapLevel][nextSquare] == "out") {
+          squares[mapLevel][currentSquare] = null;
+          var nextSquare = 76;
+          squares[this.state.mapLevel][nextSquare] = "P";
+          this.playSound('https://www.ashlynnpai.com/assets/warp3.ogg');
         }
         else if(squares[mapLevel][nextSquare] == "balrog") {
           this.startBossFight();
@@ -1301,7 +1315,7 @@ class Game extends React.Component {
           <div>
             <Tips />
             <button onClick={() => this.toggleOverlay()} className="overlayButton">
-              <img width="50" src="https://www.ashlynnpai.com/assets/greatsword.png" />
+              <img src="https://www.ashlynnpai.com/assets/greatsword.png" />
             </button>
             <div>Click to close</div>
           </div>
@@ -1328,24 +1342,24 @@ class Game extends React.Component {
          <div>
           {this.state.darkness ? (
             <div>
-              <img onClick={() => this.toggleDarkness()} width="50" src="https://www.ashlynnpai.com/assets/if_ic_flash_off_48px_352368.png" />
+              <img className="clickIcons" onClick={() => this.toggleDarkness()} src="https://www.ashlynnpai.com/assets/if_ic_flash_off_48px_352368.png" />
             </div>
           ) : (
             <div>
-              <img onClick={() => this.toggleDarkness()} width="50" src="https://www.ashlynnpai.com/assets/if_ic_flash_on_48px_352369.png" />
+              <img className="clickIcons" onClick={() => this.toggleDarkness()} src="https://www.ashlynnpai.com/assets/if_ic_flash_on_48px_352369.png" />
             </div>
           )}
           {this.state.sound ? (
             <div>
-              <img onClick={() => this.toggleSound()} width="40" src="https://www.ashlynnpai.com/assets/if_speaker_40842.png" />
+              <img className="clickIcons" onClick={() => this.toggleSound()} src="https://www.ashlynnpai.com/assets/if_speaker_40842.png" />
             </div>
           ) : (
             <div>
-              <img onClick={() => this.toggleSound()} width="40" src="https://www.ashlynnpai.com/assets/if_speaker_mute_40843.png" />
+              <img className="clickIcons" onClick={() => this.toggleSound()} src="https://www.ashlynnpai.com/assets/if_speaker_mute_40843.png" />
             </div>
           )}
           <div>
-            <img onClick={() => this.toggleOverlay()} width="40" src="https://www.ashlynnpai.com/assets/if_help_black_40796.png" />
+            <img className="clickIcons" onClick={() => this.toggleOverlay()} src="https://www.ashlynnpai.com/assets/if_help_black_40796.png" />
           </div>
         </div>
         <div>
