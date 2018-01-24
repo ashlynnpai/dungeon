@@ -133,10 +133,15 @@ class Game extends React.Component {
   }
 
   seedFixtures(squares) {
-    let fixtures = [[25, 30, 31, 32, 39], [20, 25, 30, 35], [25, 30, 32, 34, 53]];
-    fixtures.forEach(function(level, i) {
-      level.forEach(function(item, j) {
-        squares[i][item] = "F";
+    let fixtures = [
+    [{name: "fountain1", locations: [42, 82, 57, 97]}, {name: "pool", locations: [67, 68, 69, 70, 71, 72, 7, 27, 12, 32]},
+    {name: "statue1", locations: [79]}],
+    [], []];
+    fixtures.forEach(function(arr, i) {
+      arr.forEach(function(hash) {
+        hash.locations.forEach(function(index) {
+          squares[i][index] = hash.name;
+        });
       });
     });
     return squares;
