@@ -183,7 +183,7 @@ class Game extends React.Component {
         count++;
       }
     }
-    if (count == 4) {
+    if (count == 5) {
       index++;
       count = 0;
     }
