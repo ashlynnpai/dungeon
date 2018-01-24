@@ -327,7 +327,7 @@ body {
 
 .xp-bar {
   background-color: #1a1a1a;
-text-align: left;
+  text-align: left;
   height: 30px;
   width: 275px;
   padding: 2px;
@@ -674,7 +674,6 @@ text-align: left;
     border-radius: 5px;
     margin-top: 20px;
     color: #fff;
-    width: 50px
 }
 
 .clickIcons {
@@ -755,13 +754,12 @@ text-align: left;
   }
   .overlayButton {
     margin-top: 10px;
-    height: 30px;
   }
   .clickIcons {
     width: 30px;
   }
   .topInfo {
-    height: 30px;
+    height: 36px;
   }
   .fastStats {
     font-size: 8px;
@@ -769,5 +767,12 @@ text-align: left;
   }
   .messageDisplay {
     font-size: 20px;
+  }
+  .topInfo {
+    margin-top: 10px;
+  }
+  .xp-bar {
+    height: 20px;
+    font-size: 14px;
   }
 }
