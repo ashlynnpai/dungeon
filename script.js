@@ -12,7 +12,7 @@ class Game extends React.Component {
     url: "https://www.ashlynnpai.com/assets/Jinn_goblin.png"},
     {name: "orc1", displayName: "Orc Captain", attack: 3, health: 50, level: 3,
     url: "https://www.ashlynnpai.com/assets/Jinn_orc.png"},
-    {name: "balrog", displayName: "Balrog", attack: 10, health: 250, level: 5,
+    {name: "firelord", displayName: "Firelord", attack: 10, health: 250, level: 5,
       url: "https://www.ashlynnpai.com/assets/balrog11.jpg"}
     ];
     this.weaponsInfo = [
@@ -54,7 +54,7 @@ class Game extends React.Component {
     squares[0][0] = "P";
     squares[0][5] = "pet";
     let finalSquare = squares[0].length - 1
-    squares[2][finalSquare - 1] = "balrog";
+    squares[2][finalSquare - 1] = "firelord";
 
     squares = this.seedFixtures(squares);
     squares = this.seedReserves(squares);
@@ -120,7 +120,7 @@ class Game extends React.Component {
     document.removeEventListener("keypress", this.onKeyPressed.bind(this));
   }
 
-  // seed helper functions
+  // seed board helper functions
   createSquares(n, arr) {
     if (n == 3) {
       return arr;
@@ -170,13 +170,13 @@ class Game extends React.Component {
     let finalSquare = squares[0].length - 1;
     let stairs = [{level:0, index:finalSquare, direction:"down"}, {level:1, index:0, direction:"up"},
     {level:1, index:finalSquare, direction:"down"}, {level:2, index:0, direction:"up"}];
-
     stairs.forEach(function(item) {
       squares[item.level][item.index] = item.direction;
     });
     return squares;
   }
 
+  //seeds five mobs on each map level in a random square
   seedMobs(squares, count, index) {
     let mobSeeds = ["goblin1", "goblin2", "orc1"];
     let seeded = false;
@@ -203,7 +203,6 @@ class Game extends React.Component {
     {level: 1, item: "Necklace"}, {level: 1, item: "Slicer"},
     {level: 2, item: "Book"}, {level: 2, item: "Iceblade"}, {level: 2, item: "Orb"}];
     let seeded = false;
-
     if (i == findableItems.length) {
       return squares;
     }
@@ -218,21 +217,12 @@ class Game extends React.Component {
       }
       return this.seedItems(squares, i);
     }
-}
+  }
 
-  // sound
+  //sound
 
   toggleSound() {
-    if (this.state.sound) {
-      this.setState({
-        sound: false
-      })
-    }
-    else {
-      this.setState({
-        sound: true
-      })
-    }
+    this.state.sound ? this.setState({sound: false}) : this.setState({sound: true})
   }
 
   playSound(audioFile) {
@@ -245,16 +235,7 @@ class Game extends React.Component {
   //control overlays for tips and prompt to revive character
 
   toggleOverlay() {
-    if (this.state.overlay) {
-      this.setState({
-        overlay: false
-      })
-    }
-    else {
-      this.setState({
-        overlay: true
-      })
-    }
+    this.state.overlay ? this.setState({overlay: false}) : this.setState({overlay: true})
   }
 
   toggleRez() {
@@ -290,6 +271,7 @@ class Game extends React.Component {
     }
   }
 
+  //computes the aura of visible squares around a character and hides the rest
   checkVisible() {
     let squares = this.state.squares;
     let mapLevel = this.state.mapLevel;
@@ -331,13 +313,13 @@ class Game extends React.Component {
   }
 
   setVisible(visible) {
-      let squares = this.state.squares;
-      for (let i=0; i<visible.length; i++) {
-        if (visible[i] >= 0) {
-          document.getElementById("square" + visible[i]).classList.remove("hidden");
-          document.getElementById("square" + visible[i]).classList.add(squares[this.state.mapLevel][visible[i]] + "color");
-        }
-     }
+    let squares = this.state.squares;
+    for (let i=0; i<visible.length; i++) {
+      if (visible[i] >= 0) {
+        document.getElementById("square" + visible[i]).classList.remove("hidden");
+        document.getElementById("square" + visible[i]).classList.add(squares[this.state.mapLevel][visible[i]] + "color");
+      }
+    }
     this.setState({
       squares: squares
     })
@@ -353,7 +335,7 @@ class Game extends React.Component {
     })
   }
 
-  //query if item is contained in existing objects
+  //query if item is contained in existing data objects
 
   mobLookup(mob) {
     if (this.mobsInfo.filter(mobInfo => mobInfo.name == mob).length > 0) {
@@ -396,11 +378,10 @@ class Game extends React.Component {
       mobHp: mobHash.health
     });
     this.combatSequence(0, mobSpecial);
-}
+  }
 
   combatSequence(round, mobSpecial) {
-    //update the mob health on this.state.mobHp not in the {}
-    //this.state.playerSpecial gets updated in the keypress listener
+    //some state variables are also getting updated in the keypress listeners
     let log = this.state.combatLog;
     let mainLog = this.state.mainLog;
     let mob = this.state.currentMob;
@@ -414,6 +395,7 @@ class Game extends React.Component {
     }
     let playerHitChance = this.state.hitChance - .1 * levelDiff;
     let mobHitChance = .7 + .1 * levelDiff;
+    //players skills activated by keypress listeners can mutate these values during combat
     if (this.state.playerSpecial == "cloak") {
       playerHitChance -= .2;
       mobHitChance -= .2;
@@ -433,12 +415,12 @@ class Game extends React.Component {
     }
     var modifiedMobAttack = mob.attack + (Math.round(Math.random()) * mob.level);
 
-    if (mob.name == "balrog") {
-      //mutates mobSpecial and round for boss fight
+    if (mob.name == "firelord") {
+      //the boss' special skill is mutating
       switch (round) {
       case 1: {
         var mobSpecial = this.mobSkills[2];
-        this.announceMobSpecial(mobSpecial, "Balrog");
+        this.announceMobSpecial(mobSpecial, "Firelord");
         break;
       }
       case 2: {
@@ -452,9 +434,8 @@ class Game extends React.Component {
         break;
       }
       case 6: {
-      //cast ice
         var mobSpecial = this.mobSkills[1];
-        this.announceMobSpecial(mobSpecial, "Balrog");
+        this.announceMobSpecial(mobSpecial, "Firelord");
         break;
       }
       case 7: {
@@ -469,7 +450,7 @@ class Game extends React.Component {
       }
       case 11: {
         var mobSpecial = this.mobSkills[0];
-        this.announceMobSpecial(mobSpecial, "Balrog");
+        this.announceMobSpecial(mobSpecial, "Firelord");
         break;
       }
       case 12: {
@@ -483,8 +464,8 @@ class Game extends React.Component {
       }
     }
 
+    //player autoattack
     let playerRoll = Math.random();
-
     if (playerRoll <= playerHitChance) {
       this.playSound('https://www.ashlynnpai.com/assets/Swords_Collide-Sound_Explorer-2015600826.mp3');
       mobHealth -= modifiedPlayerAttack;
@@ -502,7 +483,7 @@ class Game extends React.Component {
     mobHealth = this.petAutoAttack(mobHealth);
 
     if (mobHealth <= 0) {
-      if (mob.name == "balrog") {
+      if (mob.name == "firelord") {
         this.bossDies(mob);
       }
       this.mobDies(mob);
@@ -513,6 +494,7 @@ class Game extends React.Component {
       mobSpecial = this.processMobSpecial(mobSpecial, modifiedMobAttack, modifiedPlayerAttack);
     }
 
+    //mob autoattack
     let mobRoll = Math.random();
     if (mobRoll <= mobHitChance) {
       playerHealth -= modifiedMobAttack;
@@ -646,7 +628,7 @@ class Game extends React.Component {
     let action = "You die."
     let inventory = this.state.inventory;
     let log = this.state.combatLog;
-    if (mob.name == "balrog") {
+    if (mob.name == "firelord") {
       inventory[0].healthPotion = 6;
       inventory[1].manaPotion = 4;
     }
@@ -667,7 +649,7 @@ class Game extends React.Component {
   //boss fight functions and helper functions used by main combat function
 
   startBossFight() {
-    let boss = {name: "balrog", displayName: "Balrog", attack: 10, health: 250, level: 5,
+    let boss = {name: "firelord", displayName: "Firelord", attack: 10, health: 250, level: 5,
       url: "https://www.ashlynnpai.com/assets/balrog11.jpg"};
     this.computeBonus();
     this.playSound('https://www.ashlynnpai.com/assets/Demon_Your_Soul_is_mine-BlueMann-1903732045.mp3');
@@ -691,7 +673,7 @@ class Game extends React.Component {
     if (this.maxBossHealth < mobHealth) {
       mobHealth = this.maxBossHealth;
     }
-    let action = "Balrog's flames heal him for 50.";
+    let action = "Firelord's flames heal him for 50.";
     log.unshift(action);
     this.setState ({
       combatLog: log,
@@ -703,7 +685,7 @@ class Game extends React.Component {
     let playerHealth = this.state.health;
     let log = this.state.combatLog;
     playerHealth -= 10;
-    let action = "Balrog's curse weakens you for 10."
+    let action = "Firelord's curse weakens you for 10."
     log.unshift(action);
     this.setState({
       health: playerHealth,
@@ -767,7 +749,6 @@ class Game extends React.Component {
     if (energy >= this.maxPetEnergy) {
       energy = this.maxPetEnergy;
     }
-
     this.setState({
       health: health,
       mana: mana,
@@ -898,12 +879,12 @@ class Game extends React.Component {
     let attack = filteredWeapons[0].attack;
     let action = "You equip " + filteredWeapons[0].name + " for attack " + attack + ". " + filteredWeapons[0].description;
     mainLog.unshift(action);
-      this.setState({
-        weapons: weapons,
-        attack: attack,
-        mainLog: mainLog,
-        squares: squares
-      });
+    this.setState({
+      weapons: weapons,
+      attack: attack,
+      mainLog: mainLog,
+      squares: squares
+    });
   }
 
 // event handlers and helpers
@@ -1031,7 +1012,7 @@ class Game extends React.Component {
           squares[this.state.mapLevel][nextSquare] = "P";
           this.playSound('https://www.ashlynnpai.com/assets/warp3.ogg');
         }
-        else if(squares[mapLevel][nextSquare] == "balrog") {
+        else if(squares[mapLevel][nextSquare] == "firelord") {
           this.startBossFight();
           return;
         }
@@ -1069,7 +1050,6 @@ class Game extends React.Component {
         let mobHealth = this.state.mobHp;
         let level = this.state.level;
         let attack = this.state.attack;
-
         if (e.key in skillKeys) {
           if (e.key =="1") {
             let furyCost = 3;
@@ -1158,8 +1138,7 @@ class Game extends React.Component {
               {8: 'https://www.ashlynnpai.com/assets/blessing.ogg'},
               {9: 'https://www.ashlynnpai.com/assets/Electronic_Chime-KevanGC-495939803.mp3'},
               {0: 'https://www.ashlynnpai.com/assets/Electronic_Chime-KevanGC-495939803.mp3'}
-            ]
-
+            ];
             let skill = skillKeys[e.key];
             this.state.playerSpecial = skill;
             let action = "You use " + skill;
@@ -1185,21 +1164,20 @@ class Game extends React.Component {
     }
   }
 
-  //render helpers
+  //render DOM helper functions
 
   getHallName() {
-      switch (this.state.mapLevel) {
-        case 0: return "Hall of Water";
-        case 1: return "Hall of Stone";
-        case 2: return "Hall of Fire";
-      }
+    switch (this.state.mapLevel) {
+      case 0: return "Hall of Water";
+      case 1: return "Hall of Stone";
+      case 2: return "Hall of Fire";
+    }
   }
-
 
   render() {
     let mapLevel = this.state.mapLevel;
     let renderedSquares = this.state.squares[mapLevel];
-
+    //render health, mana bars
     let health = this.state.health;
     let healthPercent = Math.round((health/this.state.maxHealth)*100);
     if (healthPercent > 70) {
@@ -1236,24 +1214,24 @@ class Game extends React.Component {
     }
 
     let mob = this.state.currentMob;
-      if (mob) {
-        var mobUrl = mob.url;
-        var mobHealth = this.state.mobHp;
-        var mobMaxHealth = mob.health;
-        var mobHealthPercent = Math.round((mobHealth/mobMaxHealth)*100);
-        if (mobHealthPercent > 70) {
-          var mobHealthColor = "green";
-        }
-        else if (mobHealthPercent > 30) {
-          var mobHealthColor = "yellow";
-        }
-        else {
-          var mobHealthColor = "red";
-        }
-        var mobHealthBar = {
-          width: mobHealthPercent + "%",
-          color: "#fff"
-        };
+    if (mob) {
+      var mobUrl = mob.url;
+      var mobHealth = this.state.mobHp;
+      var mobMaxHealth = mob.health;
+      var mobHealthPercent = Math.round((mobHealth/mobMaxHealth)*100);
+      if (mobHealthPercent > 70) {
+        var mobHealthColor = "green";
+      }
+      else if (mobHealthPercent > 30) {
+        var mobHealthColor = "yellow";
+      }
+      else {
+        var mobHealthColor = "red";
+      }
+      var mobHealthBar = {
+        width: mobHealthPercent + "%",
+        color: "#fff"
+      };
     }
 
     let hallLevel = this.getHallName();
@@ -1272,7 +1250,7 @@ class Game extends React.Component {
 {number: 8, name: "LIGHT", description: "Light banishes the shadow."},
 {number: 9, name: "CLOAK", description: "Decreases both your and your enemys chance to hit."},
 {number: 0, name: "NIMBLE", description: "Increases both your and your enemys chance to hit."}
- ]
+];
 
     const buffs = [
       {name: "water", url: "https://www.ashlynnpai.com/assets/horropen_water.png", type: "good"},
@@ -1284,7 +1262,7 @@ class Game extends React.Component {
       {name: "Ice Spars", url: "https://www.ashlynnpai.com/assets/Blizzard.png", type: "bad"},
       {name: "Shadow", url: "https://www.ashlynnpai.com/assets/shadow.png", type: "bad"},
       {name: "rest", url: "https://www.ashlynnpai.com/assets/Tent-Sleep-icon.png", type: "good"}
-    ]
+    ];
 
     var weapon = this.state.weapons[0].name;
 
@@ -1318,7 +1296,6 @@ class Game extends React.Component {
       }
     }
 
-
     return (
       <div onKeyPress={(e) => this.onKeyPressed(e)}>
       <div className = "main">
@@ -1348,7 +1325,7 @@ class Game extends React.Component {
           ) : (
         <div>
         </div>
-        )}
+      )}
 
       <div className = "ui">
          <div>
@@ -1420,7 +1397,6 @@ class Game extends React.Component {
           </div>
         </div>
 
-
         <div>
           {mob ? (
             <div>
@@ -1463,6 +1439,7 @@ class Game extends React.Component {
         </div>
         <div className="messageDisplay">{this.state.message}</div>
      </div>
+
     <div className="boardBackground">
       <div id="board" className="board">
         {renderedSquares.map((square,index) =>
@@ -1473,7 +1450,7 @@ class Game extends React.Component {
                  case "goblin1": return "Goblin Footsoldier Level 1";
                  case "goblin2": return "Goblin Lieutenant Level 2";
                  case "orc1": return "Orc Captain Level 3";
-                 case "balrog": return "Balrog Firelord Boss";
+                 case "firelord": return "Firelord Demon Level Doom";
                  case "pet": return "Sleeping Cat";
                }
              })()}
@@ -1481,6 +1458,7 @@ class Game extends React.Component {
          </div>)}
       </div>
     </div>
+
     <div className='ui'>
       <div>
         <div className = "blue xp-bar">
@@ -1545,17 +1523,17 @@ class Game extends React.Component {
          </div>
         <div className = "toolbar" id = "questItems">
           {this.state.questItems.map((questItem) =>
-            <span><img src={questItem.url}></img></span>)}
-           </div>
+          <span><img src={questItem.url}></img></span>)}
+        </div>
       </div>
 
       <div className="display-log">
         {this.state.mainLog.map((logLine) =>
-       <div id="logLine">{logLine}</div>)}
+        <div id="logLine">{logLine}</div>)}
       </div>
       <div className="display-log">
         {this.state.combatLog.map((combatEvent) =>
-       <div id="logLine">{combatEvent}</div>)}
+        <div id="logLine">{combatEvent}</div>)}
       </div>
     </div>
     <div className = "bottom">
