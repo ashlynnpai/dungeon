@@ -1463,7 +1463,7 @@ class Game extends React.Component {
     <div className="boardBackground">
       <div id="board" className="board">
         {renderedSquares.map((square,index) =>
-         <div className={square + "color"}  id={"square" + index} key={index}>{index} {square}
+         <div className={square + "color"}  id={"square" + index} key={index}>
            <div className='squareInfo'>
              {(() => {
                switch (square) {
