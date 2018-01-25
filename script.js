@@ -74,7 +74,7 @@ class Game extends React.Component {
       maxMana: 10, //has to increase on level
       level: 1,
       xp: 0,
-      hitChance: .70,
+      hitChance: .7,
       dodgeChance: 0,
       specialSkill: null,
       buff: null,
@@ -258,14 +258,15 @@ class Game extends React.Component {
   }
 
   toggleRez() {
-    let action = "Scrappy has revived you. Press R to rest."
+    let action = "Scrappy has revived you."
     let log = this.state.mainLog;
     log.unshift(action);
     this.setState({
       living: true,
       message: "",
       mainLog: log,
-      health: this.state.maxHealth
+      health: this.state.maxHealth,
+      mana: this.state.maxMana
     })
   }
 
@@ -438,7 +439,7 @@ class Game extends React.Component {
         break;
       }
       case 2: {
-        this.bossHeal();
+        mobHealth = this.bossHeal(mobHealth);
         break;
       }
       case 3: {
@@ -447,29 +448,30 @@ class Game extends React.Component {
         }
         break;
       }
-      case 5: {
+      case 6: {
       //cast ice
         var mobSpecial = this.mobSkills[1];
         this.announceMobSpecial(mobSpecial, "Balrog");
         break;
       }
-      case 6: {
-        this.bossHeal();
+      case 7: {
+        mobHealth = this.bossHeal(mobHealth);
         break;
       }
-      case 7: {
+      case 8: {
         if (mobSpecial) {
           this.bossSecondAttack();
         }
         break;
       }
-      case 9: {
+      case 11: {
         var mobSpecial = this.mobSkills[0];
         this.announceMobSpecial(mobSpecial, "Balrog");
         break;
       }
-      case 10: {
-        this.bossHeal();
+      case 12: {
+        mobHealth = this.bossHeal(mobHealth);
+        this.playSound('https://www.ashlynnpai.com/assets/Demon_Your_Soul_is_mine-BlueMann-1903732045.mp3');
         round = 0;
         break;
       }
@@ -525,8 +527,10 @@ class Game extends React.Component {
 
     if (playerHealth <= 0) {
       this.playerDies(mob);
+      return;
     }
-    setTimeout(this.combatSequence.bind(this), 2000, round, mobSpecial);
+    round++;
+    setTimeout(this.combatSequence.bind(this), 1500, round, mobSpecial);
   }
 
   //main combat helper functions
@@ -637,7 +641,6 @@ class Game extends React.Component {
 
   playerDies(mob) {
     let action = "You die."
-    this.playSound("https://www.ashlynnpai.com/assets/Sad_Trombone-Joe_Lamb-665429450.mp3");
     let inventory = this.state.inventory;
     let log = this.state.combatLog;
     if (mob.name == "balrog") {
@@ -651,7 +654,9 @@ class Game extends React.Component {
       combatLog: log,
       message: action,
       currentAction: null,
-      inventory: inventory
+      inventory: inventory,
+      mobHp: mob.health,
+      buff: null
     });
     return;
   }
@@ -662,8 +667,10 @@ class Game extends React.Component {
     let boss = {name: "balrog", displayName: "Balrog", attack: 10, health: 200, level: 4,
       url: "https://www.ashlynnpai.com/assets/balrog11.jpg"};
     this.computeBonus();
+    this.playSound('https://www.ashlynnpai.com/assets/Demon_Your_Soul_is_mine-BlueMann-1903732045.mp3');
     this.setState({
       currentMob: boss,
+      mobHp: boss.health,
       currentAction: "combat"
     })
     this.combatSequence(0, null);
@@ -675,20 +682,18 @@ class Game extends React.Component {
     this.state.dodgeChance += count * .01;
   }
 
-  bossHeal() {
-    let mobHealth = this.state.mobHp;
+  bossHeal(mobHealth) {
     let log = this.state.combatLog;
     mobHealth += 30;
     if (this.maxBossHealth < mobHealth) {
       mobHealth = this.maxBossHealth;
     }
-    this.playSound('https://www.ashlynnpai.com/assets/Demon_Your_Soul_is_mine-BlueMann-1903732045.mp3');
     let action = "Balrog's flames heal him for 30.";
     log.unshift(action);
     this.setState ({
       combatLog: log,
-      mobHp: mobHealth
     })
+    return mobHealth;
   }
 
   bossSecondAttack() {
@@ -791,6 +796,7 @@ class Game extends React.Component {
         maxMana: maxMana,
         health: maxHealth,
         mana: maxMana,
+        petEnergy: this.maxPetEnergy,
         xp: xp,
         level: level
       })
@@ -1024,6 +1030,7 @@ class Game extends React.Component {
         }
         else if(squares[mapLevel][nextSquare] == "balrog") {
           this.startBossFight();
+          return;
         }
         else if(this.mobLookup(squares[mapLevel][nextSquare])) {
           this.state.targetIndex = nextSquare;
@@ -1100,8 +1107,9 @@ class Game extends React.Component {
             }
           }
           else if (e.key =="3") {
+            let healAmount = 10 * this.state.level;
             if (mana >= 4) {
-              health += 10;
+              health += healAmount;
               if (health > this.state.maxHealth) {
                 health = this.state.maxHealth;
               }
@@ -1128,8 +1136,9 @@ class Game extends React.Component {
             }
           }
           else if (e.key =="5") {
+            let healAmount = 10 * this.state.level;
             if (this.state.inventory[0].healthPotion > 0) {
-              health += 10;
+              health += healAmount;
               if (health > this.state.maxHealth) {
                 health = this.state.maxHealth;
               }
@@ -1428,7 +1437,7 @@ class Game extends React.Component {
           {mob ? (
             <div>
               <div className = "avatar">
-                <img src ={mob.url} />
+                <img width="50" src ={mob.url} />
               </div>
             </div>
           ) : (

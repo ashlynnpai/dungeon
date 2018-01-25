@@ -217,7 +217,7 @@ body {
   height: 60px;
   //width: $boardWidth;
   display: flex;
-  margin-top: 30px;
+  margin-top: 10px;
   //margin: 0 auto;
   background: #c39898; //rose
   background: $orange; //orange
@@ -509,9 +509,9 @@ body {
   width: 400px;
   background: $black;
   text-align: left;
-  padding: 20px;
+  padding: 10px;
   color: #fff;
-  margin-top: 5px;
+  margin-top: 2px;
   margin-bottom: 20px;
 }
 
@@ -525,7 +525,7 @@ body {
 
 .questLogName {
   margin-left: 20px;
-  font-size: 24px;
+  font-size: 18px;
 }
 
 .questLogName img {
@@ -769,7 +769,7 @@ body {
     font-size: 20px;
   }
   .topInfo {
-    margin-top: 10px;
+    margin-top: 5px;
   }
   .xp-bar {
     height: 20px;
