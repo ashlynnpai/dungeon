@@ -2,7 +2,9 @@ class Game extends React.Component {
   constructor(props) {
     super(props);
     this.size = 200;
-    this.rowSize = 10;
+    this.tileSize = 50;
+    this.rowSize = 20;
+    this.rowNums = 7;
     this.maxPetEnergy = 10;
     this.mobsInfo = [{name: "goblin1", displayName: "Goblin Footsoldier", attack: 1, health: 20, level: 1,
     url: "https://www.ashlynnpai.com/assets/Jinn_goblin.png"},
@@ -10,8 +12,8 @@ class Game extends React.Component {
     url: "https://www.ashlynnpai.com/assets/Jinn_goblin.png"},
     {name: "orc1", displayName: "Orc Captain", attack: 3, health: 50, level: 3,
     url: "https://www.ashlynnpai.com/assets/Jinn_orc.png"},
-    {name: "balrog", displayName: "Balrog", attack: 5, health: 100, level: 3,
-    url: "https://www.ashlynnpai.com/assets/balrog11.jpg"}
+    {name: "balrog", displayName: "Balrog", attack: 10, health: 250, level: 5,
+      url: "https://www.ashlynnpai.com/assets/balrog11.jpg"}
     ];
     this.weaponsInfo = [
     {name: "Hands", attack: 1, description: "These are deadly weapons.", url: "https://www.ashlynnpai.com/assets/Power%20of%20blessing.png"},
@@ -26,9 +28,9 @@ class Game extends React.Component {
     {name: "Gloves", bonus: ["attack", 1], url: "https://www.ashlynnpai.com/assets/Leather%20Glove_1.png", description: "Attack +1"},
     {name: "Breastplate", bonus: ["hitChance", .03], url: "https://www.ashlynnpai.com/assets/Light%20Armor_1.png", description: "Hit +.05"}
   ];
-    this.findableItems = [{index: 9, item: "Rune"}, {index: 11, item: "Meatchopper"}, {index: 59, item: "Brooch"},
-{index: 110, item: "Necklace"}, {index: 114, item: "Slicer"},
-{index: 119, item: "Book"}, {index: 152, item: "Iceblade"}, {index: 190, item: "Orb"}];
+    this.findableItems = [{level: 0, item: "Rune"}, {level: 0, item: "Meatchopper"}, {level: 1, item: "Brooch"},
+  {level: 1, item: "Necklace"}, {level: 1, item: "Slicer"},
+  {level: 2, item: "Book"}, {level: 2, item: "Iceblade"}, {level: 2, item: "Orb"}];
     this.questItemsInfo = [{name: "Rune", longName: "Rune of Shielding", description:
     "This rune was created by the elves for protection.", url: "https://www.ashlynnpai.com/assets/Ruin%20Stone_01.png"},
     {name: "Brooch", longName: "Brooch of Wisdom", description:
@@ -47,90 +49,32 @@ class Game extends React.Component {
     {name: "Shadow", action: "casts", counter: "light"}];
     const startPoint = 0;
 
-    let squares = Array(this.size).fill("S");
-    let level1 = Array.from(Array(10).keys())
-    let room1 = [3, 4, 12, 13, 14, 20, 21, 22, 23, 24, 25, 30];
-    let room2 = [16, 17, 18, 26, 27, 28, 29, 39, 38, 37, 36, 35, 49, 59, 58, 57];
-    let hall1 = [40, 41, 42, 43, 44, 45, 46, 50, 51, 52, 53, 54, 55, 56, 60, 61, 61, 62, 62, 63, 63, 64, 64, 65, 66];
-    level1.push.apply(level1, room1.concat(room2).concat(hall1));
+    let squares = this.createSquares(0, []);
+    //seed player, pet, fixtures
+    squares[0][0] = "P";
+    squares[0][5] = "pet";
+    let finalSquare = squares[0].length - 1
+    squares[2][finalSquare - 1] = "balrog";
 
-    let room3 = [75, 76, 77, 78, 79, 89, 88, 87, 86, 96, 97, 98, 99];
-    let room4 = [85, 84, 83, 82, 81, 80, 90, 91, 92, 93, 100, 101, 102, 103, 110, 111, 112];
-    let room5 = [104, 105, 106, 107, 108, 109, 119, 118, 117, 116, 115, 114, 113]
-    let miniboss = [126, 127, 128, 136, 137, 138, 139, 146, 147, 148];
-    let level2 = []
-    level2.push.apply(level2, room3.concat(room4).concat(room5).concat(miniboss));
-
-    let room6 = [135, 134, 133, 132, 131, 130, 145, 144, 143, 142, 141, 140];
-    let room7 = [150, 151, 152, 160, 161, 162, 170, 171, 172, 180, 181, 190, 191];
-    let room8 = [163, 164, 165, 166, 167, 168, 169, 173, 174, 175, 176, 177, 178, 179];
-    let boss = [185, 186, 187, 188, 189, 195, 196, 197, 198, 199]
-    let level3= [];
-    level3.push.apply(level3, room6.concat(room7).concat(room8).concat(boss));
-    let spaces = level1.concat(level2).concat(level3);
-
-    for (let i=0; i<squares.length; i++) {
-      if(spaces.includes(i)) {
-        squares[i] = null;
-      }
-    }
-    //make a copy of empty squares for modification
-    let spacesCopy = spaces.slice();
-    //seed the player and remove the square from empty squares
-    squares[startPoint] = "P";
-    spacesCopy.splice(startPoint, 2);
-    //seed the pet
-    let petStartPoint = 14;
-    squares[petStartPoint] = "pet";
-    let petIndex = spacesCopy.indexOf(petStartPoint);
-    spacesCopy.splice(petIndex, 1);
-    let bossStartPoint = 198;
-    squares[bossStartPoint] = "balrog";
-    let bossIndex = spacesCopy.indexOf(bossStartPoint);
-    spacesCopy.splice(bossIndex, 1);
-
-    // seed the findable items (quest items and weapons)
-    for (let i=0; i<this.findableItems.length; i++) {
-      let itemIndex = this.findableItems[i].index;
-      squares[itemIndex] = "I";
-      let indexOfSpacesCopy = spacesCopy.indexOf(itemIndex);
-      spacesCopy.splice(indexOfSpacesCopy, 1);
-     }
-
-    let seeds = [{room: room1, amount: 1, mob: "goblin1"}, {room: room2, amount: 2, mob: "goblin1"},
-  {room: hall1, amount: 2, mob: "goblin1"}, {room: room3, amount: 1, mob: "goblin2"}, {room: room4, amount: 2, mob: "goblin2"},
-  {room: room5, amount: 2, mob: "goblin2"}, {room: room6, amount: 1, mob: "orc1"}, {room: room7, amount: 2, mob: "orc1"},
-  {room: room8, amount: 2, mob: "orc1"}
-   ];
-
-    for (let i=0; i<seeds.length; i++) {
-      for (let j=0; j<seeds[i].amount; j++) {
-        let seededMob = false;
-        while (!seededMob) {
-          let mobIndex = Math.floor(Math.random() * seeds[i].room.length);
-          let squareChoice = seeds[i].room[mobIndex];
-          if (spacesCopy.includes(squareChoice)) {
-            squares[squareChoice] = seeds[i].mob;
-            let indexOfSpacesCopy = spacesCopy.indexOf(mobIndex);
-            spacesCopy.splice(indexOfSpacesCopy, 1);
-            seededMob = true;
-          }
-        }
-      }
-    }
+    squares = this.seedFixtures(squares);
+    squares = this.seedReserves(squares);
+    squares = this.seedStairs(squares);
+    squares = this.seedMobs(squares, 0, 0);
+    squares = this.seedItems(squares, 0);
 
     this.state = {
       squares: squares,
+      mapLevel: 0,
       hidden: [],
+      yCoord: 0, // will be used to scroll the board div
       playerIndex: startPoint,
-      yCoord: 0,
       health: 20,
       maxHealth: 20, //has to increase on level
       mana: 10,
       maxMana: 10, //has to increase on level
       level: 1,
       xp: 0,
-      hitChance: .70,
+      hitChance: .7,
       dodgeChance: 0,
       specialSkill: null,
       buff: null,
@@ -163,7 +107,8 @@ class Game extends React.Component {
       combatLog: [],
       message: "",
       sound: true,
-      overlay: true
+      overlay: true,
+      darkness: false
       };
   }
 
@@ -174,6 +119,106 @@ class Game extends React.Component {
   componentWillUnmount() {
     document.removeEventListener("keypress", this.onKeyPressed.bind(this));
   }
+
+  // seed helper functions
+  createSquares(n, arr) {
+    if (n == 3) {
+      return arr;
+    }
+    else {
+     let level = Array.from(Array(this.rowSize * this.rowNums).fill(null));
+     arr.push(level);
+     return this.createSquares(n + 1, arr);
+    }
+  }
+
+  seedFixtures(squares) {
+    let fixtures = [
+    [{name: "fountain1", locations: [42, 82, 57, 97]}, {name: "pool", locations: [67, 68, 69, 70, 71, 72, 7, 27, 12, 32,
+    107, 127, 112, 132]},
+    {name: "statue1", locations: [79]}],
+    [{name: "rune1", locations: [44]}, {name: "rune2", locations: [84]}, {name: "head1", locations: [60]},
+    {name: "statue2", locations: [79]}, {name: "stone", locations: [7, 27, 47, 48, 49, 51, 52, 53, 33, 13]}],
+    [{name: "fountain2", locations: [42, 82]}, {name: "lava", locations: [67, 68, 69, 70, 71, 72]},
+    {name: "firepit", locations: [6, 46, 86, 126]}, {name: "stone", locations: [134, 114, 94, 95, 96, 98, 99]},
+    {name: "gate", locations: [97]}, {name: "skulls", locations: [74]}, {name: "in", locations: [77]},
+    {name: "out", locations: [117]}]
+  ];
+    fixtures.forEach(function(arr, i) {
+      arr.forEach(function(hash) {
+        hash.locations.forEach(function(index) {
+          squares[i][index] = hash.name;
+        });
+      });
+    });
+    return squares;
+  }
+
+  seedReserves(squares) {
+    let finalSquare = squares[0].length - 1;
+    let reserves = [[1, 2, finalSquare - 1], [1, 2, finalSquare - 1],
+    [1, 2, 75, 76, 78, 115, 116, 118, 119, 135, 136, 137, 139]];
+    reserves.forEach(function(level, i) {
+      level.forEach(function(item, j) {
+        squares[i][item] = "R";
+      });
+    });
+    return squares;
+  }
+
+  seedStairs(squares) {
+    let finalSquare = squares[0].length - 1;
+    let stairs = [{level:0, index:finalSquare, direction:"down"}, {level:1, index:0, direction:"up"},
+    {level:1, index:finalSquare, direction:"down"}, {level:2, index:0, direction:"up"}];
+
+    stairs.forEach(function(item) {
+      squares[item.level][item.index] = item.direction;
+    });
+    return squares;
+  }
+
+  seedMobs(squares, count, index) {
+    let mobSeeds = ["goblin1", "goblin2", "orc1"];
+    let seeded = false;
+    if (index == 3) {
+      return squares;
+    }
+    while (!seeded) {
+      let randomIndex = Math.floor(Math.random() * squares[0].length);
+      if (squares[index][randomIndex] == null) {
+        squares[index][randomIndex] = mobSeeds[index];
+        seeded = true;
+        count++;
+      }
+    }
+    if (count == 5) {
+      index++;
+      count = 0;
+    }
+    return this.seedMobs(squares, count, index);
+  }
+
+  seedItems(squares, i) {
+    let findableItems = [{level: 0, item: "Rune"}, {level: 0, item: "Meatchopper"}, {level: 1, item: "Brooch"},
+    {level: 1, item: "Necklace"}, {level: 1, item: "Slicer"},
+    {level: 2, item: "Book"}, {level: 2, item: "Iceblade"}, {level: 2, item: "Orb"}];
+    let seeded = false;
+
+    if (i == findableItems.length) {
+      return squares;
+    }
+    else {
+      while (!seeded) {
+        let randomIndex = Math.floor(Math.random() * squares[0].length);
+        if (squares[this.findableItems[i].level][randomIndex] == null) {
+          squares[this.findableItems[i].level][randomIndex] = this.findableItems[i].item;
+          seeded = true;
+          i++;
+        }
+      }
+      return this.seedItems(squares, i);
+    }
+}
 
   // sound
 
@@ -213,53 +258,85 @@ class Game extends React.Component {
   }
 
   toggleRez() {
-    let action = "Scrappy has revived you. Press R to rest."
+    let action = "Scrappy has revived you."
     let log = this.state.mainLog;
     log.unshift(action);
+    if (this.state.pet) {
+      this.state.petEnergy = this.maxPetEnergy;
+    }
     this.setState({
       living: true,
       message: "",
       mainLog: log,
-      health: this.state.maxHealth
+      health: this.state.maxHealth,
+      mana: this.state.maxMana,
     })
   }
 
 //determine which squares are visible
 
+  toggleDarkness() {
+    if (this.state.darkness) {
+      this.setAllVisible();
+      this.setState({
+        darkness: false
+      })
+    }
+    else {
+      this.checkVisible();
+      this.setState({
+        darkness: true
+      })
+    }
+  }
+
   checkVisible() {
     let squares = this.state.squares;
+    let mapLevel = this.state.mapLevel;
     let p = this.state.playerIndex;
-    let r = Math.floor(p/10);
-    let n = 10;
+    let n = 20;
     let visible = [];
-    const aura = [p, p-2, p-1, p+1, p+2,
-      p-n-2, p-n-1, p-n, p-n+1, p-n+2,
-      p+n-2, p+n-1, p+n, p+n+1, p+n+2,
-      p+3, p-3, p-n-3, p-n+3, p+n-3, p+n+3,
-      p-n*2, p+n*2, p-n*2-1, p-n*2+1, p+n*2+1, p+n*2-1,
-      p+4, p-n+4,p+n+4];
+    const aura = [p, p-2, p-1, p+1, p+2, p+3, p-3,
+      p-n, p-n-2, p-n-1, p-n+1, p-n+2,
+      p+n, p+n-2, p+n-1, p+n+1, p+n+2,
+      p-n*2, p-n*2-1, p-n*2+1,
+      p+n*2, p+n*2-1, p+n*2+1,
+      p-4, p+4];
+
+    //only set visible what is on grid and eliminate overflow to other rows
     for (let i=0; i<aura.length; i++) {
-      if (Math.abs(aura[i]%10-p%10)<4 && aura[i]>=0 && aura[i]<=squares.length) {
+      if (Math.abs(aura[i] % n - p % n) < 4 && aura[i] >= 0 && aura[i] < squares[mapLevel].length) {
         visible.push(aura[i]);
       }
     }
-    this.setVisible(visible);
     let hidden = [];
-    for (let i=0; i<squares.length; i++) {
+    for (let i=0; i<squares[mapLevel].length; i++) {
       if (!visible.includes(i)) {
          hidden.push(i);
       }
     }
     this.setHidden(hidden);
+    this.setVisible(visible);
+  }
+
+  setAllVisible() {
+    let squares = this.state.squares;
+    let renderedSquares = squares[this.state.mapLevel];
+    renderedSquares.forEach(function(value, index) {
+      if (document.getElementById("square" + index).classList.contains("hidden")) {
+        document.getElementById("square" + index).classList.remove("hidden");
+      }
+      document.getElementById("square" + index).classList.add(value + "color");
+    });
   }
 
   setVisible(visible) {
       let squares = this.state.squares;
       for (let i=0; i<visible.length; i++) {
-      if (visible[i] >= 0) {
-       document.getElementById("square" + visible[i]).classList.remove("hidden");
-       document.getElementById("square" + visible[i]).classList.add(squares[visible[i]] + "color");
-      }
+        if (visible[i] >= 0) {
+          document.getElementById("square" + visible[i]).classList.remove("hidden");
+          document.getElementById("square" + visible[i]).classList.add(squares[this.state.mapLevel][visible[i]] + "color");
+        }
      }
     this.setState({
       squares: squares
@@ -267,10 +344,10 @@ class Game extends React.Component {
   }
 
   setHidden(hidden) {
+    let squares = this.state.squares;
     for (let i=0; i<hidden.length; i++) {
       document.getElementById("square" + hidden[i]).className = "hidden";
     }
-    let squares = this.state.squares;
     this.setState({
       squares: squares
     })
@@ -282,6 +359,12 @@ class Game extends React.Component {
     if (this.mobsInfo.filter(mobInfo => mobInfo.name == mob).length > 0) {
       return true;
     };
+  }
+
+  foundItemLookup(itemName) {
+    if (this.findableItems.filter(findableItem => findableItem.item == itemName).length > 0) {
+       return true;
+     };
   }
 
   weaponLookup(weapon) {
@@ -359,7 +442,7 @@ class Game extends React.Component {
         break;
       }
       case 2: {
-        this.bossHeal();
+        mobHealth = this.bossHeal(mobHealth);
         break;
       }
       case 3: {
@@ -368,29 +451,30 @@ class Game extends React.Component {
         }
         break;
       }
-      case 5: {
+      case 6: {
       //cast ice
         var mobSpecial = this.mobSkills[1];
         this.announceMobSpecial(mobSpecial, "Balrog");
         break;
       }
-      case 6: {
-        this.bossHeal();
+      case 7: {
+        mobHealth = this.bossHeal(mobHealth);
         break;
       }
-      case 7: {
+      case 8: {
         if (mobSpecial) {
           this.bossSecondAttack();
         }
         break;
       }
-      case 9: {
+      case 11: {
         var mobSpecial = this.mobSkills[0];
         this.announceMobSpecial(mobSpecial, "Balrog");
         break;
       }
-      case 10: {
-        this.bossHeal();
+      case 12: {
+        mobHealth = this.bossHeal(mobHealth);
+        this.playSound('https://www.ashlynnpai.com/assets/Demon_Your_Soul_is_mine-BlueMann-1903732045.mp3');
         round = 0;
         break;
       }
@@ -446,8 +530,10 @@ class Game extends React.Component {
 
     if (playerHealth <= 0) {
       this.playerDies(mob);
+      return;
     }
-    setTimeout(this.combatSequence.bind(this), 2000, round, mobSpecial);
+    round++;
+    setTimeout(this.combatSequence.bind(this), 1500, round, mobSpecial);
   }
 
   //main combat helper functions
@@ -538,9 +624,8 @@ class Game extends React.Component {
     let squares = this.state.squares;
     let tip = "Press R to rest and regain health."
     mainLog.unshift(tip);
-    squares[mobIndex] = null;
-    squares[this.state.playerIndex] = null;
-    squares[mobIndex] = "P";
+    squares[this.state.mapLevel][this.state.playerIndex] = null;
+    squares[this.state.mapLevel][mobIndex] = "P";
     this.setState({
       mobHp: 0,
       xp: xp,
@@ -572,7 +657,9 @@ class Game extends React.Component {
       combatLog: log,
       message: action,
       currentAction: null,
-      inventory: inventory
+      inventory: inventory,
+      mobHp: mob.health,
+      buff: null
     });
     return;
   }
@@ -580,11 +667,13 @@ class Game extends React.Component {
   //boss fight functions and helper functions used by main combat function
 
   startBossFight() {
-    let boss = {name: "balrog", displayName: "Balrog", attack: 10, health: 200, level: 4,
+    let boss = {name: "balrog", displayName: "Balrog", attack: 10, health: 250, level: 5,
       url: "https://www.ashlynnpai.com/assets/balrog11.jpg"};
     this.computeBonus();
+    this.playSound('https://www.ashlynnpai.com/assets/Demon_Your_Soul_is_mine-BlueMann-1903732045.mp3');
     this.setState({
       currentMob: boss,
+      mobHp: boss.health,
       currentAction: "combat"
     })
     this.combatSequence(0, null);
@@ -596,20 +685,18 @@ class Game extends React.Component {
     this.state.dodgeChance += count * .01;
   }
 
-  bossHeal() {
-    let mobHealth = this.state.mobHp;
+  bossHeal(mobHealth) {
     let log = this.state.combatLog;
-    mobHealth += 30;
+    mobHealth += 50;
     if (this.maxBossHealth < mobHealth) {
       mobHealth = this.maxBossHealth;
     }
-    this.playSound('https://www.ashlynnpai.com/assets/blessing.ogg');
-    let action = "Balrog's flames heal him for 30.";
+    let action = "Balrog's flames heal him for 50.";
     log.unshift(action);
     this.setState ({
       combatLog: log,
-      mobHp: mobHealth
     })
+    return mobHealth;
   }
 
   bossSecondAttack() {
@@ -712,6 +799,7 @@ class Game extends React.Component {
         maxMana: maxMana,
         health: maxHealth,
         mana: maxMana,
+        petEnergy: this.maxPetEnergy,
         xp: xp,
         level: level
       })
@@ -767,16 +855,14 @@ class Game extends React.Component {
 
   // items found on grid
 
-  processFindableItems(nextIndex) {
-    let retrievedItem = this.findableItems.filter(findableItem => findableItem.index == nextIndex);
-    let itemName = retrievedItem[0].item;
-    if (this.weaponLookup(itemName)) {
-      this.equipWeapon(itemName);
-    }
-    else if (this.questItemLookup(itemName)) {
-      this.processQuestItem(itemName);
-    }
-  }
+  processFoundItems(itemName) {
+     if (this.weaponLookup(itemName)) {
+       this.equipWeapon(itemName);
+     }
+     else if (this.questItemLookup(itemName)) {
+       this.processQuestItem(itemName);
+     }
+   }
 
   processQuestItem(item) {
     let log = this.state.mainLog;
@@ -828,83 +914,150 @@ class Game extends React.Component {
   }
 
   onKeyPressed(e) {
-    let current_square = this.state.playerIndex;
     let squares = this.state.squares;
+    let currentSquare = this.state.playerIndex;
+    let mapLevel = this.state.mapLevel;
     let boardDiv = document.getElementById("board");
     if (this.state.living) {
       if(!this.state.currentAction){
-        if(e.key == 'd' && current_square % 10 != 9){
-          var next_square = current_square + 1;
-        }
-        else if(e.key =='a' && current_square % 10 != 0) {
-          var next_square = current_square - 1;
-        }
-        else if(e.key =='w' && current_square > 9) {
-          var next_square = current_square - this.rowSize;
-           if(squares[next_square] == null) {
-            let yCoord = this.state.yCoord;
-            yCoord -= 75
-            this.setState({
-              yCoord: yCoord
-            })
-            boardDiv.scrollTo(0, yCoord);
+        if(e.key == 'd') {
+          if (currentSquare % this.rowSize != this.rowSize - 1) {
+            var nextSquare = currentSquare + 1;
+          }
+          else {
+           this.playSound("https://www.ashlynnpai.com/assets/Smashing-Yuri_Santana-1233262689.mp3");
+            return;
           }
         }
-        else if(e.key =='s' && current_square < 190) {
-          var next_square = current_square + this.rowSize;
-          if(squares[next_square] == null) {
-            let yCoord = this.state.yCoord;
-            yCoord += 75
-            this.setState({
-              yCoord: yCoord
-            })
-            boardDiv.scrollTo(0, yCoord);
+        else if(e.key =='a') {
+          if (currentSquare % this.rowSize != 0) {
+            var nextSquare = currentSquare - 1;
+          }
+          else {
+            this.playSound("https://www.ashlynnpai.com/assets/Smashing-Yuri_Santana-1233262689.mp3");
+            return;
+          }
+        }
+        else if(e.key =='w') {
+          if (currentSquare > this.rowSize - 1) {
+            var nextSquare = currentSquare - this.rowSize;
+            if(squares[mapLevel][nextSquare] == null) {
+              let yCoord = this.state.yCoord;
+              yCoord -= this.tileSize;
+              this.setState({
+                yCoord: yCoord
+              })
+              boardDiv.scrollTo(0, yCoord);
+            }
+          }
+          else {
+            this.playSound("https://www.ashlynnpai.com/assets/Smashing-Yuri_Santana-1233262689.mp3");
+            return;
+          }
+        }
+        else if(e.key =='s') {
+          if (currentSquare < this.rowSize * (this.rowNums - 1)) {
+            var nextSquare = currentSquare + this.rowSize;
+            if(squares[mapLevel][nextSquare] == null) {
+              let yCoord = this.state.yCoord;
+              yCoord += this.tileSize;
+              this.setState({
+                yCoord: yCoord
+              })
+              boardDiv.scrollTo(0, yCoord);
+            }
+          }
+          else {
+            this.playSound("https://www.ashlynnpai.com/assets/Smashing-Yuri_Santana-1233262689.mp3");
+            return;
           }
         }
         else if(e.key == 'r') {
           this.state.currentAction = "resting";
-          var next_square = current_square;
+          var nextSquare = currentSquare;
           this.regenerateHealth();
         }
         else {
           return;
         }
-        if(squares[next_square] == null) {
-          squares[current_square] = null;
-          squares[next_square] = "P";
+        if(squares[mapLevel][nextSquare] == null
+          || squares[mapLevel][nextSquare] == "R")
+        {
+          squares[mapLevel][currentSquare] = null;
+          squares[mapLevel][nextSquare] = "P";
         }
-        else if(squares[next_square] == "pet") {
-          this.playSound('https://www.ashlynnpai.com/assets/Kitten%20Meow-SoundBible.com-1295572573.mp3');
+        else if(squares[mapLevel][nextSquare] == "pet") {
+ this.playSound('https://www.ashlynnpai.com/assets/Kitten%20Meow-SoundBible.com-1295572573.mp3');
           this.state.pet = true;
           let action = "Scrappy would like to join you on your adventure. You have gained a skill BITE."
           this.state.mainLog.unshift(action);
-          squares[current_square] = null;
-          squares[next_square] = "P";
+          squares[mapLevel][currentSquare] = null;
+          squares[mapLevel][nextSquare] = "P";
         }
-        else if(squares[next_square] == "balrog") {
+       else if(squares[mapLevel][nextSquare] == "down") {
+          squares[mapLevel][currentSquare] = null;
+          yCoord = 0;
+          boardDiv.scrollTo(0, yCoord);
+          this.state.mapLevel++;
+          var nextSquare = 1;
+          squares[this.state.mapLevel][nextSquare] = "P";
+          this.playSound('https://www.ashlynnpai.com/assets/warp3.ogg');
+          this.setState({
+            yCoord: yCoord
+          })
+        }
+        else if(squares[mapLevel][nextSquare] == "up") {
+          squares[mapLevel][currentSquare] = null;
+          yCoord = 300;
+          boardDiv.scrollTo(0, yCoord);
+          let lastSquare = squares[mapLevel].length - 1;
+          this.state.mapLevel--;
+          var nextSquare = lastSquare - 1;
+          squares[this.state.mapLevel][nextSquare] = "P";
+          this.playSound('https://www.ashlynnpai.com/assets/warp3.ogg');
+          this.setState({
+            yCoord: yCoord
+          })
+        }
+        else if(squares[mapLevel][nextSquare] == "in") {
+          squares[mapLevel][currentSquare] = null;
+          var nextSquare = 116;
+          squares[this.state.mapLevel][nextSquare] = "P";
+          this.playSound('https://www.ashlynnpai.com/assets/warp3.ogg');
+        }
+        else if(squares[mapLevel][nextSquare] == "out") {
+          squares[mapLevel][currentSquare] = null;
+          var nextSquare = 76;
+          squares[this.state.mapLevel][nextSquare] = "P";
+          this.playSound('https://www.ashlynnpai.com/assets/warp3.ogg');
+        }
+        else if(squares[mapLevel][nextSquare] == "balrog") {
           this.startBossFight();
-        }
-        else if(this.mobLookup(squares[next_square])) {
-          this.state.targetIndex = next_square;
-          this.state.currentAction = "fighting";
-          this.fightMob(squares[next_square]);
           return;
         }
-        else if(squares[next_square] == "I") {
-          this.processFindableItems(next_square);
-          squares[current_square] = null;
-          squares[next_square] = "P";
+        else if(this.mobLookup(squares[mapLevel][nextSquare])) {
+          this.state.targetIndex = nextSquare;
+          this.state.currentAction = "fighting";
+          this.fightMob(squares[mapLevel][nextSquare]);
+          return;
+        }
+        else if(this.foundItemLookup(squares[mapLevel][nextSquare])) {
+          this.processFoundItems(squares[mapLevel][nextSquare]);
+          squares[mapLevel][currentSquare] = null;
+          squares[mapLevel][nextSquare] = "P";
           this.playSound('https://www.ashlynnpai.com/assets/Electronic_Chime-KevanGC-495939803.mp3');
         }
         else {
           return;
         }
         this.setState({
-          playerIndex: next_square,
+          playerIndex: nextSquare,
           squares: squares
          });
-        this.checkVisible();
+        if (this.state.darkness) {
+          this.checkVisible();
         }
+      }
       if (this.state.currentAction) {
         //set a special state and in combat check if state is true
         //only one state can be active at a time
@@ -957,14 +1110,15 @@ class Game extends React.Component {
             }
           }
           else if (e.key =="3") {
+            let healAmount = 10 * this.state.level;
             if (mana >= 4) {
-              health += 10;
+              health += healAmount;
               if (health > this.state.maxHealth) {
                 health = this.state.maxHealth;
               }
               mana -= 4;
               this.playSound('https://www.ashlynnpai.com/assets/blessing.ogg');
-              let action = "You cast heal for 10 health.";
+              let action = "You cast heal for " + healAmount;
               log.unshift(action);
             }
             else {
@@ -985,8 +1139,9 @@ class Game extends React.Component {
             }
           }
           else if (e.key =="5") {
+            let healAmount = 10 * this.state.level;
             if (this.state.inventory[0].healthPotion > 0) {
-              health += 10;
+              health += healAmount;
               if (health > this.state.maxHealth) {
                 health = this.state.maxHealth;
               }
@@ -1030,7 +1185,21 @@ class Game extends React.Component {
     }
   }
 
+  //render helpers
+
+  getHallName() {
+      switch (this.state.mapLevel) {
+        case 0: return "Hall of Water";
+        case 1: return "Hall of Stone";
+        case 2: return "Hall of Fire";
+      }
+  }
+
+
   render() {
+    let mapLevel = this.state.mapLevel;
+    let renderedSquares = this.state.squares[mapLevel];
+
     let health = this.state.health;
     let healthPercent = Math.round((health/this.state.maxHealth)*100);
     if (healthPercent > 70) {
@@ -1087,6 +1256,7 @@ class Game extends React.Component {
         };
     }
 
+    let hallLevel = this.getHallName();
     let levelInfo = {1:50, 2:100, 3:200, 4:1000};
     let level = this.state.level;
     var xpGoal = levelInfo[level];
@@ -1157,7 +1327,7 @@ class Game extends React.Component {
           <div>
             <Tips />
             <button onClick={() => this.toggleOverlay()} className="overlayButton">
-              <img width="50" src="https://www.ashlynnpai.com/assets/greatsword.png" />
+              <img src="https://www.ashlynnpai.com/assets/greatsword.png" />
             </button>
             <div>Click to close</div>
           </div>
@@ -1181,18 +1351,27 @@ class Game extends React.Component {
         )}
 
       <div className = "ui">
-        <div>
-          {this.state.sound ? (
+         <div>
+          {this.state.darkness ? (
             <div>
-              <img onClick={() => this.toggleSound()} width="40" src="https://www.ashlynnpai.com/assets/if_speaker_40842.png" />
+              <img className="clickIcons" onClick={() => this.toggleDarkness()} src="https://www.ashlynnpai.com/assets/if_ic_flash_off_48px_352368.png" />
             </div>
           ) : (
             <div>
-              <img onClick={() => this.toggleSound()} width="40" src="https://www.ashlynnpai.com/assets/if_speaker_mute_40843.png" />
+              <img className="clickIcons" onClick={() => this.toggleDarkness()} src="https://www.ashlynnpai.com/assets/if_ic_flash_on_48px_352369.png" />
+            </div>
+          )}
+          {this.state.sound ? (
+            <div>
+              <img className="clickIcons" onClick={() => this.toggleSound()} src="https://www.ashlynnpai.com/assets/if_speaker_40842.png" />
+            </div>
+          ) : (
+            <div>
+              <img className="clickIcons" onClick={() => this.toggleSound()} src="https://www.ashlynnpai.com/assets/if_speaker_mute_40843.png" />
             </div>
           )}
           <div>
-            <img onClick={() => this.toggleOverlay()} width="40" src="https://www.ashlynnpai.com/assets/if_help_black_40796.png" />
+            <img className="clickIcons" onClick={() => this.toggleOverlay()} src="https://www.ashlynnpai.com/assets/if_help_black_40796.png" />
           </div>
         </div>
         <div>
@@ -1255,18 +1434,18 @@ class Game extends React.Component {
             ) : (
             <div className = "blankMob">
             </div>
-            )}
-          </div>
-          <div>
+          )}
+        </div>
+        <div>
           {mob ? (
             <div>
               <div className = "avatar">
-                <img src ={mob.url} />
+                <img width="50" src ={mob.url} />
               </div>
             </div>
           ) : (
-             <div className = "blankAvatar">
-             </div>
+            <div className = "blankAvatar">
+            </div>
           )}
         </div>
      </div>
@@ -1280,25 +1459,27 @@ class Game extends React.Component {
        <div className="fastStats">
          <p>Hit {this.state.hitChance.toFixed(2)} </p>
          <p>Dodge {this.state.dodgeChance.toFixed(2)} </p>
+         <p>{hallLevel}</p>
         </div>
         <div className="messageDisplay">{this.state.message}</div>
      </div>
-
-    <div id="board" className="flex-container" >
-      {this.state.squares.map((square,index) =>
-       <div className={square + "color"}  id={"square" + index} key={index}>{index} {square}
-         <div className='squareInfo'>
-           {(() => {
-             switch (square) {
-               case "goblin1": return "Goblin Footsoldier Level 1";
-               case "goblin2": return "Goblin Lieutenant Level 2";
-               case "orc1": return "Orc Captain Level 3";
-               case "balrog": return "Balrog Firelord Boss";
-               case "pet": return "Sleeping Cat";
-             }
-           })()}
-         </div>
-       </div>)}
+    <div className="boardBackground">
+      <div id="board" className="board">
+        {renderedSquares.map((square,index) =>
+         <div className={square + "color"}  id={"square" + index} key={index}>
+           <div className='squareInfo'>
+             {(() => {
+               switch (square) {
+                 case "goblin1": return "Goblin Footsoldier Level 1";
+                 case "goblin2": return "Goblin Lieutenant Level 2";
+                 case "orc1": return "Orc Captain Level 3";
+                 case "balrog": return "Balrog Firelord Boss";
+                 case "pet": return "Sleeping Cat";
+               }
+             })()}
+           </div>
+         </div>)}
+      </div>
     </div>
     <div className='ui'>
       <div>
@@ -1439,6 +1620,7 @@ const Tips = () => {
     <span className="shortcutKey">S</span>
     <span className="shortcutKey">D</span>
     <p>Move into an occupied square to fight monsters or open chests.</p>
+    <p>Stairs between levels are located at the ends of each hall.</p>
     <h3>Combat</h3>
     <span className="shortcutKey">1</span> -
     <span className="shortcutKey">0</span>
