@@ -694,9 +694,13 @@ class Game extends React.Component {
   }
 
   bossDies(mob) {
+    let squares = this.state.squares;
+    let mobIndex = this.state.targetIndex;
     let log = this.state.combatLog;
     let mainLog = this.state.mainLog;
     let action = mob.displayName + " dies. You have reclaimed Silverhearth.";
+    this.playSound('https://www.ashlynnpai.com/assets/369252__funwithsound__victory-celebration-movie-score.wav');
+    squares[this.state.mapLevel][mobIndex] = null;
     log.unshift(action);
     mainLog.unshift(action);
     this.setState({
@@ -708,6 +712,7 @@ class Game extends React.Component {
       playerSpecial: null,
       currentMob: null,
       currentAction: null,
+      squares: squares
     });
     return;
   }
