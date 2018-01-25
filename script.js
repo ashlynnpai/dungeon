@@ -12,8 +12,8 @@ class Game extends React.Component {
     url: "https://www.ashlynnpai.com/assets/Jinn_goblin.png"},
     {name: "orc1", displayName: "Orc Captain", attack: 3, health: 50, level: 3,
     url: "https://www.ashlynnpai.com/assets/Jinn_orc.png"},
-    {name: "balrog", displayName: "Balrog", attack: 5, health: 100, level: 3,
-    url: "https://www.ashlynnpai.com/assets/balrog11.jpg"}
+    {name: "balrog", displayName: "Balrog", attack: 10, health: 250, level: 5,
+      url: "https://www.ashlynnpai.com/assets/balrog11.jpg"}
     ];
     this.weaponsInfo = [
     {name: "Hands", attack: 1, description: "These are deadly weapons.", url: "https://www.ashlynnpai.com/assets/Power%20of%20blessing.png"},
@@ -261,12 +261,15 @@ class Game extends React.Component {
     let action = "Scrappy has revived you."
     let log = this.state.mainLog;
     log.unshift(action);
+    if (this.state.pet) {
+      this.state.petEnergy = this.maxPetEnergy;
+    }
     this.setState({
       living: true,
       message: "",
       mainLog: log,
       health: this.state.maxHealth,
-      mana: this.state.maxMana
+      mana: this.state.maxMana,
     })
   }
 
@@ -664,7 +667,7 @@ class Game extends React.Component {
   //boss fight functions and helper functions used by main combat function
 
   startBossFight() {
-    let boss = {name: "balrog", displayName: "Balrog", attack: 10, health: 200, level: 4,
+    let boss = {name: "balrog", displayName: "Balrog", attack: 10, health: 250, level: 5,
       url: "https://www.ashlynnpai.com/assets/balrog11.jpg"};
     this.computeBonus();
     this.playSound('https://www.ashlynnpai.com/assets/Demon_Your_Soul_is_mine-BlueMann-1903732045.mp3');
@@ -684,11 +687,11 @@ class Game extends React.Component {
 
   bossHeal(mobHealth) {
     let log = this.state.combatLog;
-    mobHealth += 30;
+    mobHealth += 50;
     if (this.maxBossHealth < mobHealth) {
       mobHealth = this.maxBossHealth;
     }
-    let action = "Balrog's flames heal him for 30.";
+    let action = "Balrog's flames heal him for 50.";
     log.unshift(action);
     this.setState ({
       combatLog: log,
@@ -1115,7 +1118,7 @@ class Game extends React.Component {
               }
               mana -= 4;
               this.playSound('https://www.ashlynnpai.com/assets/blessing.ogg');
-              let action = "You cast heal for 10 health.";
+              let action = "You cast heal for " + healAmount;
               log.unshift(action);
             }
             else {
