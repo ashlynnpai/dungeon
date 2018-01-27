@@ -604,13 +604,11 @@ body {
   background-repeat: no-repeat, no-repeat;
   background-position: center, center;
   background-size: $icon-height, cover;
+  position: relative;
 }
 
-.petcolor:hover {
-  background-image: url("https://www.ashlynnpai.com/assets/cat1.png"), $tile-image;
-  background-repeat: no-repeat, no-repeat;
-  background-position: center, center;
-  background-size: $icon-height-hover, cover;
+.petcolor:hover .squareInfo {
+  display: block;
 }
 
 .goblin1color {
@@ -655,6 +653,10 @@ body {
   background-position: center, center;
   background-size:$icon-height, cover;
   position: relative;
+}
+
+.firelordcolor:hover .squareInfo {
+  display: block;
 }
 
 .Runecolor, .Meatchoppercolor, .Broochcolor, .Necklacecolor, .Slicercolor, .Bookcolor,

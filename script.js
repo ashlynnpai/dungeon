@@ -433,38 +433,38 @@ class Game extends React.Component {
         }
         break;
       }
-      case 7: {
+      case 6: {
         var mobSpecial = this.mobSkills[1];
         this.announceMobSpecial(mobSpecial, "Firelord");
         break;
       }
-      case 8: {
+      case 7: {
         mobHealth = this.bossHeal(mobHealth);
         break;
       }
-      case 9: {
+      case 8: {
         if (mobSpecial) {
           this.bossSecondAttack();
         }
         break;
       }
-      case 13: {
+      case 11: {
         var mobSpecial = this.mobSkills[0];
         this.announceMobSpecial(mobSpecial, "Firelord");
         break;
       }
-      case 14: {
+      case 12: {
         mobHealth = this.bossHeal(mobHealth);
         this.playSound('https://www.ashlynnpai.com/assets/Demon_Your_Soul_is_mine-BlueMann-1903732045.mp3');
         break;
       }
-      case 15: {
+      case 13: {
         if (mobSpecial) {
           this.bossSecondAttack();
         }
         break;
       }
-      case 17: {
+      case 16: {
         round = 0;
         break;
       }
