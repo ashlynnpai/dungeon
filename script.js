@@ -433,29 +433,38 @@ class Game extends React.Component {
         }
         break;
       }
-      case 6: {
+      case 7: {
         var mobSpecial = this.mobSkills[1];
         this.announceMobSpecial(mobSpecial, "Firelord");
         break;
       }
-      case 7: {
+      case 8: {
         mobHealth = this.bossHeal(mobHealth);
         break;
       }
-      case 8: {
+      case 9: {
         if (mobSpecial) {
           this.bossSecondAttack();
         }
         break;
       }
-      case 11: {
+      case 13: {
         var mobSpecial = this.mobSkills[0];
         this.announceMobSpecial(mobSpecial, "Firelord");
         break;
       }
-      case 12: {
+      case 14: {
         mobHealth = this.bossHeal(mobHealth);
         this.playSound('https://www.ashlynnpai.com/assets/Demon_Your_Soul_is_mine-BlueMann-1903732045.mp3');
+        break;
+      }
+      case 15: {
+        if (mobSpecial) {
+          this.bossSecondAttack();
+        }
+        break;
+      }
+      case 17: {
         round = 0;
         break;
       }
@@ -485,6 +494,7 @@ class Game extends React.Component {
     if (mobHealth <= 0) {
       if (mob.name == "firelord") {
         this.bossDies(mob);
+        return;
       }
       this.mobDies(mob);
       return;
@@ -656,7 +666,6 @@ class Game extends React.Component {
     this.setState({
       currentMob: boss,
       mobHp: boss.health,
-      currentAction: "combat"
     })
     this.combatSequence(0, null);
   }
@@ -700,7 +709,8 @@ class Game extends React.Component {
     let mainLog = this.state.mainLog;
     let action = mob.displayName + " dies. You have reclaimed Silverhearth.";
     this.playSound('https://www.ashlynnpai.com/assets/369252__funwithsound__victory-celebration-movie-score.wav');
-    squares[this.state.mapLevel][mobIndex] = null;
+    squares[this.state.mapLevel][this.state.playerIndex] = null;
+    squares[this.state.mapLevel][mobIndex] = "P";
     log.unshift(action);
     mainLog.unshift(action);
     this.setState({
@@ -1018,6 +1028,8 @@ class Game extends React.Component {
           this.playSound('https://www.ashlynnpai.com/assets/warp3.ogg');
         }
         else if(squares[mapLevel][nextSquare] == "firelord") {
+          this.state.targetIndex = nextSquare;
+          this.state.currentAction = "fighting";
           this.startBossFight();
           return;
         }
