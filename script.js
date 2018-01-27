@@ -1493,7 +1493,7 @@ class Game extends React.Component {
             {pet ? (
             <div className="toolbarTip">
               <p id="offensive">BITE</p>
-              <p id="skillCost">Costs 5 energy</p>
+              <p id="skillCost">Costs 3 energy</p>
               <div id="skillDescription">Scrappys bite wounds the enemy.</div>
             </div>
             ) : (
@@ -1506,7 +1506,7 @@ class Game extends React.Component {
           <span id="toolbar3" className="toolbarItem">3
             <div className="toolbarTip">
               <p id="defensive">HEAL</p>
-              <p id="skillCost">Costs 5 mana.</p>
+              <p id="skillCost">Costs 4 mana.</p>
               <div id="skillDescription">HEAL yourself for half your total health.</div>
              </div>
           </span>
@@ -1523,7 +1523,7 @@ class Game extends React.Component {
              <div className="toolbarTip">
                <p id="defensive">HEALING POTION</p>
                <p id="skillCost">Consumes one potion.</p>
-               <div id="skillDescription">Restores 10 health.</div>
+               <div id="skillDescription">Restores 10 health for each level.</div>
              </div>
           </span>
         </div>
