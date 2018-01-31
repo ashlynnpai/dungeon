@@ -6,4 +6,4 @@ It has been tested on Chrome browser. It requires a keyboard and was designed to
 
 Attributions for images and sound used at  https://github.com/ashlynnpai/dungeon/blob/master/attributions.txt and in the SCSS file.
 
-Have feedback or a copyright complaint? Please contact me at main@ashlynnpai.com or message me on twitter @ashlynnpaics.
+Have feedback or a copyright complaint? Please contact me at main@ashlynnpai.com or message me on twitter @ashlynnpai.
