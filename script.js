@@ -992,6 +992,7 @@ class Game extends React.Component {
         }
        else if(squares[mapLevel][nextSquare] == "down") {
           squares[mapLevel][currentSquare] = null;
+          let yCoord = this.state.yCoord;
           yCoord = 0;
           boardDiv.scrollTo(0, yCoord);
           this.state.mapLevel++;
@@ -1004,6 +1005,7 @@ class Game extends React.Component {
         }
         else if(squares[mapLevel][nextSquare] == "up") {
           squares[mapLevel][currentSquare] = null;
+          let yCoord = this.state.yCoord;
           yCoord = 300;
           boardDiv.scrollTo(0, yCoord);
           let lastSquare = squares[mapLevel].length - 1;
@@ -1304,7 +1306,7 @@ class Game extends React.Component {
     var questsCompleted = [];
     var questsCurrent = [];
 
-    for (i=0; i<this.state.quests.length; i++) {
+    for (var i=0; i<this.state.quests.length; i++) {
       if (this.state.quests[i].completed) {
         questsCompleted.unshift(this.state.quests[i]);
       }
